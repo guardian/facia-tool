@@ -11,14 +11,15 @@ new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-CODE', {
 	stack: 'cms-fronts',
 	stage: 'CODE',
 	env: { region: 'us-east-1' },
-	cloudFormationStackName: 'facia-certificates-CODE',
+	// Riff-Raff names the stack from its Stack/Stage/App tags; match it so `cdk diff` works.
+	cloudFormationStackName: 'cms-fronts-CODE-facia-tool-certificates',
 	domainName: 'fronts.code.dev-gutools.co.uk',
 });
 new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-PROD', {
 	stack: 'cms-fronts',
 	stage: 'PROD',
 	env: { region: 'us-east-1' },
-	cloudFormationStackName: 'facia-certificates-PROD',
+	cloudFormationStackName: 'cms-fronts-PROD-facia-tool-certificates',
 	domainName: 'fronts.gutools.co.uk',
 });
 

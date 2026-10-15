@@ -22,7 +22,7 @@ export interface FaciaToolCertificateProps extends GuStackProps {
  *
  * ARN=$(aws cloudformation describe-stack-resources \
  *   --profile cmsFronts --region us-east-1 \
- *   --stack-name "facia-certificates-$STAGE" \
+ *   --stack-name "cms-fronts-$STAGE-facia-tool-certificates" \
  *   --query "StackResources[?ResourceType=='AWS::CertificateManager::Certificate'].PhysicalResourceId" \
  *   --output text)
  *

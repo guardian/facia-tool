@@ -858,18 +858,26 @@ facia-tool change. Leave the 2018 certificate in place (`GuCertificate` applies
 >   rejected — [riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827),
 >   which must merge and take effect **first**. The plan said "someone with
 >   Riff-Raff admin has to grant deploy permissions"; it is a PR, not a request.
-> - **`cloudFormationStackByTags` defaults to `true`**, in which case Riff-Raff
->   finds the stack by Stack/App/Stage tags and *ignores* `cloudFormationStackName`
->   entirely. It must be set to `false` for the explicit name to be used. The note
->   above about presence-indicator leaving the name parameters at their defaults
->   was therefore misleading — defaults mean tag lookup, not a derived name.
+> - **`cloudFormationStackByTags` defaults to `true`**, which is *lookup* by
+>   Stack/App/Stage tags, not a naming scheme: Riff-Raff finds a stack carrying
+>   those tags and updates it, and only if none matches does it create one, named
+>   from the tag values joined with `-` in Stack/Stage/App order
+>   (`getNewStackName` in
+>   [UpdateCloudFormationTask.scala](https://github.com/guardian/riff-raff/blob/main/magenta-lib/src/main/scala/magenta/tasks/UpdateCloudFormationTask.scala)).
+>   `cloudFormationStackName` is read **only** on the by-name branch, so setting
+>   both is dead config. The note above about presence-indicator leaving the name
+>   parameters at their defaults was therefore misleading. The default is kept
+>   here, so the stacks are `cms-fronts-<stage>-facia-tool-certificates` — unlike
+>   `facia-<stage>`, which only has that shape because it predates the convention.
 > - **The validation records were confirmed live in DNS**, not just inferred from
 >   the two certificates sharing a CNAME: both `_cc09….fronts.gutools.co.uk` and
 >   `_34ef….fronts.code.dev-gutools.co.uk` resolve to `…acm-validations.aws.`. So
 >   neither deploy will hang waiting for validation.
 >
-> Stacks are `facia-certificates-CODE` / `facia-certificates-PROD`; the SSM
-> hand-off commands are recorded in the doc comment on `FaciaToolCertificate`.
+> `bin/cdk.ts` repeats the Riff-Raff-derived stack name in
+> `cloudFormationStackName`. Riff-Raff, not CDK, decides the real name at deploy
+> time, so that prop is only there to keep `cdk diff` pointed at the right stack.
+> The SSM hand-off commands are in the doc comment on `FaciaToolCertificate`.
 >
 > **Part two is not started**: create the SSM parameters, then convert
 > `CloudFrontCertificateArn` to `fromSSM` and repoint the distribution.

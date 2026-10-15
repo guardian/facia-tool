@@ -15,7 +15,3 @@ deployments:
       templateStagePaths:
         CODE: FaciaToolCertificate-useast-1-CODE.template.json
         PROD: FaciaToolCertificate-useast-1-PROD.template.json
-      # Defaults to true, which would look the stack up by Stack/App/Stage tags instead.
-      cloudFormationStackByTags: false
-      cloudFormationStackName: facia-certificates
-      prependStackToCloudFormationStackName: false
