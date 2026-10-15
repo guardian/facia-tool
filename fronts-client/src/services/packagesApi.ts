@@ -1,6 +1,5 @@
 import pandaFetch from './pandaFetch';
 import { liveRecipes } from './recipeQuery';
-import { liveCapi } from './capiQuery';
 import { attemptFriendlyErrorMessage } from 'util/error';
 import type {
 	CreatePackageRequest,
@@ -242,16 +241,7 @@ export async function fetchPackageItemDisplays(
 			? liveRecipes.recipesById(recipeIds)
 			: Promise.resolve([]);
 
-	const chefsPromise = Promise.all(
-		Array.from({ length: Math.ceil(chefIds.length / 100) }, (_, index) =>
-			liveCapi.chefs({
-				ids: chefIds.slice(index * 100, (index + 1) * 100).join(','),
-				'show-elements': 'image',
-				'show-fields': 'all',
-				'page-size': 100,
-			}),
-		),
-	);
+	const chefsPromise = liveRecipes.chefs({ limit: 500 }, chefIds);
 
 	const [recipes, chefPages] = await Promise.all([
 		recipesPromise,
@@ -261,19 +251,22 @@ export async function fetchPackageItemDisplays(
 	const displays: Record<string, PackageItemDisplay> = {};
 
 	for (const recipe of recipes) {
+		const thumbnail = recipe.imageTemplateUrl
+			? recipe.imageTemplateUrl
+					.replace('#{width}', '120')
+					.replace('#{quality}', '80')
+			: undefined;
 		displays[packageItemKey({ cardType: 'recipe', id: recipe.id })] = {
 			title: recipe.title,
-			imageUrl: recipe.previewImage?.url || recipe.featuredImage?.url,
+			imageUrl: thumbnail,
 		};
 	}
 
-	for (const page of chefPages) {
-		for (const chef of page.response.results) {
-			displays[packageItemKey({ cardType: 'chef', id: chef.id })] = {
-				title: chef.webTitle,
-				imageUrl: chef.bylineImageUrl,
-			};
-		}
+	for (const chef of chefPages.results) {
+		displays[packageItemKey({ cardType: 'chef', id: chef.profileId })] = {
+			title: chef.displayName,
+			imageUrl: chef.bylineImageUrl,
+		};
 	}
 
 	return displays;
