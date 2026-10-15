@@ -152,7 +152,7 @@ const recipeQuery = (baseUrl: string) => {
 			params: RecipeSearchParams,
 		): Promise<RecipeSearchResponse> => {
 			const response = await gqlClient.faciaRecipeSearch(
-				params.queryText,
+				params.queryText ?? '',
 				params.filters?.celebrations ? params.filters.celebrations[0] : null,
 				params.filters?.diets ? params.filters.diets[0] : null,
 				params.uprateByDate,
@@ -177,10 +177,9 @@ const recipeQuery = (baseUrl: string) => {
 							: null,
 					)
 					.filter((value) => !!value);
-				console.log(recipes);
 				return {
-					hits: 0, //TBD
-					maxScore: response.maxScore,
+					hits: recipes.length, //TBD
+					maxScore: response.maxScore ?? 0,
 					recipes,
 				};
 			} else {
