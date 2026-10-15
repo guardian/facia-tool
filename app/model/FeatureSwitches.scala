@@ -34,11 +34,11 @@ object EventGraphics
     )
 
 object HeadlineUpdateIndicator
-	extends FeatureSwitch(
-		key = "headline-update-indicator",
-		title = "Enable headline update indicator on cards",
-		enabled = false
-	)
+    extends FeatureSwitch(
+      key = "headline-update-indicator",
+      title = "Enable headline update indicator on cards",
+      enabled = false
+    )
 
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
