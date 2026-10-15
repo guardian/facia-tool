@@ -62,8 +62,5 @@
     "load-grunt-config": "3.0.2",
     "puppeteer": "^19.11.1",
     "time-grunt": "1.3.0"
-  },
-  "dependencies": {
-    "feast-multiplatform-backend-api": "file:feast-multiplatform-backend-api-2.0.1.tgz"
   }
 }
