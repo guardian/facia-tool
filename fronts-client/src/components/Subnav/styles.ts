@@ -187,7 +187,7 @@ export const Select = styled.select`
 
 export const RepeatableRow = styled.div`
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
 	gap: 8px;
 	margin-bottom: 12px;
 `;
@@ -218,6 +218,19 @@ export const ColumnHeaderLabel = styled.span`
 	font-size: 14px;
 	font-weight: 700;
 	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
+export const CharacterCountRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 4px;
+`;
+
+export const CharacterCount = styled.span`
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
 `;
 
 export const ItemHeader = styled.span`
@@ -263,7 +276,8 @@ export const IconButton = styled.button`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	align-self: flex-end;
+	align-self: flex-start;
+	margin-top: 4px;
 	height: 2.5rem;
 	padding: 0;
 	background: none;
