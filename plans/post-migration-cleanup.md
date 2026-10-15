@@ -1219,3 +1219,18 @@ Recorded so they aren't rediscovered as new:
 - **No CloudFront access logging or WAF** on either distribution.
 - **`editorial-tools-jammy-java11`** is an ageing AMI recipe (Ubuntu 22.04,
   Java 11). A bump needs app testing and must not ride along with anything here.
+- **`StorageConsumerRole` may trust accounts that no longer need it.** Naming the
+  accounts properly in 6b made the trust policy legible for the first time, and
+  two entries look vestigial. `DeployTools` arrived as
+  `MobileAPITeamcityAccountID`, described as *"AWS account ID of MAPI - used for
+  CI"* — TeamCity has been replaced by Riff-Raff and GitHub Actions, so the
+  original reason may be gone. `Membership` (formerly `SupportAccountID`) is worth
+  the same question. The role grants read/write on `facia-tool-store/<stage>/*`,
+  so a stale trust is real standing access, not a tidiness issue.
+
+  **This is a removal of access, so prove it before acting** — absence of a
+  recent `AssumeRole` is not proof of disuse if the caller is seasonal or
+  rarely-run. Check CloudTrail for `AssumeRole` events naming the role over as
+  long a window as is retained, *and* ask the owning teams. Do it per account:
+  the six entries are independent, and nothing says they became obsolete at the
+  same time.
