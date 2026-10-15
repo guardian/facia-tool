@@ -153,6 +153,7 @@ const SubnavSection = () => {
 						entries={entries}
 						isLoading={isLoading}
 						onEdit={(id) => history.push(subnavRoutes.edit(id))}
+						runAction={runAction}
 					/>
 				</Route>
 			</Switch>

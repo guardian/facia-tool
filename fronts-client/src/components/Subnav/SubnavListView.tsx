@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import format from 'date-fns/format';
+import { FiMinusCircle, FiMoreVertical, FiTrash2 } from 'react-icons/fi';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { IconButton } from '@guardian/stand/IconButton';
+import { Menu, MenuItem, MenuToggle } from '@guardian/stand/Menu';
 import {
 	Table,
 	TableBody,
@@ -14,14 +17,17 @@ import {
 import { Badge } from '@guardian/stand/Badge';
 import { Icon } from '@guardian/stand/Icon';
 import { theme } from 'constants/theme';
-import { SubnavListEntry } from './helpers';
+import { RunAction, SubnavListEntry } from './helpers';
 import { CustomSubnav } from './types';
+import { deleteSubnav, unpublishSubnav } from './subnavApi';
+import { DeleteSubnavModal, UnpublishSubnavModal } from './SubnavActionModals';
 import { ListViewSidebar, Panel, PanelThumb, PanelThumbEmpty } from './styles';
 
 interface SubnavListViewProps {
 	entries: SubnavListEntry[];
 	isLoading: boolean;
 	onEdit: (id: string) => void;
+	runAction: RunAction;
 }
 
 const panelsGridTheme = {
@@ -96,6 +102,26 @@ const badgeGroupStyle: React.CSSProperties = {
 	flexWrap: 'wrap',
 };
 
+const statusCellStyle: React.CSSProperties = {
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'space-between',
+	gap: '8px',
+	width: '100%',
+};
+
+const menuTriggerStyle = css`
+	border: none;
+	&:hover,
+	&:active {
+		border: none;
+	}
+`;
+
+const menuStyle = css`
+	max-width: 160px;
+`;
+
 const tableHeaderStyles = css`
 	& > tr {
 		align-items: center;
@@ -160,10 +186,16 @@ const SubnavListPanel = ({
 	status,
 	entries,
 	onEdit,
+	onCreate,
+	onUnpublish,
+	onDelete,
 }: {
 	status: 'live' | 'draft';
 	entries: SubnavListEntry[];
 	onEdit: (id: string) => void;
+	onCreate?: () => void;
+	onUnpublish?: (entry: SubnavListEntry) => void;
+	onDelete?: (entry: SubnavListEntry) => void;
 }) => {
 	const heading = status === 'live' ? 'Launched subnavs' : 'Draft subnavs';
 	const emptyMessage =
@@ -191,7 +223,8 @@ const SubnavListPanel = ({
 						</Typography>
 					)}
 				>
-					{entries.map(({ id, subnav, hasLive, hasDraft }) => {
+					{entries.map((entry) => {
+						const { id, subnav, hasLive, hasDraft } = entry;
 						const imageSrc = subnav.images?.[0]?.imageSrc;
 						const title = subnav.header.headerText || 'Untitled subnav';
 						const meta = [...subnav.links.map((link) => link.linkText)]
@@ -253,7 +286,40 @@ const SubnavListPanel = ({
 								</TableCell>
 								{status === 'live' ? (
 									<TableCell compactLabel="Status: " gridColumn={{ lg: '3' }}>
-										<StatusBadges hasLive={hasLive} hasDraft={hasDraft} />
+										<div style={statusCellStyle}>
+											<StatusBadges hasLive={hasLive} hasDraft={hasDraft} />
+											{onUnpublish && onDelete && (
+												<Menu
+													size="sm"
+													aria-label={`Actions for ${title}`}
+													popoverProps={{
+														cssOverrides: menuStyle,
+														containerPadding: 8,
+													}}
+												>
+													<MenuToggle>
+														<IconButton
+															variant="tertiary"
+															size="sm"
+															ariaLabel={`Actions for ${title}`}
+															cssOverrides={menuTriggerStyle}
+														>
+															<FiMoreVertical />
+														</IconButton>
+													</MenuToggle>
+													<MenuItem
+														label="Take down"
+														icon={<FiMinusCircle />}
+														onAction={() => onUnpublish(entry)}
+													/>
+													<MenuItem
+														label="Delete"
+														icon={<FiTrash2 />}
+														onAction={() => onDelete(entry)}
+													/>
+												</Menu>
+											)}
+										</div>
 									</TableCell>
 								) : (
 									<TableCell compactLabel="Status: " gridColumn={{ lg: '3' }}>
@@ -273,12 +339,22 @@ export const SubnavListView = ({
 	entries,
 	isLoading,
 	onEdit,
+	runAction,
 }: SubnavListViewProps) => {
+	const [pendingModal, setPendingModal] = useState<{
+		type: 'delete' | 'unpublish';
+		entry: SubnavListEntry;
+	} | null>(null);
+
 	const draftEntries = entries.filter((entry) => entry.hasDraft);
 
 	const publishedEntries = entries.filter(
 		(entry) => entry.hasLive && !entry.hasDraft,
 	);
+
+	const closeModal = () => setPendingModal(null);
+	const modalHeaderText =
+		pendingModal?.entry.subnav.header.headerText || 'Untitled subnav';
 
 	return (
 		<>
@@ -300,27 +376,47 @@ export const SubnavListView = ({
 							Loading…
 						</Typography>
 					) : (
-						<>
-							<Grid theme={panelsGridTheme}>
-								<Item>
-									<SubnavListPanel
-										status="draft"
-										entries={draftEntries}
-										onEdit={onEdit}
-									/>
-								</Item>
-								<Item>
-									<SubnavListPanel
-										status="live"
-										entries={publishedEntries}
-										onEdit={onEdit}
-									/>
-								</Item>
-							</Grid>
-						</>
+						<Grid theme={panelsGridTheme}>
+							<Item>
+								<SubnavListPanel
+									status="draft"
+									entries={draftEntries}
+									onEdit={onEdit}
+								/>
+							</Item>
+							<Item>
+								<SubnavListPanel
+									status="live"
+									entries={publishedEntries}
+									onEdit={onEdit}
+									onUnpublish={(entry) =>
+										setPendingModal({ type: 'unpublish', entry })
+									}
+									onDelete={(entry) =>
+										setPendingModal({ type: 'delete', entry })
+									}
+								/>
+							</Item>
+						</Grid>
 					)}
 				</div>
 			</div>
+			<UnpublishSubnavModal
+				isOpen={pendingModal?.type === 'unpublish'}
+				onOpenChange={(open) => !open && closeModal()}
+				headerText={modalHeaderText}
+				onConfirm={() =>
+					pendingModal && runAction(pendingModal.entry.id, unpublishSubnav)
+				}
+			/>
+			<DeleteSubnavModal
+				isOpen={pendingModal?.type === 'delete'}
+				onOpenChange={(open) => !open && closeModal()}
+				headerText={modalHeaderText}
+				onConfirm={() =>
+					pendingModal && runAction(pendingModal.entry.id, deleteSubnav)
+				}
+			/>
 		</>
 	);
 };
