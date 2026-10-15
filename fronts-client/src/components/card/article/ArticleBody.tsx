@@ -241,6 +241,7 @@ interface ArticleBodyProps {
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
 	hasCapiHeadlineChanged: boolean;
+	isHeadlineUpdateIndicatorEnabled: boolean;
 }
 
 const determineABTestStatus = (
@@ -341,6 +342,7 @@ const articleBodyDefault = React.memo(
 		hasLiveAbTest,
 		headlineTestError,
 		hasCapiHeadlineChanged,
+		isHeadlineUpdateIndicatorEnabled,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -545,7 +547,10 @@ const articleBodyDefault = React.memo(
 				</CardContent>
 				<ThumbnailArea
 					size={size}
-					$reserveBadgeSpace={shouldShowAbTestStatus || hasCapiHeadlineChanged}
+					$reserveBadgeSpace={
+						shouldShowAbTestStatus ||
+						(isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged)
+					}
 				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
@@ -629,7 +634,7 @@ const articleBodyDefault = React.memo(
 				</ThumbnailArea>
 
 				<BadgeWrapper>
-					{hasCapiHeadlineChanged && (
+					{isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && (
 						<Badge
 							size="sm"
 							weight="strong"

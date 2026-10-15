@@ -85,6 +85,7 @@ interface ComponentProps extends ArticleComponentProps {
 	children: React.ReactNode;
 	onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
 	hasCapiHeadlineChanged: boolean;
+	isHeadlineUpdateIndicatorEnabled: boolean;
 }
 
 interface ComponentState {
@@ -130,6 +131,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			hasLiveAbTest,
 			headlineTestError,
 			hasCapiHeadlineChanged,
+			isHeadlineUpdateIndicatorEnabled,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -206,6 +208,9 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								hasLiveAbTest={hasLiveAbTest}
 								headlineTestError={headlineTestError}
 								hasCapiHeadlineChanged={hasCapiHeadlineChanged}
+								isHeadlineUpdateIndicatorEnabled={
+									isHeadlineUpdateIndicatorEnabled
+								}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -230,6 +235,7 @@ const createMapStateToProps = () => {
 		hasLiveAbTest?: boolean;
 		headlineTestError: AbTestHeadlineErrorType | null;
 		hasCapiHeadlineChanged: boolean;
+		isHeadlineUpdateIndicatorEnabled: boolean;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
@@ -251,6 +257,10 @@ const createMapStateToProps = () => {
 			hasLiveAbTest: hasLiveAbTest,
 			headlineTestError: headlineTestError,
 			hasCapiHeadlineChanged: article?.hasCapiHeadlineChanged ?? false,
+			isHeadlineUpdateIndicatorEnabled: selectFeatureValue(
+				getState(state),
+				'headline-update-indicator',
+			),
 		};
 	};
 };
