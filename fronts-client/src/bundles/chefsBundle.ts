@@ -28,7 +28,7 @@ export const fetchChefs =
 	async (dispatch) => {
 		dispatch(actions.fetchStart(ids));
 		try {
-			const chefSearchResponse = await liveRecipes.chefs(params);
+			const chefSearchResponse = await liveRecipes.chefs(params, ids);
 
 			const chefs: Chef[] = chefSearchResponse.results.map((r) => ({
 				id: r.profileId,

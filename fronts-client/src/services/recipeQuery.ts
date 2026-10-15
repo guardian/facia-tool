@@ -108,10 +108,14 @@ const recipeQuery = (baseUrl: string) => {
 	};
 
 	return {
-		chefs: async (params: ChefSearchParams): Promise<ChefSearchResponse> => {
+		chefs: async (
+			params: ChefSearchParams,
+			ids?: string[],
+		): Promise<ChefSearchResponse> => {
 			const response = await gqlClient.faciaChefSearch(
 				params.limit ?? 50,
 				params.query,
+				ids,
 			);
 
 			if (response) {

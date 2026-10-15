@@ -70,8 +70,8 @@ import {
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
-import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
+import { fetchChefs } from '../bundles/chefsBundle';
 
 const selectAllCardsInCollections = createSelectAllCardsInCollections();
 
@@ -414,13 +414,11 @@ export const fetchCardReferencedEntitiesForCards =
 			promises.push(articlesPromise);
 		}
 
-		//FIXME - needs replacing
-		// if (cardsByCardType.chef) {
-		// 	const chefsPromise = dispatch(
-		// 		fetchChefsById(cardsByCardType.chef.map((chef) => chef.id)),
-		// 	);
-		// 	promises.push(chefsPromise);
-		// }
+		if (cardsByCardType.chef) {
+			const chefIdList = cardsByCardType.chef.map((chef) => chef.id);
+			const chefsPromise = dispatch(fetchChefs({ limit: 500 }, chefIdList));
+			promises.push(chefsPromise);
+		}
 
 		if (cardsByCardType.recipe) {
 			const recipesPromise = dispatch(
