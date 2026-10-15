@@ -1,0 +1,19 @@
+stacks: [cms-fronts]
+regions: [us-east-1]
+allowedStages:
+  - CODE
+  - PROD
+
+# A separate Riff-Raff project from riff-raff.yaml, because a cloud-formation deployment can
+# only target the regions of the file it lives in, and the service stack is eu-west-1. Keeping
+# it separate also means routine facia-tool deploys never touch the certificate.
+deployments:
+  cfn-facia-tool-certificate:
+    type: cloud-formation
+    app: facia-tool-cloudfront
+    parameters:
+      templateStagePaths:
+        CODE: FaciaToolCertificate-useast-1-CODE.template.json
+        PROD: FaciaToolCertificate-useast-1-PROD.template.json
+      cloudFormationStackName: facia-certificate
+      prependStackToCloudFormationStackName: false

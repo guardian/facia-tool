@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`The FaciaToolCertificate stack matches the CODE snapshot 1`] = `
+{
+  "Description": "Facia Tool CloudFront certificate",
+  "Metadata": {
+    "gu:cdk:constructs": [
+      "GuCertificate",
+    ],
+    "gu:cdk:version": "TEST",
+  },
+  "Resources": {
+    "CertificateFaciatoolcloudfront01D09BB8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "fronts.code.dev-gutools.co.uk",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool-cloudfront",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Name",
+            "Value": "FaciaToolCertificate-useast-1-CODE/CertificateFaciatoolcloudfront",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
+
+exports[`The FaciaToolCertificate stack matches the PROD snapshot 1`] = `
+{
+  "Description": "Facia Tool CloudFront certificate",
+  "Metadata": {
+    "gu:cdk:constructs": [
+      "GuCertificate",
+    ],
+    "gu:cdk:version": "TEST",
+  },
+  "Resources": {
+    "CertificateFaciatoolcloudfront01D09BB8": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DomainName": "fronts.gutools.co.uk",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool-cloudfront",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Name",
+            "Value": "FaciaToolCertificate-useast-1-PROD/CertificateFaciatoolcloudfront",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "ValidationMethod": "DNS",
+      },
+      "Type": "AWS::CertificateManager::Certificate",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;
