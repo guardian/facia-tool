@@ -416,6 +416,7 @@ export const fetchCardReferencedEntitiesForCards =
 
 		if (cardsByCardType.chef) {
 			const chefIdList = cardsByCardType.chef.map((chef) => chef.id);
+			console.log('Prefilling chef IDs', chefIdList);
 			const chefsPromise = dispatch(fetchChefs({ limit: 500 }, chefIdList));
 			promises.push(chefsPromise);
 		}

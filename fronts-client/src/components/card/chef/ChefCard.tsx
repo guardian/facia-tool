@@ -106,7 +106,7 @@ export const ChefCard = ({
 				)}
 				<ImageAndGraphWrapper size="small">
 					<ThumbnailSmall
-						url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
+						url={chef?.chefImageOverride?.src ?? chef?.bylineImageUrl}
 						showSquareThumbnail={true}
 					/>
 				</ImageAndGraphWrapper>
@@ -117,11 +117,13 @@ export const ChefCard = ({
 						urlPath={undefined}
 						renderButtons={(props) => (
 							<>
-								<HoverViewButton
-									hoverText="View"
-									href={chef?.webUrl}
-									{...props}
-								/>
+								{chef?.webUrl ? (
+									<HoverViewButton
+										hoverText="View"
+										href={chef?.webUrl}
+										{...props}
+									/>
+								) : null}
 								<HoverAddToClipboardButton
 									hoverText="Clipboard"
 									onAddToClipboard={onAddToClipboard}

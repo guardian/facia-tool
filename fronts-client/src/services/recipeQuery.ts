@@ -57,6 +57,7 @@ export interface ChefSearchHit {
 	contributorType: 'Profile' | 'Byline';
 	displayName: string;
 	profileId: string;
+	webUrl?: string;
 	bylineImageUrl?: string;
 }
 
@@ -115,7 +116,7 @@ const recipeQuery = (baseUrl: string) => {
 			const response = await gqlClient.faciaChefSearch(
 				params.limit ?? 50,
 				params.query,
-				ids,
+				ids ?? null,
 			);
 
 			if (response) {
@@ -128,6 +129,7 @@ const recipeQuery = (baseUrl: string) => {
 								profileId: chefOrByline.contributorId,
 								displayName: chefOrByline.webTitle,
 								bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
+								webUrl: chefOrByline.webUrl,
 							};
 						} else {
 							return {
