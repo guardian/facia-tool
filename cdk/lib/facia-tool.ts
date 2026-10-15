@@ -395,11 +395,9 @@ export class FaciaTool extends GuStack {
 				...[
 					GuardianAwsAccounts.Frontend,
 					GuardianAwsAccounts.Mobile,
-					// `MobileAPITeamcityAccountID` was this account; TeamCity predates Riff-Raff.
 					GuardianAwsAccounts.DeployTools,
 					GuardianAwsAccounts.Ophan,
 					GuardianAwsAccounts.CAPI,
-					// `SupportAccountID` was this account.
 					GuardianAwsAccounts.Membership,
 				].map((accountId) => new AccountPrincipal(accountId)),
 			),
