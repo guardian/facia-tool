@@ -28,14 +28,18 @@ export const fetchChefs =
 	async (dispatch) => {
 		dispatch(actions.fetchStart(ids));
 		try {
+			console.log('fetching chefs with ids ', ids);
 			const chefSearchResponse = await liveRecipes.chefs(params, ids);
 
-			const chefs: Chef[] = chefSearchResponse.results.map((r) => ({
-				id: r.profileId,
-				type: r.contributorType,
-				webTitle: r.displayName,
-				bylineImageUrl: r.bylineImageUrl,
-			}));
+			const chefs: Chef[] = chefSearchResponse.results
+				.filter((r) => r.contributorType == 'Profile')
+				.map((r) => ({
+					id: r.profileId,
+					type: r.contributorType,
+					webTitle: r.displayName,
+					webUrl: r.webUrl,
+					bylineImageUrl: r.bylineImageUrl,
+				}));
 			dispatch(actions.fetchSuccess(chefs));
 		} catch (e) {
 			dispatch(actions.fetchError(e));
