@@ -121,6 +121,9 @@ const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
 // Soft limit for subnav header and nav item text; exceeding it warns but does not block saving.
 const RECOMMENDED_TEXT_LIMIT = 20;
 
+// Debounce window before an edit is automatically saved as a draft.
+const AUTOSAVE_DELAY_MS = 1500;
+
 const stepLabels: Record<StepId, string> = {
 	header: 'Header',
 	links: 'Nav items',
@@ -252,6 +255,7 @@ const SubnavForm = ({
 		initialSubnav?.images ?? [],
 	);
 	const [error, setError] = useState<string | null>(null);
+	const [publishing, setPublishing] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showUnpublishModal, setShowUnpublishModal] = useState(false);
 	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
@@ -507,6 +511,29 @@ const SubnavForm = ({
 		}
 	};
 
+	// Debounced autosave: once a header exists and there are unsaved changes,
+	// persist the draft shortly after edits settle so no explicit save is needed.
+	const draftSignature = signature(currentSubnav);
+	useEffect(() => {
+		if (!canSaveDraft) {
+			return;
+		}
+		const timer = setTimeout(() => {
+			void handleSaveDraft();
+		}, AUTOSAVE_DELAY_MS);
+		return () => clearTimeout(timer);
+	}, [canSaveDraft, draftSignature]);
+
+	const autosaveStatus = saving
+		? 'Saving…'
+		: !hasHeader
+			? 'Add a header to start saving'
+			: isDirty
+				? 'Unsaved changes…'
+				: draftSaved
+					? 'All changes saved'
+					: '';
+
 	// The web platform should pick up on subnav changes after a minute or so. Count down the propagation window, then auto-reload the frame once.
 	useEffect(() => {
 		if (previewCountdown === null) {
@@ -526,10 +553,15 @@ const SubnavForm = ({
 
 	const handlePublish = async () => {
 		setError(null);
+		setPublishing(true);
 		try {
 			await onPublish(subnavId.current);
 		} catch (e) {
 			console.error('Failed to publish subnav', e);
+		} finally {
+			if (isMounted.current) {
+				setPublishing(false);
+			}
 		}
 	};
 
@@ -960,21 +992,25 @@ const SubnavForm = ({
 								</Typography>
 							)}
 							<CreateFormActions>
-								<Button
-									variant="secondary"
-									size="sm"
-									onPress={handleSaveDraft}
-									isDisabled={!canSaveDraft}
+								<Typography
+									element="p"
+									variant="bodySm"
+									aria-live="polite"
+									cssOverrides={css({
+										alignSelf: 'center',
+										margin: 0,
+										color: theme.base.colors.textMuted,
+									})}
 								>
-									{saving ? 'Saving…' : 'Save draft'}
-								</Button>
+									{autosaveStatus}
+								</Typography>
 								<Button
 									variant="primary"
 									size="sm"
 									onPress={handlePublish}
 									isDisabled={!canPublish}
 								>
-									{saving ? 'Publishing…' : 'Publish subnav'}
+									{publishing ? 'Publishing…' : 'Publish subnav'}
 								</Button>
 								{isEditMode && hasLive && hasDraft && onDiscard && (
 									<Button

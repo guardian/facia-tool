@@ -46,9 +46,11 @@ export const SubnavEditRoute = ({
 	const hasLive = config.live.some((s) => s.id === id);
 	const hasDraft = config.draft.some((s) => s.id === id);
 
-	// Re-seed the form whenever the server version changes (after a save,
-	// discard, or unpublish) so its state stays in sync with the config.
-	const formKey = `${id}:${subnav.lastUpdated}:${hasLive}:${hasDraft}`;
+	// Re-seed the form when the live/draft state changes (after a discard or
+	// unpublish) so its state stays in sync with the config. We deliberately
+	// exclude lastUpdated so routine autosaves don't remount the form and
+	// steal focus while the user is still typing.
+	const formKey = `${id}:${hasLive}:${hasDraft}`;
 
 	return (
 		<SubnavForm
