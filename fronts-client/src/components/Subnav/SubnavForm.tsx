@@ -609,7 +609,7 @@ const SubnavForm = ({
 								>
 									<TextInput
 										label="Header text"
-										description="Contextual text for the subnav header"
+										description=""
 										isRequired
 										fluid
 										value={headerText}
@@ -776,6 +776,8 @@ const SubnavForm = ({
 																		onPress={() => removeLink(index)}
 																		aria-label="Remove nav item"
 																		cssOverrides={css({
+																			alignSelf: 'flex-end',
+																			marginTop: '4px',
 																			padding: '0.25em 0.45em 0.25em 0.5em',
 																		})}
 																	/>
@@ -872,6 +874,8 @@ const SubnavForm = ({
 											onPress={() => removePage(index)}
 											aria-label="Remove page"
 											cssOverrides={css({
+												alignSelf: 'flex-end',
+												marginTop: '3px',
 												padding: '0.25em 0.45em 0.25em 0.5em',
 											})}
 										/>
