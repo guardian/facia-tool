@@ -251,6 +251,10 @@ jobs:
                   node-version-file: cdk/.nvmrc
                   cache: npm
                   cache-dependency-path: cdk/package-lock.json
+            # @guardian/aws-account-setup is an internal repo installed over git.
+            - uses: guardian/actions-read-private-repos@v1.0.1
+              with:
+                  private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
             - name: Build and synth CDK
               working-directory: cdk
               run: |

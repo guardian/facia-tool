@@ -126,10 +126,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
       "Type": "String",
     },
-    "ContentAPIAccountID": {
-      "Description": "AWS account ID of CAPI",
-      "Type": "String",
-    },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
     },
@@ -138,31 +134,10 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "FrontendAccountID": {
-      "Description": "AWS account ID of frontend",
-      "Type": "String",
-    },
-    "FrontendRoleToAssume": {
-      "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX",
-      "Description": "Frontend Role to assume for cross account policies",
-      "Type": "String",
-    },
     "LoggingStreamName": {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "MobileAPIAccountID": {
-      "Description": "AWS account ID of MAPI",
-      "Type": "String",
-    },
-    "MobileAPITeamcityAccountID": {
-      "Description": "AWS account ID of MAPI - used for CI",
-      "Type": "String",
-    },
-    "OphanAccountID": {
-      "Description": "AWS account ID of Ophan",
-      "Type": "String",
     },
     "PrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
@@ -173,10 +148,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
-    },
-    "SupportAccountID": {
-      "Description": "AWS account ID of Support",
-      "Type": "String",
     },
     "SwitchboardBucket": {
       "Default": "arn:aws:s3:::facia-switches/*",
@@ -224,9 +195,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontendRoleToAssume",
-              },
+              "Resource": "arn:aws:iam::000000000007:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX",
             },
           ],
           "Version": "2012-10-17",
@@ -687,9 +656,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "MobileAPIAccountID",
-                },
+                "AWS": "000000000033",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -700,9 +667,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "FrontendAccountID",
-                },
+                "AWS": "000000000007",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -713,9 +678,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "OphanAccountID",
-                },
+                "AWS": "000000000031",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -2096,11 +2059,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "FrontendAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000007:root",
                     ],
                   ],
                 },
@@ -2118,11 +2077,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "MobileAPIAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000033:root",
                     ],
                   ],
                 },
@@ -2140,11 +2095,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "MobileAPITeamcityAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000018:root",
                     ],
                   ],
                 },
@@ -2162,11 +2113,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "OphanAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000031:root",
                     ],
                   ],
                 },
@@ -2184,11 +2131,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "ContentAPIAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000025:root",
                     ],
                   ],
                 },
@@ -2206,11 +2149,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "SupportAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000012:root",
                     ],
                   ],
                 },
@@ -2589,11 +2528,7 @@ chown facia-tool /etc/gu/facia-tool.application.secrets.conf
 chmod 400 /etc/gu/facia-tool.application.secrets.conf
 cat > /etc/gu/facia-tool.properties <<'EOF'
 STAGE=CODE
-STS_ROLE=",
-                  {
-                    "Ref": "FrontendRoleToAssume",
-                  },
-                  "
+STS_ROLE=arn:aws:iam::000000000007:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX
 FRONT_PRESSED_TABLE=front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU
 USER_DATA_TABLE=",
                   {
@@ -2786,10 +2721,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
       "Type": "String",
     },
-    "ContentAPIAccountID": {
-      "Description": "AWS account ID of CAPI",
-      "Type": "String",
-    },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
     },
@@ -2798,31 +2729,10 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "FrontendAccountID": {
-      "Description": "AWS account ID of frontend",
-      "Type": "String",
-    },
-    "FrontendRoleToAssume": {
-      "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX",
-      "Description": "Frontend Role to assume for cross account policies",
-      "Type": "String",
-    },
     "LoggingStreamName": {
       "Default": "/account/services/logging.stream.name",
       "Description": "SSM parameter containing the Name (not ARN) on the kinesis stream",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "MobileAPIAccountID": {
-      "Description": "AWS account ID of MAPI",
-      "Type": "String",
-    },
-    "MobileAPITeamcityAccountID": {
-      "Description": "AWS account ID of MAPI - used for CI",
-      "Type": "String",
-    },
-    "OphanAccountID": {
-      "Description": "AWS account ID of Ophan",
-      "Type": "String",
     },
     "PrivateSubnets": {
       "Default": "/account/vpc/primary/subnets/private",
@@ -2833,10 +2743,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Default": "/account/vpc/primary/subnets/public",
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
-    },
-    "SupportAccountID": {
-      "Description": "AWS account ID of Support",
-      "Type": "String",
     },
     "SwitchboardBucket": {
       "Default": "arn:aws:s3:::facia-switches/*",
@@ -2884,9 +2790,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontendRoleToAssume",
-              },
+              "Resource": "arn:aws:iam::000000000007:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX",
             },
           ],
           "Version": "2012-10-17",
@@ -3347,9 +3251,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "MobileAPIAccountID",
-                },
+                "AWS": "000000000033",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -3360,9 +3262,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "FrontendAccountID",
-                },
+                "AWS": "000000000007",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -3373,9 +3273,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "Action": "sns:Subscribe",
               "Effect": "Allow",
               "Principal": {
-                "AWS": {
-                  "Ref": "OphanAccountID",
-                },
+                "AWS": "000000000031",
               },
               "Resource": {
                 "Ref": "FrontsUpdateSNSTopic",
@@ -4448,11 +4346,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "FrontendAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000007:root",
                     ],
                   ],
                 },
@@ -4470,11 +4364,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "MobileAPIAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000033:root",
                     ],
                   ],
                 },
@@ -4492,11 +4382,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "MobileAPITeamcityAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000018:root",
                     ],
                   ],
                 },
@@ -4514,11 +4400,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "OphanAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000031:root",
                     ],
                   ],
                 },
@@ -4536,11 +4418,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "ContentAPIAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000025:root",
                     ],
                   ],
                 },
@@ -4558,11 +4436,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::",
-                      {
-                        "Ref": "SupportAccountID",
-                      },
-                      ":root",
+                      ":iam::000000000012:root",
                     ],
                   ],
                 },
@@ -4941,11 +4815,7 @@ chown facia-tool /etc/gu/facia-tool.application.secrets.conf
 chmod 400 /etc/gu/facia-tool.application.secrets.conf
 cat > /etc/gu/facia-tool.properties <<'EOF'
 STAGE=PROD
-STS_ROLE=",
-                  {
-                    "Ref": "FrontendRoleToAssume",
-                  },
-                  "
+STS_ROLE=arn:aws:iam::000000000007:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX
 FRONT_PRESSED_TABLE=front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W
 USER_DATA_TABLE=",
                   {
