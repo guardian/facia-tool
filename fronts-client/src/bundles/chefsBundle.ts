@@ -28,7 +28,6 @@ export const fetchChefs =
 	async (dispatch) => {
 		dispatch(actions.fetchStart(ids));
 		try {
-			console.log('fetching chefs with ids ', ids);
 			const chefSearchResponse = await liveRecipes.chefs(params, ids);
 
 			const chefs: Chef[] = chefSearchResponse.results
