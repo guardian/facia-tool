@@ -10,14 +10,14 @@ exports[`The FaciaToolCertificate stack matches the CODE snapshot 1`] = `
     "gu:cdk:version": "TEST",
   },
   "Resources": {
-    "CertificateFaciatoolcloudfront01D09BB8": {
+    "CertificateFaciatoolcertificates058FD069": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "DomainName": "fronts.code.dev-gutools.co.uk",
         "Tags": [
           {
             "Key": "App",
-            "Value": "facia-tool-cloudfront",
+            "Value": "facia-tool-certificates",
           },
           {
             "Key": "gu:cdk:version",
@@ -29,7 +29,7 @@ exports[`The FaciaToolCertificate stack matches the CODE snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "FaciaToolCertificate-useast-1-CODE/CertificateFaciatoolcloudfront",
+            "Value": "FaciaToolCertificate-useast-1-CODE/CertificateFaciatoolcertificates",
           },
           {
             "Key": "Stack",
@@ -59,14 +59,14 @@ exports[`The FaciaToolCertificate stack matches the PROD snapshot 1`] = `
     "gu:cdk:version": "TEST",
   },
   "Resources": {
-    "CertificateFaciatoolcloudfront01D09BB8": {
+    "CertificateFaciatoolcertificates058FD069": {
       "DeletionPolicy": "Retain",
       "Properties": {
         "DomainName": "fronts.gutools.co.uk",
         "Tags": [
           {
             "Key": "App",
-            "Value": "facia-tool-cloudfront",
+            "Value": "facia-tool-certificates",
           },
           {
             "Key": "gu:cdk:version",
@@ -78,7 +78,7 @@ exports[`The FaciaToolCertificate stack matches the PROD snapshot 1`] = `
           },
           {
             "Key": "Name",
-            "Value": "FaciaToolCertificate-useast-1-PROD/CertificateFaciatoolcloudfront",
+            "Value": "FaciaToolCertificate-useast-1-PROD/CertificateFaciatoolcertificates",
           },
           {
             "Key": "Stack",

@@ -21,7 +21,7 @@ export class FaciaToolCertificate extends GuStack {
 		});
 
 		new GuCertificate(this, {
-			app: 'facia-tool-cloudfront',
+			app: 'facia-tool-certificates',
 			domainName: props.domainName,
 		});
 	}

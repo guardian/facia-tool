@@ -8,12 +8,14 @@ allowedStages:
 # only target the regions of the file it lives in, and the service stack is eu-west-1. Keeping
 # it separate also means routine facia-tool deploys never touch the certificate.
 deployments:
-  cfn-facia-tool-certificate:
+  cfn-facia-tool-certificates:
     type: cloud-formation
-    app: facia-tool-cloudfront
+    app: facia-tool-certificates
     parameters:
       templateStagePaths:
         CODE: FaciaToolCertificate-useast-1-CODE.template.json
         PROD: FaciaToolCertificate-useast-1-PROD.template.json
-      cloudFormationStackName: facia-certificate
+      # Defaults to true, which would look the stack up by Stack/App/Stage tags instead.
+      cloudFormationStackByTags: false
+      cloudFormationStackName: facia-certificates
       prependStackToCloudFormationStackName: false

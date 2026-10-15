@@ -11,14 +11,14 @@ new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-CODE', {
 	stack: 'cms-fronts',
 	stage: 'CODE',
 	env: { region: 'us-east-1' },
-	cloudFormationStackName: 'facia-certificate-CODE',
+	cloudFormationStackName: 'facia-certificates-CODE',
 	domainName: 'fronts.code.dev-gutools.co.uk',
 });
 new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-PROD', {
 	stack: 'cms-fronts',
 	stage: 'PROD',
 	env: { region: 'us-east-1' },
-	cloudFormationStackName: 'facia-certificate-PROD',
+	cloudFormationStackName: 'facia-certificates-PROD',
 	domainName: 'fronts.gutools.co.uk',
 });
 
