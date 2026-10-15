@@ -24,7 +24,7 @@ task 5, the rest of task 6, and task 9 are open.
 | 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Merged |
 | 5 — SSM path (steps 4–6) | — | Not started; must follow #2132 being deployed to both stages |
 | 6a — network parameters | [#2117](https://github.com/guardian/facia-tool/pull/2117) | Merged (needed a manual `update-stack` first — see below) |
-| 6b, 6f — account IDs | — | **Blocked**: naming convention undecided, and the parameters need creating |
+| 6b, 6f — account IDs | — | **Blocked** on a CI deploy key for `aws-account-setup`; approach settled, see 6b |
 | 6c — `CapiPreviewRole` | — | **Closed, no change.** A documented operator knob; see 6c |
 | 6c — `DBSecurityGroupIdNewVPC` | — | Deferred to task 9 |
 | 6d, 6e — `StaticBucketName`, `AMIFaciatool` | — | No action needed; see below |
@@ -147,8 +147,8 @@ after 2. 6 is independent but large — split it. 7 should precede 8.
 > work at all (`StaticBucketName`, `AMIFaciatool`, `CapiPreviewRole`), one is
 > deferred to task 9 (`DBSecurityGroupIdNewVPC`), and `CloudFrontCertificateArn`
 > turned out to be a "create the certificate in CDK" job rather than a parameter
-> job. That leaves the account IDs as the only genuine parameter wave. See
-> 6b–6g.
+> job. The account IDs are the only remaining wave, and they turn out not to need
+> SSM at all — see 6b. See 6b–6g.
 
 ---
 
@@ -541,7 +541,7 @@ Worth knowing before inventing a path — these exist in cmsFronts today:
 
 | Prefix | Example | Use |
 | --- | --- | --- |
-| `/organisation/accounts/<name>` | `/organisation/accounts/deployTools` | **AWS account IDs** — the obvious precedent for 6b |
+| `/organisation/accounts/<name>` | `/organisation/accounts/deployTools` | AWS account IDs — but prefer `@guardian/aws-account-setup`, see 6b |
 | `/account/services/<thing>` | `/account/services/logging.stream.name` | account-wide service facts |
 | `/account/vpc/primary/…` | `/account/vpc/primary/subnets/private` | networking (already used by 6a) |
 | `/<STAGE>/<stack>/<app>/…` | `/PROD/cms-fronts/facia-tool/db/password` | the GuCDK per-app convention (task 5) |
@@ -596,31 +596,85 @@ the synthesized template against the live stack's.
 > logical IDs. Incidentally retires the `W9007` false positive. **Read the
 > Riff-Raff constraint above before deploying.**
 
-### 6b — cross-account IDs
+### 6b and 6f — cross-account IDs, via `@guardian/aws-account-setup`
 
 The six `*AccountID` parameters are consumed only by `FrontsUpdateSNSPolicy`
 (subscribe permissions) and `StorageConsumerRole`'s trust policy.
+`FrontendRoleToAssume` (6f) is a role ARN whose **account ID is committed as a
+default** in [cdk/lib/facia-tool.ts](../cdk/lib/facia-tool.ts). Both are the
+same problem and should be one PR.
 
-Convert them to `AWS::SSM::Parameter::Value<String>` with defaults pointing at
-SSM paths, creating those parameters first *(write creds — ask the user)*. **Do
-not** move the values into `bin/cdk.ts` — they are account IDs and must not be
-committed.
+> **Better than SSM: delete the parameters entirely.** The IDs are already
+> published as a typed constant in
+> [guardian/aws-account-setup](https://github.com/guardian/aws-account-setup/blob/main/packages/shared/src/aws-accounts.ts),
+> which [service-catalogue](https://github.com/guardian/service-catalogue/tree/main/packages/cdk)
+> consumes. `import { GuardianAwsAccounts } from '@guardian/aws-account-setup'`
+> gives `GuardianAwsAccounts.Frontend` and friends, so the value becomes a
+> **named, reviewable** thing in code without the ID ever entering this repo.
+>
+> This is strictly better than the SSM plan: no parameters to create, no write
+> credentials, and — because the parameters are *removed* rather than retyped —
+> **the Riff-Raff `UseExistingValue` constraint does not apply at all**, so no
+> manual `update-stack` is needed. Riff-Raff only supplies parameters the
+> template declares (proven by task 1).
 
-All six are stage-invariant, so create **one** parameter each at an
-account-scoped path rather than two at the convention path. These are also not
-facia-tool facts — other cmsFronts services need the same six numbers — so agree
-the path with whoever else would read them before creating anything.
-`/organisation/accounts/<name>` is the existing precedent in this account
-(`/organisation/accounts/artifacts`, `/organisation/accounts/deployTools`).
+**All seven are covered.** Verified by matching the live `facia-CODE` and
+`facia-PROD` parameter values against the library, printing only the names:
 
-**Unlike `CapiPreviewRole` (6c), nothing operational depends on these being
-settable per deploy** — they are fixed facts about the organisation, which is
-what makes them the one remaining parameter wave worth doing.
+| Parameter | `GuardianAwsAccounts` key |
+| --- | --- |
+| `FrontendAccountID` | `Frontend` |
+| `MobileAPIAccountID` | `Mobile` |
+| `MobileAPITeamcityAccountID` | **`DeployTools`** |
+| `OphanAccountID` | `Ophan` |
+| `ContentAPIAccountID` | `CAPI` |
+| `SupportAccountID` | **`Membership`** |
+| `FrontendRoleToAssume` | `Frontend` |
 
-Note the type change: a parameter changing from `String` to
-`AWS::SSM::Parameter::Value<String>` keeps its logical ID but changes how the
-value arrives. Confirm with a change set that the resolved policy documents are
-unchanged.
+Two of those names are not what the parameter names suggest, which is itself an
+argument for the change: `MobileAPITeamcityAccountID` is the **DeployTools**
+account (TeamCity was the CI system before Riff-Raff), and `SupportAccountID` is
+**Membership**. Keep the parameter *names* if you like, but name the values
+correctly.
+
+`FrontendRoleToAssume`'s live value is **identical to the committed default in
+both stages**, so nothing has been overridden on the stack and it is safe to
+make it a constant: `` `arn:aws:iam::${GuardianAwsAccounts.Frontend}:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX` ``.
+The role *name* is not sensitive; only the account ID is, and that now comes
+from the library.
+
+**Three things this needs, none of them obvious.**
+
+1. **CI must authenticate to an internal repo.** `aws-account-setup` is
+   `internal`, not public, and is consumed as a git dependency:
+   `"@guardian/aws-account-setup": "github:guardian/aws-account-setup#shared@2.2.0"`
+   (a git tag; `dist/` is committed at release tags, so no build step is needed
+   on install — verified by installing it). service-catalogue's CI adds, before
+   `npm ci`:
+
+   ```yaml
+   - uses: guardian/actions-read-private-repos@v1.0.1
+     with:
+       private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
+   ```
+
+   **That secret does not exist in facia-tool yet** and needs someone with admin
+   on both repos. *(Ask the user — this is the blocker.)*
+2. **The snapshot tests must mock the library, or the IDs get committed anyway**
+   — straight into `cdk/lib/__snapshots__/`, defeating the point. The package
+   ships a `__mocks__` directory of `000000000000`-style placeholders for exactly
+   this, so one line in
+   [cdk/jest.setup.js](../cdk/jest.setup.js) is enough:
+   `jest.mock('@guardian/aws-account-setup')`. Expect the snapshot diff to show
+   placeholders where the `Ref`s used to be.
+3. **Check the current snapshots first.** If any real ID is already committed
+   there, note that it stays in git history — flag it rather than attempting a
+   history rewrite.
+
+**Verify.** The resolved policy documents must be unchanged: the same account IDs,
+inline instead of behind a `Ref`. Use the resolve-and-compare technique from the
+top of this document, and confirm the change set shows only `Modify` on the IAM
+resources and the parameters removed.
 
 ### 6c — `CapiPreviewRole` and `DBSecurityGroupIdNewVPC`
 
