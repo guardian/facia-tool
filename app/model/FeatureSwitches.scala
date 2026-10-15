@@ -33,11 +33,19 @@ object EventGraphics
       enabled = false
     )
 
+object HeadlineUpdateIndicator
+	extends FeatureSwitch(
+		key = "headline-update-indicator",
+		title = "Enable headline update indicator on cards",
+		enabled = false
+	)
+
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    EventGraphics
+    EventGraphics,
+    HeadlineUpdateIndicator
   )
 
   def updateFeatureSwitchesForUser(
