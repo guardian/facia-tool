@@ -26,6 +26,7 @@ export const fetchRecipes =
 				}),
 			);
 		} catch (e) {
+			console.error('Could not fetch recipes: ', e);
 			dispatch(actions.fetchError(e));
 		}
 	};
