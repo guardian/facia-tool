@@ -34,4 +34,5 @@ export default {
 	tone: undefined,
 	hasMainVideo: false,
 	pickedKicker: 'kick',
+	hasCapiHeadlineChanged: false,
 } as DerivedArticle;
