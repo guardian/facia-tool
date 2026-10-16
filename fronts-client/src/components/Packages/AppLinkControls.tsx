@@ -69,17 +69,16 @@ export function AppLinkControls({
 					onPress={copyAppLink}
 					isDisabled={copyStatus === 'copying'}
 				>
-					{copyStatus === 'copying' ? 'Copying app link...' : 'Copy app link'}
+					{copyStatus === 'copying' ? `Copying ${title}...` : title}
 				</Button>
 			</InlineWrap>
 			<div role="status">
 				{copyStatus === 'copied' && (
-					<InlineMessage level="success">App link copied.</InlineMessage>
+					<InlineMessage level="success">{title} copied.</InlineMessage>
 				)}
 				{copyStatus === 'error' && (
 					<InlineMessage level="error">
-						Could not copy the app link. Check clipboard permissions and try
-						again.
+						Could not copy the link. Check clipboard permissions and try again.
 					</InlineMessage>
 				)}
 			</div>
