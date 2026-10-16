@@ -1,8 +1,28 @@
 import 'source-map-support/register';
 import { GuRoot } from '@guardian/cdk/lib/constructs/root';
 import { FaciaTool } from '../lib/facia-tool';
+import { FaciaToolCertificate } from '../lib/facia-tool-certificate';
 
 const app = new GuRoot();
+
+// us-east-1, because CloudFront viewer certificates must be. Deployed separately from the
+// service — see certificates-riff-raff.yaml.
+new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-CODE', {
+	stack: 'cms-fronts',
+	stage: 'CODE',
+	env: { region: 'us-east-1' },
+	// Riff-Raff names the stack from its Stack/Stage/App tags; match it so `cdk diff` works.
+	cloudFormationStackName: 'cms-fronts-CODE-facia-tool-certificates',
+	domainName: 'fronts.code.dev-gutools.co.uk',
+});
+new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-PROD', {
+	stack: 'cms-fronts',
+	stage: 'PROD',
+	env: { region: 'us-east-1' },
+	cloudFormationStackName: 'cms-fronts-PROD-facia-tool-certificates',
+	domainName: 'fronts.gutools.co.uk',
+});
+
 new FaciaTool(app, 'FaciaTool-euwest-1-CODE', {
 	stack: 'cms-fronts',
 	stage: 'CODE',

@@ -7,11 +7,13 @@ migration itself).
 
 Task numbers are deliberately non-contiguous (1, 2, 4, 5, 6, 7, 8) — they match
 the numbering of the original review so the two documents can be read together.
-Item 3 was considered and dropped.
+Item 3 was considered and dropped. Task 9 was added later, during review of
+task 6.
 
 ## Status
 
-Tasks 1, 2, 4a, 4b, 6a and 7 are merged. Task 8 and task 5 are open.
+Tasks 1, 2, 4a, 4b, 6a, 7 and 8 are merged, as is step 2 of task 5. The rest of
+task 5, the rest of task 6, and task 9 are open.
 
 | Task | PR | State |
 | --- | --- | --- |
@@ -19,12 +21,18 @@ Tasks 1, 2, 4a, 4b, 6a and 7 are merged. Task 8 and task 5 are open.
 | 2 — `kms:Decrypt` | [#2114](https://github.com/guardian/facia-tool/pull/2114) | Merged |
 | 4a — policy refactor | [#2115](https://github.com/guardian/facia-tool/pull/2115) | Merged |
 | 4b — policy narrowing | [#2116](https://github.com/guardian/facia-tool/pull/2116) | Merged |
-| 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Draft. **Blocked on step 1** — needs the parameters creating |
+| 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Merged |
 | 5 — SSM path (steps 4–6) | — | Not started; must follow #2132 being deployed to both stages |
 | 6a — network parameters | [#2117](https://github.com/guardian/facia-tool/pull/2117) | Merged (needed a manual `update-stack` first — see below) |
-| 6b–6d — other parameters | — | **Blocked**: need SSM parameters creating, and the 6a caveat applies |
+| 6b, 6f — account IDs | [#2134](https://github.com/guardian/facia-tool/pull/2134) | Draft. Seven parameters removed via `@guardian/aws-account-setup`; CI green |
+| 6c — `CapiPreviewRole` | — | **Closed, no change.** A documented operator knob; see 6c |
+| 6c — `DBSecurityGroupIdNewVPC` | — | Deferred to task 9 |
+| 6d, 6e — `StaticBucketName`, `AMIFaciatool` | — | No action needed; see below |
+| 6g — CloudFront certificate (part 1) | [#2133](https://github.com/guardian/facia-tool/pull/2133) | Draft. Creates the certificate; **blocked on [riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827)** |
+| 6g — CloudFront certificate (part 2) | — | Not started; must follow #2133 being deployed and `ISSUED` |
 | 7 — CloudFront L2 | [#2118](https://github.com/guardian/facia-tool/pull/2118) | Merged. `FaciaCloudfront` only; see revised task 7 |
-| 8 — static bucket OAC | [#2121](https://github.com/guardian/facia-tool/pull/2121) | Open — deletes the distribution; see revised task 8 |
+| 8 — static bucket OAC | [#2121](https://github.com/guardian/facia-tool/pull/2121) | Merged — deleted the distribution rather than adding OAC; see revised task 8 |
+| 9 — absorb `facia-editions.yml` | — | Not started. Added after review; subsumes the `DBSecurityGroupIdNewVPC` half of 6c |
 
 Three findings change the plan as written; each is folded into the relevant
 task below.
@@ -125,6 +133,8 @@ after 2. 6 is independent but large — split it. 7 should precede 8.
 7 (CloudFront L2)
         ↓
 8 (static bucket OAC)
+        ↓
+9 (absorb facia-editions.yml)   ← last; subsumes part of 6c
 ```
 
 > **In practice.** 4a was stacked directly on 2 rather than run in parallel, so
@@ -132,6 +142,13 @@ after 2. 6 is independent but large — split it. 7 should precede 8.
 > statement the two policies spell differently isn't possible. 7 was done before 5
 > and 6b–6d only because those are blocked on write credentials, not for any
 > ordering reason.
+
+> **Task 6 reshaped after review.** Of the eight parameters left, three need no
+> work at all (`StaticBucketName`, `AMIFaciatool`, `CapiPreviewRole`), one is
+> deferred to task 9 (`DBSecurityGroupIdNewVPC`), and `CloudFrontCertificateArn`
+> turned out to be a "create the certificate in CDK" job rather than a parameter
+> job. The account IDs are the only remaining wave, and they turn out not to need
+> SSM at all — see 6b. See 6b–6g.
 
 ---
 
@@ -405,9 +422,18 @@ its grant still exist until step 6).
 
 ### Progress
 
-**Step 1 — not done.** Needs write credentials. The commands to run are below;
-they never print or persist the value. `put-parameter` defaults to no-overwrite,
-so a second run is a safe no-op rather than a clobber.
+**Step 1 — done.** Both convention-path parameters now exist and their values
+match the legacy ones (compared by hash, neither printed):
+
+```
+CODE match
+PROD match
+```
+
+So [#2132](https://github.com/guardian/facia-tool/pull/2132) is no longer
+blocked. The commands used to create them are below, kept for reference; they
+never print or persist the value. `put-parameter` defaults to no-overwrite, so a
+second run is a safe no-op rather than a clobber.
 
 ```shell
 for STAGE in CODE PROD; do
@@ -479,12 +505,47 @@ The no-default parameters are: `FrontendAccountID`, `MobileAPIAccountID`,
 `MobileAPITeamcityAccountID`, `OphanAccountID`, `ContentAPIAccountID`,
 `SupportAccountID`, `StaticBucketName`, `CloudFrontCertificateArn`,
 `CapiPreviewRole`, `DBSecurityGroupIdNewVPC`, `VpcId`, `PublicSubnets`,
-`PrivateSubnets`, and `AMIFaciatool` (which is fine — Riff-Raff resolves it from
-`amiParametersToTags`).
+`PrivateSubnets`, and `AMIFaciatool` (which is fine — see 6e).
 
 **Do this in waves, one PR each.** Changing a parameter's type or removing it
 alters how Riff-Raff supplies the value, so each wave needs its own change set
 and its own deploy.
+
+### Which parameters vary by stage
+
+Measured, not assumed — the two live stacks' parameter values compared pairwise
+(values never printed, compared by base64 so whitespace can't confuse the
+comparison):
+
+| Same in CODE and PROD | Differs per stage |
+| --- | --- |
+| all six `*AccountID`, `FrontendRoleToAssume`, `CapiPreviewRole`, `UserDataTablePrefix`, `SwitchboardBucket`, `VpcId`, `PublicSubnets`, `PrivateSubnets`, `AMIFaciatool` | `CloudFrontCertificateArn`, `DBSecurityGroupIdNewVPC` |
+
+> **Correction.** An earlier version of this table listed `CapiPreviewRole` as
+> differing per stage. It does not — both stages point at the *same* PROD CAPI
+> preview role, which is deliberate (see 6c). The first comparison used `join`
+> over tab-separated `--output text`, which mis-aligned fields; redo it with
+> `--output json | jq` if you need to repeat it.
+
+**Being stage-invariant today does not mean a shared parameter is correct** —
+see 6c, where `CapiPreviewRole` must stay stage-scoped precisely so CODE can be
+changed without touching PROD.
+
+(`CapiEndpointSsmKeyNewVPC` is also the same in both stages — both point at
+`/newvpc/endpoint/capi/PROD`, i.e. CODE uses the PROD CAPI endpoint. Same
+convention as `CapiPreviewRole`, and for the same reason.)
+
+### Naming conventions already present in the account
+
+Worth knowing before inventing a path — these exist in cmsFronts today:
+
+| Prefix | Example | Use |
+| --- | --- | --- |
+| `/organisation/accounts/<name>` | `/organisation/accounts/deployTools` | AWS account IDs — but prefer `@guardian/aws-account-setup`, see 6b |
+| `/account/services/<thing>` | `/account/services/logging.stream.name` | account-wide service facts |
+| `/account/vpc/primary/…` | `/account/vpc/primary/subnets/private` | networking (already used by 6a) |
+| `/<STAGE>/<stack>/<app>/…` | `/PROD/cms-fronts/facia-tool/db/password` | the GuCDK per-app convention (task 5) |
+
 
 > **Constraint discovered during 6a, applies to every wave.** Riff-Raff's
 > `combineParameters`
@@ -535,35 +596,364 @@ the synthesized template against the live stack's.
 > logical IDs. Incidentally retires the `W9007` false positive. **Read the
 > Riff-Raff constraint above before deploying.**
 
-### 6b — cross-account IDs
+### 6b and 6f — cross-account IDs, via `@guardian/aws-account-setup`
 
 The six `*AccountID` parameters are consumed only by `FrontsUpdateSNSPolicy`
 (subscribe permissions) and `StorageConsumerRole`'s trust policy.
+`FrontendRoleToAssume` (6f) is a role ARN whose **account ID is committed as a
+default** in [cdk/lib/facia-tool.ts](../cdk/lib/facia-tool.ts). Both are the
+same problem and should be one PR.
 
-Convert them to `AWS::SSM::Parameter::Value<String>` with defaults pointing at
-SSM paths, creating those parameters first *(write creds — ask the user)*. **Do
-not** move the values into `bin/cdk.ts` — they are account IDs and must not be
-committed.
+> **Better than SSM: delete the parameters entirely.** The IDs are already
+> published as a typed constant in
+> [guardian/aws-account-setup](https://github.com/guardian/aws-account-setup/blob/main/packages/shared/src/aws-accounts.ts),
+> which [service-catalogue](https://github.com/guardian/service-catalogue/tree/main/packages/cdk)
+> consumes. `import { GuardianAwsAccounts } from '@guardian/aws-account-setup'`
+> gives `GuardianAwsAccounts.Frontend` and friends, so the value becomes a
+> **named, reviewable** thing in code without the ID ever entering this repo.
+>
+> This is strictly better than the SSM plan: no parameters to create, no write
+> credentials, and — because the parameters are *removed* rather than retyped —
+> **the Riff-Raff `UseExistingValue` constraint does not apply at all**, so no
+> manual `update-stack` is needed. Riff-Raff only supplies parameters the
+> template declares (proven by task 1).
 
-Note the type change: a parameter changing from `String` to
-`AWS::SSM::Parameter::Value<String>` keeps its logical ID but changes how the
-value arrives. Confirm with a change set that the resolved policy documents are
-unchanged.
+**All seven are covered.** Verified by matching the live `facia-CODE` and
+`facia-PROD` parameter values against the library, printing only the names:
 
-### 6c — environment infrastructure
+| Parameter | `GuardianAwsAccounts` key |
+| --- | --- |
+| `FrontendAccountID` | `Frontend` |
+| `MobileAPIAccountID` | `Mobile` |
+| `MobileAPITeamcityAccountID` | **`DeployTools`** |
+| `OphanAccountID` | `Ophan` |
+| `ContentAPIAccountID` | `CAPI` |
+| `SupportAccountID` | **`Membership`** |
+| `FrontendRoleToAssume` | `Frontend` |
 
-`CloudFrontCertificateArn`, `DBSecurityGroupIdNewVPC`, `CapiPreviewRole` → SSM,
-same approach as 6b. `StaticBucketName` is a plain bucket name and carries
-nothing sensitive, so a per-stage prop in `bin/cdk.ts` is fine and preferable —
-it makes the value reviewable.
+Two of those names are not what the parameter names suggest, which is itself an
+argument for the change: `MobileAPITeamcityAccountID` is the **DeployTools**
+account (TeamCity was the CI system before Riff-Raff), and `SupportAccountID` is
+**Membership**. Keep the parameter *names* if you like, but name the values
+correctly.
 
-### 6d — the hardcoded account ID
+`FrontendRoleToAssume`'s live value is **identical to the committed default in
+both stages**, so nothing has been overridden on the stack and it is safe to
+make it a constant: `` `arn:aws:iam::${GuardianAwsAccounts.Frontend}:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX` ``.
+The role *name* is not sensitive; only the account ID is, and that now comes
+from the library.
 
-`FrontendRoleToAssume` has a **default containing an AWS account ID**, committed
+**Three things this needs, none of them obvious.**
+
+1. **CI must authenticate to an internal repo.** `aws-account-setup` is
+   `internal`, not public, and is consumed as a git dependency:
+   `"@guardian/aws-account-setup": "github:guardian/aws-account-setup#shared@2.2.0"`
+   (a git tag; `dist/` is committed at release tags, so no build step is needed
+   on install — verified by installing it). Add, before `npm ci`:
+
+   ```yaml
+   - uses: guardian/actions-read-private-repos@v1.0.1
+     with:
+       private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
+   ```
+
+   **Not a blocker after all** — `AWS_ACCOUNT_SETUP_DEPLOY_KEY` exists at the
+   **organisation** level, so no per-repo setup was needed.
+2. **The snapshot tests must mock the library, or the IDs get committed anyway**
+   — straight into `cdk/lib/__snapshots__/`, defeating the point. The package
+   ships a `__mocks__` directory of `000000000000`-style placeholders for exactly
+   this, so one line in
+   [cdk/jest.setup.js](../cdk/jest.setup.js) is enough:
+   `jest.mock('@guardian/aws-account-setup')`. Expect the snapshot diff to show
+   placeholders where the `Ref`s used to be.
+3. **Check the current snapshots first.** If any real ID is already committed
+   there, note that it stays in git history — flag it rather than attempting a
+   history rewrite.
+
+**Verify.** The resolved policy documents must be unchanged: the same account IDs,
+inline instead of behind a `Ref`. Use the resolve-and-compare technique from the
+top of this document, and confirm the change set shows only `Modify` on the IAM
+resources and the parameters removed.
+
+> **Done — [#2134](https://github.com/guardian/facia-tool/pull/2134)**, draft,
+> covering 6b and 6f together. Seven parameters removed; resolved
+> `FrontsUpdateSNSPolicy`, `StorageConsumerRole`, `AssumeFrontendRolePolicy` and
+> instance user data are identical to both live stacks.
+>
+> **Two things made the comparison lie before it told the truth**, worth knowing
+> if you repeat it: pseudo-parameters (`AWS::Partition` and friends) have to be
+> resolved too, and `Fn::Join` fragments **re-split** when a `Ref` becomes a
+> literal. Both show up as spurious differences until each side is flattened to a
+> plain string. `StorageConsumerRole` and the user data both reported `DIFFERS`
+> for these reasons alone.
+>
+> The deploy key was **not** a blocker — it is an org-level secret, and CI passed
+> first time including the `upload` job.
+>
+> The real account ID previously committed in
+> `cdk/lib/__snapshots__/facia-tool.test.ts.snap` is now gone from the working
+> tree, but **remains in git history**. No rewrite attempted.
+
+### 6c — `CapiPreviewRole` and `DBSecurityGroupIdNewVPC`
+
+**Neither is being changed. 6c is closed.** Both turned out to be the wrong
+shape for a parameter wave, for different reasons.
+
+#### `CapiPreviewRole` — decided: leave exactly as it is
+
+**It is a deliberate operator knob, not accidental configuration.**
+[docs/SwitchingToCodeCAPI.md](../docs/SwitchingToCodeCAPI.md) documents pointing
+Fronts CODE at CODE CAPI, and step 3 is: *"In AWS, update the `facia-tool` CODE
+CloudFormation stack … changing the `CapiPreviewRole` to match the CODE value of
+`content.api.draft.role`"*. So this parameter has no default **on purpose** —
+someone is expected to change it by hand on the CODE stack, and Riff-Raff's
+`UseExistingValue` is what makes the override stick across deploys. That also
+explains why both stages currently hold the same PROD role: by convention Fronts
+CODE runs against PROD CAPI.
+
+> **Decision: no change.** The procedure is known, documented and understood as
+> it stands. Moving the value to SSM would have meant two stage-scoped
+> parameters, a rewritten runbook, and an extra indirection in a manual
+> procedure that someone may be following under time pressure during an
+> incident. The upside — the value becomes named and reviewable — does not pay
+> for that. **This parameter is a deliberate exception to task 6's goal**, which
+> is the useful thing to record: it has no default because it is meant to be
+> changed, not because it was forgotten.
+
+If this is ever revisited, the constraints are:
+
+- **It must stay stage-scoped** despite the two values being identical today.
+  One shared account-scoped parameter would mean switching CODE to CODE CAPI
+  also switched PROD.
+- **Hardcoding it in `bin/cdk.ts` is not an option**: it is a cross-account ARN
+  containing an account ID (ground rule 6), and it would turn a documented
+  operational switch into a code change plus a deploy.
+- [docs/SwitchingToCodeCAPI.md](../docs/SwitchingToCodeCAPI.md) would have to be
+  updated in the same PR.
+
+**Separately — the value exists twice and nothing keeps the copies in sync.**
+The IAM grant (`AssumeCapiPreviewRolePolicy`) uses the CloudFormation parameter,
+but the app assumes `config.contentApi.previewRole`
+([app/services/Capi.scala](../app/services/Capi.scala), via
+`content.api.draft.role` in the S3 secrets file). The documented switch requires
+editing *both*, and if they disagree the symptom is a runtime `AccessDenied`
+rather than a failed deploy. That is a real sharp edge in the current procedure
+and worth raising on its own; it is not a reason to do the SSM change, because
+SSM would not remove the duplication either.
+
+#### `DBSecurityGroupIdNewVPC` — deferred to task 9
+
+It is
+`DBSecurityGroupNewVPC` in
+[facia-editions.yml](https://github.com/guardian/editorial-tools-platform/blob/main/cloudformation/cmsFronts-account/facia-tool/facia-editions.yml),
+which today exports nothing for it (its `Outputs` are the editions roles, topic
+and KMS alias). The obvious fix was to publish it from there as an
+`AWS::SSM::Parameter`, mirroring `CapiEndpointServiceSecurityGroupParameterNewVPC`
+in that repo's `shared/private-capi-endpoint.yml`.
+
+> **Tried and rejected —
+> [editorial-tools-platform#1130](https://github.com/guardian/editorial-tools-platform/pull/1130),
+> closed unmerged.** The parameter would only exist to carry a value between two
+> stacks that should not be separate in the first place. Task 9 brings
+> `facia-editions.yml` into this CDK project, after which the security group is
+> an ordinary construct reference and neither the SSM parameter nor the
+> CloudFormation parameter is needed. Adding the parameter first would mean
+> creating a cross-stack contract and then immediately deleting it — and SSM
+> parameters are easy to create and awkward to retire once something might read
+> them.
+>
+> So `DBSecurityGroupIdNewVPC` **stays as it is** until task 9. Verified while
+> investigating, and still true: `DBSecurityGroupNewVPC` in `facia-db-CODE` /
+> `facia-db-PROD` matches the `DBSecurityGroupIdNewVPC` parameter on
+> `facia-CODE` / `facia-PROD` in both stages, and the deployed templates for both
+> `facia-db-*` stacks are identical to `facia-editions.yml` on `main` (bar a
+> trailing newline) — so there is no drift for task 9 to untangle.
+
+### 6d — `StaticBucketName` — nothing to do
+
+Superseded by task 8: [#2121](https://github.com/guardian/facia-tool/pull/2121)
+deleted `StaticCloudfront`, which was the only consumer, and the parameter with
+it. Nothing left to do.
+
+### 6e — `AMIFaciatool` — nothing to do
+
+It is already the standard name. `GuAmiParameter` builds its id as
+`"AMI" + AppIdentity.toAlphanumericTitleCase({ app })`, which for `facia-tool`
+is `AMI` + `Faciatool` = **`AMIFaciatool`** — confirmed in
+`cdk.out/FaciaTool-euwest-1-PROD.template.json` and matching
+`amiParametersToTags` in [riff-raff.yaml](../riff-raff.yaml). The parameter isn't
+declared in `templateParameters()` at all; `GuEc2App` creates it. The name only
+*looks* non-standard because GuCDK title-cases without preserving the hyphen.
+
+### 6f — the hardcoded account ID
+
+`FrontendRoleToAssume` had a **default containing an AWS account ID**, committed
 in [cdk/lib/facia-tool.ts](../cdk/lib/facia-tool.ts). It arrived with the legacy
-template so it was out of scope for the migration, but it should not stay. Move
-it to SSM and delete the literal. Note it will remain in git history — flag that
-to the user rather than attempting a history rewrite.
+template so it was out of scope for the migration. **Folded into 6b** — same
+mechanism, same PR: the parameter is removed and the ARN is built from
+`GuardianAwsAccounts.Frontend`. The live value was identical to the committed
+default in both stages, so nothing had been overridden on the stack. The ID
+remains in git history.
+
+### 6g — `CloudFrontCertificateArn` → create the certificate in CDK
+
+**This is no longer a parameter wave; it is its own piece of work.** The
+reviewer's question — why is the CloudFront certificate an external dependency
+when the ALB's is not? — has no good answer. The only real obstacle is region.
+
+**What's there now.** Both CloudFront certificates are in the **cmsFronts account
+itself** (us-east-1), so ownership is not the issue; they are simply unmanaged.
+PROD's was issued **2018-01-26**, is `AMAZON_ISSUED`, DNS-validated, renewal
+`ELIGIBLE`, and covers **two** names: `fronts.gutools.co.uk` *and*
+`fronts-static.gutools.co.uk`. The second SAN only exists for `StaticCloudfront`,
+which task 8 has now deleted — so a replacement only needs the one name.
+
+**The one real constraint.** CloudFront viewer certificates must live in
+us-east-1; this stack is eu-west-1. `GuCertificate` creates the certificate in
+the stack's own region, which is why `certificateProps` works for the ALB and
+cannot work here.
+
+**Validation is not a blocker.** The 2018 us-east-1 certificate and the 2026
+eu-west-1 `GuCertificate` for `fronts.gutools.co.uk` carry the *identical*
+validation CNAME (`_cc09…­.fronts.gutools.co.uk` →
+`_4162….acm-validations.aws.`). ACM reuses one validation token per
+(domain, account) across regions, and that record is already in NS1 — which is
+why the Phase 2 `GuCertificate` issued with no manual DNS step, and why a new
+us-east-1 certificate for the same name would too.
+
+**Options, in preference order.**
+
+1. **A second stack in us-east-1 in the same CDK app**, holding just the
+   certificate, with the ARN handed to the eu-west-1 stack through an eu-west-1
+   SSM parameter set once by hand. **Chosen** — see below.
+2. **The same, but consumed via `crossRegionReferences: true`.** Canonical CDK
+   and fully automatic, but it pulls in a Lambda-backed cross-region parameter
+   reader custom resource in both stacks. Rejected: not worth the complexity for
+   a value that changes roughly never.
+3. **Status quo as a plain SSM parameter** (the original 6c treatment). Makes the
+   value discoverable but leaves the certificate unmanaged.
+
+Note the ARN itself **cannot** go in `bin/cdk.ts` under ground rule 6 — it embeds
+the account ID — so "just hardcode it" is not an option.
+
+**Shape of option 1**, which is exactly what
+[presence-indicator](https://github.com/guardian/presence-indicator/blob/main/cdk/lib/presence-indicator.ts)
+does:
+
+- A second, tiny stack class in [cdk/lib/facia-tool.ts](../cdk/lib/facia-tool.ts)
+  (`FaciaToolCertificate`) whose only resource is a `GuCertificate` for
+  `props.domainName`. Give it its own `app` (presence-indicator uses
+  `presence-indicator-cloudfront`) so the certificate is tagged distinctly.
+- Instantiated per stage in [cdk/bin/cdk.ts](../cdk/bin/cdk.ts) with
+  `env: { region: 'us-east-1' }`, reusing the existing `domainName` prop.
+- **Deployed by Riff-Raff as a separate project.** A `cloud-formation`
+  deployment can only target the regions of the config file it lives in, and
+  [riff-raff.yaml](../riff-raff.yaml) is `regions: [eu-west-1]`. So
+  presence-indicator adds a second config file
+  ([certificates-riff-raff.yaml](https://github.com/guardian/presence-indicator/blob/main/certificates-riff-raff.yaml))
+  containing nothing but a `cloud-formation` deployment and `regions:
+  [us-east-1]`, and a second `guardian/actions-riff-raff` step in CI uploading it
+  under its own `projectName` (`editorial-tools:presence certificates`), with its
+  own `contentDirectories` entry for the two us-east-1 templates.
+
+  ```yaml
+  # certificates-riff-raff.yaml
+  stacks: [cms-fronts]
+  deployments:
+    facia-tool-certificates:
+      type: cloud-formation
+      parameters:
+        templateStagePaths:
+          CODE: FaciaToolCertificate-useast-1-CODE.template.json
+          PROD: FaciaToolCertificate-useast-1-PROD.template.json
+  regions: [us-east-1]
+  ```
+
+  Being a separate *project* is the point: it is deployed independently of the
+  service, so the certificate can be issued and confirmed long before anything
+  repoints at it, and routine facia-tool deploys never touch us-east-1. Note
+  presence-indicator leaves `cloudFormationStackName` and
+  `prependStackToCloudFormationStackName` at their defaults here, unlike the main
+  deployment — this is a new stack, so there is no existing name to preserve.
+
+  In [.github/workflows/improvedci.yml](../.github/workflows/improvedci.yml)
+  that means a second `guardian/actions-riff-raff@v4` step alongside the existing
+  one. The current step identifies the project with the `app:` input rather than
+  `projectName:`; the new step needs its own, and a new Riff-Raff project means
+  someone with Riff-Raff admin has to grant it deploy permissions before the
+  first run.
+- The existing `CloudFrontCertificateArn` template parameter stays, but becomes
+  `GuStringParameter(this, 'CloudFrontCertificateArn', { fromSSM: true, default:
+  '<ssm path>' })` — same logical ID, now `AWS::SSM::Parameter::Value<String>`.
+  presence-indicator's path is `/INFRA/<domainName>/cloudFrontCertificateArn`;
+  the convention path is used here instead, so the parameter is
+  `/<stage>/cms-fronts/facia-tool/cloudfront/certificate-arn` — matching the
+  commands in the `FaciaToolCertificate` doc comment.
+- Someone with write credentials sets that eu-west-1 SSM parameter to the new
+  ARN once, per stage. **This is the only manual link** — the two stacks are
+  otherwise both CI-built and Riff-Raff-deployed.
+
+**Known cost of option 1.** The ARN is copied into SSM by a human: nothing stops
+the parameter drifting from the certificate, and nothing redeploys the eu-west-1
+stack when the certificate changes. Given ACM renews in place and the ARN is
+stable for the life of the certificate, that is an acceptable trade.
+
+**The type change hits the 6a constraint.** `CloudFrontCertificateArn` is
+currently a plain `String` holding a literal ARN, so Riff-Raff will send
+`UseExistingValue` and CloudFormation will try to resolve that ARN as an SSM
+parameter *name*. A one-off manual `update-stack` per stage is needed first, as
+in 6a.
+
+**Task 8 had to land first**, and has: otherwise the new certificate would have
+needed the `fronts-static.*` SAN too, for a distribution that was about to be
+deleted.
+
+**Verify.** Swapping a distribution's viewer certificate is a `Modify`, not a
+replacement, but it must not happen before the new certificate reports `ISSUED`.
+Because the us-east-1 stack is a separate Riff-Raff project, this ordering is
+natural: deploy it, confirm `ISSUED`, set the SSM parameter, *then* ship the
+facia-tool change. Leave the 2018 certificate in place (`GuCertificate` applies
+`RemovalPolicy.RETAIN` anyway); delete it only after a long soak.
+
+> **Part one done — [#2133](https://github.com/guardian/facia-tool/pull/2133)**,
+> draft. Creates the certificate; nothing consumes it yet. Four corrections to
+> the shape sketched above, found while building it:
+>
+> - **The certificate stack is its own file**,
+>   [cdk/lib/facia-tool-certificate.ts](../cdk/lib/facia-tool-certificate.ts),
+>   rather than sharing `facia-tool.ts` as presence-indicator does — that file is
+>   already ~900 lines.
+> - **A new Riff-Raff project has to be authorised in
+>   [riffraff-platform](https://github.com/guardian/riffraff-platform)**, which
+>   holds a per-repo allow-list of project names
+>   (`guardian@164318/facia-tool@40353770: ['cms-fronts::facia-tool']`). Until
+>   `cms-fronts::facia-tool-certificates` is added there the CI upload is
+>   rejected — [riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827),
+>   which must merge and take effect **first**. The plan said "someone with
+>   Riff-Raff admin has to grant deploy permissions"; it is a PR, not a request.
+> - **`cloudFormationStackByTags` defaults to `true`**, which is *lookup* by
+>   Stack/App/Stage tags, not a naming scheme: Riff-Raff finds a stack carrying
+>   those tags and updates it, and only if none matches does it create one, named
+>   from the tag values joined with `-` in Stack/Stage/App order
+>   (`getNewStackName` in
+>   [UpdateCloudFormationTask.scala](https://github.com/guardian/riff-raff/blob/main/magenta-lib/src/main/scala/magenta/tasks/UpdateCloudFormationTask.scala)).
+>   `cloudFormationStackName` is read **only** on the by-name branch, so setting
+>   both is dead config. The note above about presence-indicator leaving the name
+>   parameters at their defaults was therefore misleading. The default is kept
+>   here, so the stacks are `cms-fronts-<stage>-facia-tool-certificates` — unlike
+>   `facia-<stage>`, which only has that shape because it predates the convention.
+> - **The validation records were confirmed live in DNS**, not just inferred from
+>   the two certificates sharing a CNAME: both `_cc09….fronts.gutools.co.uk` and
+>   `_34ef….fronts.code.dev-gutools.co.uk` resolve to `…acm-validations.aws.`. So
+>   neither deploy will hang waiting for validation.
+>
+> `bin/cdk.ts` repeats the Riff-Raff-derived stack name in
+> `cloudFormationStackName`. Riff-Raff, not CDK, decides the real name at deploy
+> time, so that prop is only there to keep `cdk diff` pointed at the right stack.
+> The SSM hand-off commands are in the doc comment on `FaciaToolCertificate`.
+>
+> **Part two is not started**: create the SSM parameters, then convert
+> `CloudFrontCertificateArn` to `fromSSM` and repoint the distribution.
 
 **Verify (all waves).** For each, the only acceptable `cdk diff` is one where
 every *resolved* value is identical and only the mechanism changed. Deploy CODE,
@@ -698,13 +1088,118 @@ would be pure cost.
 3. Decide separately what happens to the bucket and its contents. **Do not**
    delete it in the same change — it is stateful and outside this stack's
    lifecycle.
+4. Note for task 6g: the us-east-1 certificate carries `fronts-static.*` as a
+   second SAN purely for this distribution. Once it's gone, a CDK-managed
+   replacement certificate only needs the one name.
 
-**This needs a human decision and is not safe to do unilaterally**, so it has
-been left alone. Deleting a distribution and a DNS record is irreversible enough
-to want a second opinion, even when the evidence says it is dead.
+**This needs a human decision and is not safe to do unilaterally.** Deleting a
+distribution and a DNS record is irreversible enough to want a second opinion,
+even when the evidence says it is dead.
+
+> **Done — [#2121](https://github.com/guardian/facia-tool/pull/2121)**, merged
+> after that second opinion was obtained. Step 3 (the bucket and its contents) is
+> still outstanding and deliberately separate.
 
 **Risk.** Low to do, but only after someone confirms the service really is
 unused.
+
+---
+
+## Task 9 — bring `facia-editions.yml` into this CDK project
+
+**Goal.** Move the last hand-written CloudFormation that belongs to facia-tool —
+[`cloudformation/cmsFronts-account/facia-tool/facia-editions.yml`](https://github.com/guardian/editorial-tools-platform/blob/main/cloudformation/cmsFronts-account/facia-tool/facia-editions.yml)
+in editorial-tools-platform — into `cdk/`, so the database and the editions
+resources are defined alongside the service that uses them.
+
+**Why.** It is facia-tool's database, in facia-tool's account, consumed only by
+facia-tool, but it lives in another repo, is deployed by hand, and hands values
+to this stack through untracked CloudFormation parameters. 6c started as "publish
+the security group id to SSM from there"
+([editorial-tools-platform#1130](https://github.com/guardian/editorial-tools-platform/pull/1130),
+closed unmerged) before it became clear that the parameter would exist only to
+paper over a split that shouldn't exist. Doing this makes
+`DBSecurityGroupIdNewVPC` disappear rather than change mechanism.
+
+**This is the largest task in the plan and the only one that touches a
+production database.** It is listed last deliberately.
+
+### What is in there
+
+340 lines, one `Stage` parameter, deployed as `facia-db-CODE` / `facia-db-PROD`:
+
+- **Database** — `DBSecurityGroupNewVPC`, `DBSubnetGroupNewVPC`,
+  `PostgresInstanceNewVPC` (Postgres 14.17, `DeletionProtection: true`, all three
+  `DeletionPolicy: Retain`).
+- **Buckets** — `PreviewEditionsBucket`, `PublishedEditionsBucket`. The IAM in
+  this stack already grants `s3:PutObject` on the same two buckets that
+  `EditionsBucketsPolicy` names here.
+- **Editions fan-out** — `PublishedEditionUpdateTopic`, its queue, SQS policy,
+  KMS key and alias, subscription, `PublishedEditionUpdateRole` and policy,
+  `EditionsBuilderRole` and policy, `S3ListenerEventsRule`.
+- **Four `Outputs`** (`EditionsBuilderRole`, `PublishedEditionUpdateRole`,
+  `PublishedEditionUpdateTopic`, `KmsKeySqsQueueFromSnsAlias`) — none has an
+  `Export`, so nothing imports them via CloudFormation. **Other accounts may well
+  reference the ARNs directly**; check before assuming they are decorative.
+
+### The structural decision, which needs making first
+
+1. **Two stacks, both defined in this CDK app.** `facia-db-<stage>` keeps its
+   identity and its resources; it just gets authored in TypeScript. Passing the
+   security group construct from one stack to the other makes CDK generate the
+   `Export`/`Fn::ImportValue` pair automatically, so no SSM parameter and no
+   CloudFormation parameter are needed. **Much the lower-risk option** — no
+   resource moves between stacks, so nothing can be replaced or deleted. The cost
+   is a CloudFormation export, which cannot be changed while it is imported.
+2. **One stack.** Genuinely eliminates the coupling, but every resource has to be
+   moved between stacks via CloudFormation resource import (`DeletionPolicy:
+   Retain` on the originals, delete the old stack without deleting the resources,
+   import into the new one). That is a multi-step, hard-to-rehearse operation
+   against a production RDS instance and two buckets.
+
+**Start from option 1.** Option 2 is only worth it if the export coupling later
+proves to be a real obstacle.
+
+### Known obstacles
+
+- **`DBMasterPassword` is `NoEcho` with no default.** It cannot move into the
+  repo and must not be printed. It has to stay a `CfnParameter` with
+  `noEcho: true`, carried by Riff-Raff's `UseExistingValue` — the same mechanism
+  the rest of task 6 is trying to get away from, and an acceptable exception.
+  Confirm the live value is also in Parameter Store (task 5's parameter) before
+  touching anything.
+- **It is not deployed by CI.** `facia-editions.yml` has no entry in
+  editorial-tools-platform's [`ci.yml`](https://github.com/guardian/editorial-tools-platform/blob/main/.github/workflows/ci.yml),
+  so it is deployed by hand today. Moving it here means it starts being deployed
+  by Riff-Raff on every merge — a behaviour change in its own right, and the
+  reason to get the logical IDs exactly right.
+- **Every logical ID must be preserved**, including the awkward `NewVPC`
+  suffixes and the typo'd `EdtionsArchiverLambdaArn` parameter. Same discipline as
+  the original migration: `overrideLogicalId` everywhere, and the synthesized
+  template compared against `aws cloudformation get-template` before deploying.
+- **Deletion protection cuts both ways.** `DeletionProtection: true` and
+  `DeletionPolicy: Retain` mean a mistake is unlikely to destroy the database —
+  but they also mean a botched change set may be impossible to roll back cleanly.
+
+### Verified starting state
+
+Checked while investigating 6c, and worth re-checking before starting:
+
+- The deployed templates for `facia-db-CODE` and `facia-db-PROD` are **identical
+  to the file on `main`** bar a trailing newline — no drift to reconcile.
+- `DBSecurityGroupNewVPC` matches the `DBSecurityGroupIdNewVPC` parameter on
+  `facia-CODE` / `facia-PROD` in both stages.
+
+**Steps.** Roughly: agree the structure; port the template to TypeScript with
+every logical ID overridden; prove the synthesized template is byte-equivalent in
+meaning to the live one; add the Riff-Raff deployment; deploy CODE and compare
+resources; soak; PROD. Only then wire the security group through as a construct
+reference and delete `DBSecurityGroupIdNewVPC`. Finally, delete the template from
+editorial-tools-platform — **last**, and in a separate PR, so the rollback is
+always "redeploy the YAML".
+
+**Risk.** High, and concentrated in the database. **Rollback.** Keep the YAML in
+editorial-tools-platform until the very end.
 
 ---
 
@@ -724,3 +1219,43 @@ Recorded so they aren't rediscovered as new:
 - **No CloudFront access logging or WAF** on either distribution.
 - **`editorial-tools-jammy-java11`** is an ageing AMI recipe (Ubuntu 22.04,
   Java 11). A bump needs app testing and must not ride along with anything here.
+- **`StorageConsumerRole` trusts two accounts that have not used it in 90 days.**
+  Naming the accounts properly in 6b made the trust policy legible for the first
+  time. The role grants read/write on `facia-tool-store/<stage>/*`, so a stale
+  trust is real standing access, not a tidiness issue.
+
+  **Measured**, rather than assumed — every `AssumeRole` event for both roles in
+  CloudTrail's 90-day window (2026-07-18 → 2026-10-16), 387,829 events,
+  attributed to the *calling* account:
+
+  | Account | CODE | PROD |
+  | --- | --- | --- |
+  | Frontend | 16,275 | 44,706 |
+  | Mobile | 10,093 | 289,600 |
+  | Ophan | 1,126 | 21,701 |
+  | CAPI | **0** | 4,328 |
+  | **DeployTools** | **0** | **0** |
+  | **Membership** | **0** | **0** |
+
+  So `DeployTools` (which arrived as `MobileAPITeamcityAccountID`, *"used for
+  CI"* — TeamCity predates Riff-Raff) and `Membership` (formerly
+  `SupportAccountID`) are the removal candidates. Nothing outside the trust
+  policy appears at all.
+
+  **`CAPI` is the cautionary case: it is idle in CODE but busy in PROD.** A
+  CODE-only sample would have made it look as dead as the other two. Don't
+  generalise from one stage.
+
+  **Still get agreement before removing access.** 90 days is CloudTrail's event
+  history limit, so this cannot distinguish "unused" from "used annually" — if
+  there is an org trail in S3, Athena over a longer window would settle it. Ask
+  the owning teams too.
+
+  How to reproduce: look up by `ResourceName` using the **full role ARN**.
+  The role *name* silently returns zero events, which looks exactly like "nobody
+  uses this".
+
+  ```shell
+  aws cloudtrail lookup-events --profile cmsFronts --region eu-west-1 \
+    --lookup-attributes AttributeKey=ResourceName,AttributeValue="$ROLE_ARN"
+  ```

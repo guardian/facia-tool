@@ -275,3 +275,15 @@ jobs:
                       cfn-facia-tool:
                         - cdk/cdk.out/FaciaTool-euwest-1-CODE.template.json
                         - cdk/cdk.out/FaciaTool-euwest-1-PROD.template.json
+            - name: Upload certificates project to riff-raff
+              uses: guardian/actions-riff-raff@v4
+              with:
+                  app: facia-tool-certificates
+                  roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+                  buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
+                  githubToken: ${{ secrets.GITHUB_TOKEN }}
+                  configPath: certificates-riff-raff.yaml
+                  contentDirectories: |
+                      cfn-facia-tool-certificates:
+                        - cdk/cdk.out/FaciaToolCertificate-useast-1-CODE.template.json
+                        - cdk/cdk.out/FaciaToolCertificate-useast-1-PROD.template.json
