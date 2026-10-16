@@ -216,9 +216,10 @@ export class FaciaTool extends GuStack {
 			},
 			{
 				name: 'CloudFrontCertificateArn',
-				type: 'String',
+				type: 'AWS::SSM::Parameter::Value<String>',
 				description:
-					'x509 certificate ARN for CloudFront - must be in us-east-1',
+					'SSM key holding the us-east-1 CloudFront certificate ARN, set by FaciaToolCertificate',
+				default: `/${this.stage}/${this.stack}/${app}/cloudfront/certificate-arn`,
 			},
 			{
 				name: 'CapiPreviewRole',
