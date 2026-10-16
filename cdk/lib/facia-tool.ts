@@ -1,3 +1,4 @@
+import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
 import { GuEc2App } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
@@ -46,6 +47,9 @@ import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
 const app = 'facia-tool';
 const applicationPort = 9000;
 
+/** Owned by the frontend account; granted to us by its own trust policy, so the name is fixed. */
+const frontendRoleArn = `arn:aws:iam::${GuardianAwsAccounts.Frontend}:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX`;
+
 const allow = (actions: string[], resources: string[]) =>
 	new PolicyStatement({ effect: Effect.ALLOW, actions, resources });
 
@@ -85,7 +89,6 @@ export class FaciaTool extends GuStack {
 
 		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
 
-		const frontendRoleToAssume = parameter('FrontendRoleToAssume');
 		const { frontPressedTable } = props;
 		const lowerCaseStage = this.stage.toLowerCase();
 
@@ -111,7 +114,7 @@ export class FaciaTool extends GuStack {
 			instanceMetricGranularity: '5Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
 			userData: this.buildUserData({
-				frontendRoleToAssume,
+				frontendRoleToAssume: frontendRoleArn,
 				frontPressedTable,
 				userDataTable: userDataTable.tableName,
 			}),
@@ -122,7 +125,7 @@ export class FaciaTool extends GuStack {
 			},
 			healthcheck: { path: '/_healthcheck' },
 			additionalPolicies: this.applicationPolicies({
-				frontendRoleToAssume,
+				frontendRoleToAssume: frontendRoleArn,
 				frontPressedTable,
 				lowerCaseStage,
 				authDomain: props.authDomain,
@@ -206,47 +209,10 @@ export class FaciaTool extends GuStack {
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
 			{
-				name: 'FrontendRoleToAssume',
-				type: 'String',
-				description: 'Frontend Role to assume for cross account policies',
-				default:
-					'arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX',
-			},
-			{
 				name: 'SwitchboardBucket',
 				type: 'String',
 				description: 'Bucket where switchboard writes switches status',
 				default: 'arn:aws:s3:::facia-switches/*',
-			},
-			{
-				name: 'FrontendAccountID',
-				type: 'String',
-				description: 'AWS account ID of frontend',
-			},
-			{
-				name: 'MobileAPIAccountID',
-				type: 'String',
-				description: 'AWS account ID of MAPI',
-			},
-			{
-				name: 'MobileAPITeamcityAccountID',
-				type: 'String',
-				description: 'AWS account ID of MAPI - used for CI',
-			},
-			{
-				name: 'OphanAccountID',
-				type: 'String',
-				description: 'AWS account ID of Ophan',
-			},
-			{
-				name: 'ContentAPIAccountID',
-				type: 'String',
-				description: 'AWS account ID of CAPI',
-			},
-			{
-				name: 'SupportAccountID',
-				type: 'String',
-				description: 'AWS account ID of Support',
 			},
 			{
 				name: 'CloudFrontCertificateArn',
@@ -400,9 +366,9 @@ export class FaciaTool extends GuStack {
 		);
 
 		const subscribers = {
-			MobileAccount: 'MobileAPIAccountID',
-			FrontendAccount: 'FrontendAccountID',
-			OphanAccount: 'OphanAccountID',
+			MobileAccount: GuardianAwsAccounts.Mobile,
+			FrontendAccount: GuardianAwsAccounts.Frontend,
+			OphanAccount: GuardianAwsAccounts.Ophan,
 		};
 		const frontsUpdateTopicPolicy = new CfnTopicPolicy(
 			this,
@@ -410,15 +376,13 @@ export class FaciaTool extends GuStack {
 			{
 				topics: [frontsUpdateTopic.topicArn],
 				policyDocument: {
-					Statement: Object.entries(subscribers).map(
-						([sid, accountIdParameter]) => ({
-							Sid: sid,
-							Effect: 'Allow',
-							Principal: { AWS: parameter(accountIdParameter) },
-							Action: 'sns:Subscribe',
-							Resource: frontsUpdateTopic.topicArn,
-						}),
-					),
+					Statement: Object.entries(subscribers).map(([sid, accountId]) => ({
+						Sid: sid,
+						Effect: 'Allow',
+						Principal: { AWS: accountId },
+						Action: 'sns:Subscribe',
+						Resource: frontsUpdateTopic.topicArn,
+					})),
 				},
 			},
 		);
@@ -429,13 +393,13 @@ export class FaciaTool extends GuStack {
 			path: '/',
 			assumedBy: new CompositePrincipal(
 				...[
-					'FrontendAccountID',
-					'MobileAPIAccountID',
-					'MobileAPITeamcityAccountID',
-					'OphanAccountID',
-					'ContentAPIAccountID',
-					'SupportAccountID',
-				].map((name) => new AccountPrincipal(parameter(name))),
+					GuardianAwsAccounts.Frontend,
+					GuardianAwsAccounts.Mobile,
+					GuardianAwsAccounts.DeployTools,
+					GuardianAwsAccounts.Ophan,
+					GuardianAwsAccounts.CAPI,
+					GuardianAwsAccounts.Membership,
+				].map((accountId) => new AccountPrincipal(accountId)),
 			),
 		});
 		this.overrideLogicalId(storageConsumerRole, retained('StorageConsumerRole'));
