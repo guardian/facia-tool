@@ -1219,18 +1219,43 @@ Recorded so they aren't rediscovered as new:
 - **No CloudFront access logging or WAF** on either distribution.
 - **`editorial-tools-jammy-java11`** is an ageing AMI recipe (Ubuntu 22.04,
   Java 11). A bump needs app testing and must not ride along with anything here.
-- **`StorageConsumerRole` may trust accounts that no longer need it.** Naming the
-  accounts properly in 6b made the trust policy legible for the first time, and
-  two entries look vestigial. `DeployTools` arrived as
-  `MobileAPITeamcityAccountID`, described as *"AWS account ID of MAPI - used for
-  CI"* — TeamCity has been replaced by Riff-Raff and GitHub Actions, so the
-  original reason may be gone. `Membership` (formerly `SupportAccountID`) is worth
-  the same question. The role grants read/write on `facia-tool-store/<stage>/*`,
-  so a stale trust is real standing access, not a tidiness issue.
+- **`StorageConsumerRole` trusts two accounts that have not used it in 90 days.**
+  Naming the accounts properly in 6b made the trust policy legible for the first
+  time. The role grants read/write on `facia-tool-store/<stage>/*`, so a stale
+  trust is real standing access, not a tidiness issue.
 
-  **This is a removal of access, so prove it before acting** — absence of a
-  recent `AssumeRole` is not proof of disuse if the caller is seasonal or
-  rarely-run. Check CloudTrail for `AssumeRole` events naming the role over as
-  long a window as is retained, *and* ask the owning teams. Do it per account:
-  the six entries are independent, and nothing says they became obsolete at the
-  same time.
+  **Measured**, rather than assumed — every `AssumeRole` event for both roles in
+  CloudTrail's 90-day window (2026-07-18 → 2026-10-16), 387,829 events,
+  attributed to the *calling* account:
+
+  | Account | CODE | PROD |
+  | --- | --- | --- |
+  | Frontend | 16,275 | 44,706 |
+  | Mobile | 10,093 | 289,600 |
+  | Ophan | 1,126 | 21,701 |
+  | CAPI | **0** | 4,328 |
+  | **DeployTools** | **0** | **0** |
+  | **Membership** | **0** | **0** |
+
+  So `DeployTools` (which arrived as `MobileAPITeamcityAccountID`, *"used for
+  CI"* — TeamCity predates Riff-Raff) and `Membership` (formerly
+  `SupportAccountID`) are the removal candidates. Nothing outside the trust
+  policy appears at all.
+
+  **`CAPI` is the cautionary case: it is idle in CODE but busy in PROD.** A
+  CODE-only sample would have made it look as dead as the other two. Don't
+  generalise from one stage.
+
+  **Still get agreement before removing access.** 90 days is CloudTrail's event
+  history limit, so this cannot distinguish "unused" from "used annually" — if
+  there is an org trail in S3, Athena over a longer window would settle it. Ask
+  the owning teams too.
+
+  How to reproduce: look up by `ResourceName` using the **full role ARN**.
+  The role *name* silently returns zero events, which looks exactly like "nobody
+  uses this".
+
+  ```shell
+  aws cloudtrail lookup-events --profile cmsFronts --region eu-west-1 \
+    --lookup-attributes AttributeKey=ResourceName,AttributeValue="$ROLE_ARN"
+  ```
