@@ -890,12 +890,9 @@ does:
   someone with Riff-Raff admin has to grant it deploy permissions before the
   first run.
 - The existing `CloudFrontCertificateArn` template parameter stays, but becomes
-  `GuStringParameter(this, 'CloudFrontCertificateArn', { fromSSM: true, default:
-  '<ssm path>' })` — same logical ID, now `AWS::SSM::Parameter::Value<String>`.
-  presence-indicator's path is `/INFRA/<domainName>/cloudFrontCertificateArn`;
-  the convention path is used here instead, so the parameter is
-  `/<stage>/cms-fronts/facia-tool/cloudfront/certificate-arn` — matching the
-  commands in the `FaciaToolCertificate` doc comment.
+  an SSM lookup — same logical ID, now `AWS::SSM::Parameter::Value<String>`.
+  presence-indicator's path is `/INFRA/<domainName>/cloudFrontCertificateArn`,
+  and that is what was used; see the part-two note below for why.
 - Someone with write credentials sets that eu-west-1 SSM parameter to the new
   ARN once, per stage. **This is the only manual link** — the two stacks are
   otherwise both CI-built and Riff-Raff-deployed.
@@ -974,10 +971,17 @@ facia-tool change. Leave the 2018 certificate in place (`GuCertificate` applies
 >   `CfnParameter`s so it can pin logical IDs; it is typed
 >   `AWS::SSM::Parameter::Value<String>` directly, as `CapiEndpointSsmKeyNewVPC`
 >   already is. Same result, one mechanism in the file rather than two.
-> - **The SSM path is derived, not written down**:
->   `` `/${this.stage}/${this.stack}/${app}/cloudfront/certificate-arn` ``, which
->   is the GuCDK convention path and matches the commands in the
->   `FaciaToolCertificate` doc comment.
+> - **The SSM path follows the cross-repo convention, not the GuCDK one.** The
+>   plan above proposed `/<stage>/cms-fronts/facia-tool/cloudfront/certificate-arn`;
+>   it is instead `` `/INFRA/${props.domainName}/cloudFrontCertificateArn` ``.
+>   [presence-indicator](https://github.com/guardian/presence-indicator),
+>   [sftp-user-manager](https://github.com/guardian/sftp-user-manager) and
+>   [gudocs2](https://github.com/guardian/gudocs2) all use exactly that path,
+>   with the same parameter description, for exactly this problem — handing a
+>   us-east-1 certificate ARN to a stack in another region. Keying by domain
+>   rather than by stage also suits the value better: it describes a certificate
+>   for a domain, not configuration for an app-stage. Nothing *reads* the path
+>   automatically; it is a convention, not a library contract.
 >
 > **Still to do, both needing write credentials:** create the two SSM parameters,
 > then one manual `update-stack` per stage (the type change hits the Riff-Raff

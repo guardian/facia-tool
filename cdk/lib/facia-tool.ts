@@ -84,7 +84,7 @@ export class FaciaTool extends GuStack {
 	constructor(scope: App, id: string, props: FaciaToolProps) {
 		super(scope, id, { description: 'Facia Tool Service', ...props });
 
-		const parameters = this.templateParameters();
+		const parameters = this.templateParameters(props.domainName);
 		const parameter = (name: string) => parameters(name).valueAsString;
 
 		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
@@ -204,7 +204,7 @@ export class FaciaTool extends GuStack {
 	 * Parameters inherited from the YAML template this stack replaced. Riff-Raff carries the
 	 * previous value over for the ones without a default, so they keep the values they already have.
 	 */
-	private templateParameters(): (name: string) => CfnParameter {
+	private templateParameters(domainName: string): (name: string) => CfnParameter {
 		const definitions: Array<
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
@@ -218,8 +218,8 @@ export class FaciaTool extends GuStack {
 				name: 'CloudFrontCertificateArn',
 				type: 'AWS::SSM::Parameter::Value<String>',
 				description:
-					'SSM key holding the us-east-1 CloudFront certificate ARN, set by FaciaToolCertificate',
-				default: `/${this.stage}/${this.stack}/${app}/cloudfront/certificate-arn`,
+					'The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.',
+				default: `/INFRA/${domainName}/cloudFrontCertificateArn`,
 			},
 			{
 				name: 'CapiPreviewRole',
