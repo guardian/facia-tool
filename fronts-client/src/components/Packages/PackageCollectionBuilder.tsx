@@ -24,6 +24,10 @@ import type {
 	PackageItemDisplay,
 } from 'types/Packages';
 import { TextArea } from '@guardian/stand/TextArea';
+import { VisibilityBadge } from './VisibilityBadge';
+import { Tooltip } from '@guardian/stand/Tooltip';
+import { Typography } from '@guardian/stand/Typography';
+import { AppLinkControls } from './AppLinkControls';
 
 const BuilderContainer = styled.div`
 	display: flex;
@@ -94,6 +98,10 @@ const BuilderContent = styled.div`
 `;
 
 const Section = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	gap: 1rem;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	padding: 20px;
@@ -149,12 +157,6 @@ const DragDropZone = styled.div`
 	&:hover {
 		background-color: #f0f0f0;
 	}
-`;
-
-const PublishActions = styled.div`
-	display: flex;
-	gap: 10px;
-	margin-bottom: 20px;
 `;
 
 const CheckboxLabel = styled.label`
@@ -218,6 +220,19 @@ const ThemeFormContainer = styled.div`
 	margin-top: 12px;
 `;
 
+const PublishActions = styled.div`
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+`;
+
+const ActionButtons = styled.div`
+	display: flex;
+	gap: 10px;
+`;
+
 interface PackageCollectionBuilderProps {
 	package: FeastPackage;
 	isPersisted: boolean;
@@ -227,6 +242,8 @@ interface PackageCollectionBuilderProps {
 	onSave: () => void;
 	onPublish: () => void;
 	onClose: () => void;
+	isPublished: boolean;
+	deepLink: string; // Full Feast deep link, including the package ID.
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -255,6 +272,8 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	onSave,
 	onPublish,
 	onClose,
+	isPublished,
+	deepLink,
 }) => {
 	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
@@ -264,7 +283,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [loadingDisplays, setLoadingDisplays] = useState(true);
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
-	const [deepLink, setDeepLink] = useState('');
+	const [copyMessage, setCopyMessage] = useState('');
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -314,6 +333,14 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			active = false;
 		};
 	}, [itemSignature, displayRefresh]);
+
+	useEffect(() => {
+		//notification message to appear for 10 seconds
+		if (!copyMessage) return;
+
+		const timeout = window.setTimeout(() => setCopyMessage(''), 10_000);
+		return () => window.clearTimeout(timeout);
+	}, [copyMessage]);
 
 	const changeMetadata = (patch: Partial<FeastPackageMetadata>) => {
 		onPackageChange({
@@ -432,13 +459,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			</BuilderHeader>
 
 			<BuilderContent>
-				<p>
-					Package ID: {pkg.id}
-					{' | '}
-					Visibility: {pkg.isHidden ? 'Hidden' : 'Visible'}
-					{isModified && ' (Modified)'}
-				</p>
-
 				<FirstSection>
 					<LeftColumn>
 						<TextInput
@@ -448,31 +468,26 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							isDisabled={disabled}
 						/>
 
+						<div style={{ width: 'fit-content', gap: '1em', display: 'flex' }}>
+							<VisibilityBadge isHidden={pkg.isHidden} />
+							<Tooltip>
+								<Typography variant="bodyCompactSm">
+									Visibility controls whether the package is shown on fronts.
+									Users with the deep-link will always be able to see it
+								</Typography>
+							</Tooltip>
+						</div>
+
 						<TextArea
 							label="Description"
 							value={pkg.metadata?.bodyText ?? ''}
 							onChange={(bodyText) => changeMetadata({ bodyText })}
 							isDisabled={disabled}
 						/>
-
-						<CheckboxLabel>
-							<input
-								type="checkbox"
-								checked={pkg.isHidden}
-								disabled={disabled}
-								onChange={(event) =>
-									onPackageChange({
-										...pkg,
-										isHidden: event.target.checked,
-									})
-								}
-							/>
-							Hide from fronts
-						</CheckboxLabel>
 					</LeftColumn>
 
 					<RightColumn>
-						<SectionTitle>Metadata</SectionTitle>
+						<SectionTitle>Fronts Display</SectionTitle>
 
 						{/*Dropping these controls for the time being, as they are not respected by the backend and are not user friendly. We'll implement them in a follow-up*/}
 						{/*<TextInput*/}
@@ -498,7 +513,20 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						{/*		});*/}
 						{/*	}}*/}
 						{/*/>*/}
-
+						<CheckboxLabel>
+							<input
+								type="checkbox"
+								checked={pkg.isHidden}
+								disabled={disabled}
+								onChange={(event) =>
+									onPackageChange({
+										...pkg,
+										isHidden: event.target.checked,
+									})
+								}
+							/>
+							Hide from fronts
+						</CheckboxLabel>
 						<MetadataBox>
 							<details>
 								<summary style={{ cursor: 'pointer' }}>Select theme</summary>
@@ -537,6 +565,53 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						</MetadataBox>
 					</RightColumn>
 				</FirstSection>
+				<Section>
+					<PublishActions>
+						<PublishActions>
+							<ActionButtons>
+								<Button
+									variant="secondary"
+									size="md"
+									isDisabled={disabled || !isModified || !pkg.name.trim()}
+									onPress={onSave}
+								>
+									Save
+								</Button>
+
+								<Button
+									variant="primary"
+									size="md"
+									isDisabled={
+										disabled || !isPersisted || isModified || !pkg.name.trim()
+									}
+									onPress={onPublish}
+								>
+									Publish
+								</Button>
+
+								{(!isPersisted || isModified) && (
+									<Typography variant="bodyCompactItalicSm">
+										Save your changes before publishing
+									</Typography>
+								)}
+
+								<Tooltip placement="start">
+									<Typography variant="bodyCompactSm">
+										Save updates the stored package. Publish sends the saved
+										package to the Feast app
+									</Typography>
+								</Tooltip>
+							</ActionButtons>
+
+							<AppLinkControls
+								deepLink={deepLink}
+								title={pkg.name}
+								isPublished={isPublished}
+								isDisabled={disabled || !isPublished || !deepLink}
+							/>
+						</PublishActions>
+					</PublishActions>
+				</Section>
 
 				<SlotsContainer>
 					<SectionTitle>Items ({pkg.items.length})</SectionTitle>
@@ -624,53 +699,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						<DragDropZone>Drag recipes or chefs here to attach</DragDropZone>
 					</DragIntentContainer>
 				</SlotsContainer>
-
-				<Section>
-					<SectionTitle>Save & Publish</SectionTitle>
-
-					<PublishActions>
-						<Button
-							variant="secondary"
-							size="md"
-							isDisabled={disabled || !isModified || !pkg.name.trim()}
-							onPress={onSave}
-						>
-							Save
-						</Button>
-
-						<Button
-							variant="primary"
-							size="md"
-							isDisabled={
-								disabled || !isPersisted || isModified || !pkg.name.trim()
-							}
-							onPress={onPublish}
-						>
-							Publish
-						</Button>
-					</PublishActions>
-
-					{(!isPersisted || isModified) && (
-						<p>Save your changes to enable Publish.</p>
-					)}
-
-					<p>
-						Save updates the stored package. Publish submits the saved package
-						to Feast for processing.
-					</p>
-
-					<p>
-						Visibility controls whether the package is shown on fronts.
-						Publishing does not change its visibility.
-					</p>
-
-					<TextInput
-						label="DeepLink"
-						value={deepLink}
-						onChange={setDeepLink}
-						isDisabled={disabled}
-					/>
-				</Section>
 			</BuilderContent>
 		</BuilderContainer>
 	);

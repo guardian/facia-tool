@@ -301,7 +301,21 @@ class PackageController(
         )
       })
       withErrorHandling {
-        val updated = db.updatePackage(newMeta, cards)
+
+        val updated =
+          try {
+            db.updatePackage(newMeta, cards)
+          } catch {
+            case err: PSQLException =>
+              // If the package does not exist, we get a key violation first because we try to update the card rows.
+              // Convert this into a 404 Not Found rather than the misleading 409
+              if (err.getSQLState == PSQLState.FOREIGN_KEY_VIOLATION.getState) {
+                0
+              } else {
+                throw err
+              }
+          }
+
         if (updated == 0) {
           logger.info(s"Request to update non-existent package $id")
           NotFound(

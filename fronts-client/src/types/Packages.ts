@@ -16,20 +16,23 @@ export interface FeastPackageMetadata {
 	excludedRegions?: string[];
 }
 
-export interface FeastPackage {
+export type PublicationStatus = 'Draft' | 'Published' | 'Failed' | 'Pending';
+export interface FeastPackageHeader {
 	id: string;
 	name: string;
 	packageType: 'Feast';
 	isHidden: boolean;
 	metadata?: FeastPackageMetadata;
-	items: PackageItem[];
 	createdOn?: number;
 	createdBy?: string;
 	createdEmail?: string;
 	updatedOn?: number;
 	updatedBy?: string;
 	updatedEmail?: string;
+	publicationStatus?: PublicationStatus;
 }
+
+export type FeastPackage = FeastPackageHeader & { items: PackageItem[] };
 
 export interface CreatePackageRequest {
 	id: string;

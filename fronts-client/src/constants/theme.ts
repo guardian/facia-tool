@@ -18,6 +18,8 @@ const colors = {
 	blueGrey: '#EEF2F6',
 	greyDark: '#444444',
 	greyMediumDark: '#515151',
+	//used by some imported components
+	greyMediumDarker: '#545454',
 	greyMediumDarkish: '#676767',
 	greyMedium: '#767676',
 	greyMediumLight: '#999999',
@@ -44,6 +46,7 @@ const colors = {
 	blueBadgeText: '#092F62',
 	orangeBadge: '#FCDDC6',
 	orangeBadgeText: '#693C16',
+	orangeBadgeIcon: '#C96E2A',
 	blackTransparent20: 'rgba(0,0,0,0.2)',
 	blackTransparent40: 'rgba(0,0,0,0.4)',
 	blackTransparent60: 'rgba(0,0,0,0.6)',
@@ -160,6 +163,12 @@ const abTestBadge = {
 	},
 };
 
+const headlineUpdateBadge = {
+	background: colors.orangeBadge,
+	text: colors.orangeBadgeText,
+	icon: colors.orangeBadgeIcon,
+};
+
 const input = {
 	height: '30px',
 	paddingY: '3px',
@@ -231,6 +240,7 @@ export const theme = {
 	thumbnailImagePortrait,
 	abTest,
 	abTestBadge,
+	headlineUpdateBadge,
 };
 
 export type Theme = typeof theme;

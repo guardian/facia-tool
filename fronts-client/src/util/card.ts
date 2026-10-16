@@ -52,6 +52,7 @@ interface CreateCardOptions {
 	showKickerCustom?: boolean;
 	customKicker?: string;
 	isImmersive?: boolean;
+	baselineCapiHeadline?: string;
 }
 
 // Ideally we will convert this to a type. See
@@ -71,6 +72,7 @@ const createCard = (
 		customKicker = '',
 		imageCutoutSrc,
 		isImmersive = false,
+		baselineCapiHeadline,
 	}: CreateCardOptions = {},
 ): Card => ({
 	uuid: v4(),
@@ -79,6 +81,7 @@ const createCard = (
 	cardType,
 	meta: {
 		...(isImmersive ? { isImmersive } : {}),
+		...(baselineCapiHeadline ? { baselineCapiHeadline } : {}),
 		...(imageHide ? { imageHide } : {}),
 		...(boostLevel ? { boostLevel } : {}),
 		...(imageReplace ? { imageReplace } : {}),
@@ -297,6 +300,7 @@ const getCardEntitiesFromDrop = async (
 				card: createCard(article.id, isEdition, {
 					imageHide: article.frontsMeta.defaults.imageHide,
 					imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+					baselineCapiHeadline: article.fields.headline,
 				}),
 				externalArticle: article,
 			};
@@ -390,6 +394,7 @@ const getArticleEntitiesFromFeedDrop = (
 		showKickerCustom: externalArticle.frontsMeta.defaults.showKickerCustom,
 		customKicker: externalArticle.frontsMeta.pickedKicker,
 		isImmersive: false,
+		baselineCapiHeadline: externalArticle.fields.headline,
 	});
 	return { card, externalArticle };
 };
