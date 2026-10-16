@@ -123,8 +123,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "String",
     },
     "CloudFrontCertificateArn": {
-      "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
-      "Type": "String",
+      "Default": "/CODE/cms-fronts/facia-tool/cloudfront/certificate-arn",
+      "Description": "SSM key holding the us-east-1 CloudFront certificate ARN, set by FaciaToolCertificate",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
@@ -2698,8 +2699,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "String",
     },
     "CloudFrontCertificateArn": {
-      "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
-      "Type": "String",
+      "Default": "/PROD/cms-fronts/facia-tool/cloudfront/certificate-arn",
+      "Description": "SSM key holding the us-east-1 CloudFront certificate ARN, set by FaciaToolCertificate",
+      "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
