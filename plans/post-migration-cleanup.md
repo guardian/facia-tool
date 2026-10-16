@@ -36,7 +36,7 @@ steps 1–2 of task 5. Left open: step 6 of task 5 (behind
 | 6c — `DBSecurityGroupIdNewVPC` | — | Deferred to task 9 |
 | 6d, 6e — `StaticBucketName`, `AMIFaciatool` | — | No action needed; see below |
 | 6g — CloudFront certificate (part 1) | [#2133](https://github.com/guardian/facia-tool/pull/2133) | Merged and deployed; both certificates `ISSUED` ([riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827) merged) |
-| 6g — CloudFront certificate (part 2) | — | Not started |
+| 6g — CloudFront certificate (part 2) | [#2138](https://github.com/guardian/facia-tool/pull/2138) | Draft. Blocked on two manual steps needing write credentials — see 6g |
 | 7 — CloudFront L2 | [#2118](https://github.com/guardian/facia-tool/pull/2118) | Merged. `FaciaCloudfront` only; see revised task 7 |
 | 8 — static bucket OAC | [#2121](https://github.com/guardian/facia-tool/pull/2121) | Merged — deleted the distribution rather than adding OAC; bucket **retained** with an explanatory readme. See revised task 8 |
 | 9 — absorb `facia-editions.yml` | — | Not started. Added after review; subsumes the `DBSecurityGroupIdNewVPC` half of 6c |
@@ -959,11 +959,11 @@ facia-tool change. Leave the 2018 certificate in place (`GuCertificate` applies
 > time, so that prop is only there to keep `cdk diff` pointed at the right stack.
 > The SSM hand-off commands are in the doc comment on `FaciaToolCertificate`.
 >
-> **Part two in progress.** Both stacks are deployed and both certificates are
-> `ISSUED` (`fronts.code.dev-gutools.co.uk`, `fronts.gutools.co.uk`). The code
-> change converting `CloudFrontCertificateArn` to an SSM lookup is ready; the
-> deploy is gated on the two manual steps below. Three corrections to the sketch
-> above:
+> **Part two — [#2138](https://github.com/guardian/facia-tool/pull/2138)**,
+> draft. Both stacks are deployed and both certificates are `ISSUED`
+> (`fronts.code.dev-gutools.co.uk`, `fronts.gutools.co.uk`). The code change
+> converting `CloudFrontCertificateArn` to an SSM lookup is done; the deploy is
+> gated on the two manual steps below. Three corrections to the sketch above:
 >
 > - **There is no distribution to repoint.** `cloudFront()` already passes the
 >   parameter's value to `Certificate.fromCertificateArn`, so changing the
