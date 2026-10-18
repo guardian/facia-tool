@@ -26,6 +26,7 @@ const colors = {
 	greyLight: '#A9A9A9',
 	greyVeryLight: '#c9c9c9',
 	greyLightPinkish: '#C9C9C9',
+	whiteGrey: '#CCCCCC',
 	whiteDark: '#DCDCDC',
 	whiteMedium: '#EDEDED',
 	whiteLight: '#F6F6F6',

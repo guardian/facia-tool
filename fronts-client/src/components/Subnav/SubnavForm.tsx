@@ -168,21 +168,21 @@ const gridTheme = {
 
 const stepperOverrides = css`
 	li button > div:first-of-type {
-		border-right: 1px solid #cccccc;
+		border-right: 1px solid ${theme.colors.whiteGrey};
 	}
 `;
 
 const stepperTheme = {
 	navigation: {
 		shared: {
-			border: '0.0625rem solid #cccccc',
+			border: `0.0625rem solid ${theme.colors.whiteGrey}`,
 			currentBackgroundColor: `${theme.colors.orange}`,
 		},
 	},
 	step: {
 		shared: {
-			backgroundColor: '#ededed',
-			currentBackgroundColor: '#ededed',
+			backgroundColor: `${theme.colors.whiteMedium}`,
+			currentBackgroundColor: `${theme.colors.whiteMedium}`,
 			text: {
 				inverseColor: `${theme.colors.blackDark}`,
 			},
@@ -199,12 +199,22 @@ const stepperTheme = {
 const sidebarItemStyle = css`
 	align-self: stretch;
 	border-radius: 4px;
-	background-color: #ededed;
+	background-color: ${theme.colors.whiteMedium};
 `;
 
 const deleteButtonStyle = css`
 	color: #c70000;
 `;
+
+const sectionHeadingStyle = css({
+	paddingBottom: '0px',
+	marginBottom: '0px',
+});
+
+const sectionDescriptionStyle = css({
+	marginBottom: '16px',
+	color: theme.base.colors.textMuted,
+});
 
 const SubnavForm = ({
 	onSaveDraft,
@@ -544,27 +554,20 @@ const SubnavForm = ({
 							<Typography
 								element="h2"
 								variant="heading2Xl"
-								cssOverrides={css({
-									paddingBottom: '0px',
-									marginBottom: '0px',
-								})}
+								cssOverrides={sectionHeadingStyle}
 							>
 								Header
 							</Typography>
 							<Typography
 								element="body"
 								variant="bodyMd"
-								cssOverrides={css({
-									marginBottom: '16px',
-									color: theme.base.colors.textMuted,
-								})}
+								cssOverrides={sectionDescriptionStyle}
 							>
 								Add a header text and paste an optional URL link
 							</Typography>
 							<RowFields>
 								<TextInput
 									label="Header text"
-									description=""
 									isRequired
 									fluid
 									value={headerText}
@@ -573,7 +576,6 @@ const SubnavForm = ({
 								/>
 								<TextInput
 									label="URL (Dotcom path) (optional)"
-									description=""
 									fluid
 									value={headerDotcomPath}
 									onChange={setHeaderDotcomPath}
@@ -599,20 +601,14 @@ const SubnavForm = ({
 							<Typography
 								element="h2"
 								variant="heading2Xl"
-								cssOverrides={css({
-									paddingBottom: '0px',
-									marginBottom: '0px',
-								})}
+								cssOverrides={sectionHeadingStyle}
 							>
 								Nav Items
 							</Typography>
 							<Typography
 								element="body"
 								variant="bodyMd"
-								cssOverrides={css({
-									marginBottom: '16px',
-									color: theme.base.colors.textMuted,
-								})}
+								cssOverrides={sectionDescriptionStyle}
 							>
 								Add navigational menu items and their URLs
 							</Typography>
@@ -724,20 +720,14 @@ const SubnavForm = ({
 							<Typography
 								element="h2"
 								variant="heading2Xl"
-								cssOverrides={css({
-									paddingBottom: '0px',
-									marginBottom: '0px',
-								})}
+								cssOverrides={sectionHeadingStyle}
 							>
 								Assign to pages
 							</Typography>
 							<Typography
 								element="body"
 								variant="bodyMd"
-								cssOverrides={css({
-									marginBottom: '16px',
-									color: theme.base.colors.textMuted,
-								})}
+								cssOverrides={sectionDescriptionStyle}
 							>
 								Assign the subnav to specific front, tag or article you’d like
 								it to be displayed
@@ -803,20 +793,14 @@ const SubnavForm = ({
 							<Typography
 								element="h2"
 								variant="heading2Xl"
-								cssOverrides={css({
-									paddingBottom: '0px',
-									marginBottom: '0px',
-								})}
+								cssOverrides={sectionHeadingStyle}
 							>
 								Banner Image (optional){' '}
 							</Typography>
 							<Typography
 								element="body"
 								variant="bodyMd"
-								cssOverrides={css({
-									marginBottom: '16px',
-									color: theme.base.colors.textMuted,
-								})}
+								cssOverrides={sectionDescriptionStyle}
 							>
 								Add images to the Subnav header, you can also add multiple
 								images for different breakpoints
@@ -833,20 +817,14 @@ const SubnavForm = ({
 							<Typography
 								element="h2"
 								variant="heading2Xl"
-								cssOverrides={css({
-									paddingBottom: '0px',
-									marginBottom: '0px',
-								})}
+								cssOverrides={sectionHeadingStyle}
 							>
 								Save & Publish
 							</Typography>
 							<Typography
 								element="body"
 								variant="bodyMd"
-								cssOverrides={css({
-									marginBottom: '16px',
-									color: theme.base.colors.textMuted,
-								})}
+								cssOverrides={sectionDescriptionStyle}
 							>
 								Review the subnav in the panel on the right, then publish when
 								you are ready.{' '}

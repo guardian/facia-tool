@@ -23,7 +23,7 @@ const LogoTypeContainer = styled(Link)`
 	height: 60px;
 	width: 60px;
 	line-height: 60px;
-	color: white;
+	color: ${theme.colors.white};
 	text-decoration: none;
 `;
 
@@ -33,16 +33,19 @@ const customNaviStyles = css`
 	width: 100%;
 `;
 
-const topBarColors = (isSelected: boolean) => css`
+const topBarColors = css`
 	color: white;
 	background: ${theme.colors.blackDark};
-	${isSelected ? `border-bottom-color: ${theme.colors.orange};` : ''}
+`;
+
+const selectedBorder = css`
+	border-bottom-color: ${theme.colors.orange};
 `;
 
 const faviconCustomTheme = {
 	color: {
 		background: theme.colors.greyDark,
-		text: 'white',
+		text: theme.colors.white,
 	},
 };
 
@@ -68,7 +71,7 @@ export default ({
 		<SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
 			{!isSubnavPath && <LogoTypeContainer to="/">F</LogoTypeContainer>}
 			{isSubnavPath && (
-				<TopBar cssOverrides={[customNaviStyles, topBarColors(false)]}>
+				<TopBar cssOverrides={[customNaviStyles, topBarColors]}>
 					<TopBarToolName
 						name="Fronts"
 						favicon={{
@@ -80,21 +83,26 @@ export default ({
 						collapsedHoverText="Back"
 						subsection="Navi"
 						subsectionIcon={'explore'}
-						cssOverrides={[topBarColors(false)]}
+						cssOverrides={[topBarColors]}
 					></TopBarToolName>
 					<TopBarContainerLeft>
 						<TopBarNavigation
 							text="All subnavs"
 							href="/v2/subnavs"
 							isSelected={!!isSubnavListPath}
-							cssOverrides={[topBarColors(!!isSubnavListPath), navHoverBorder]}
+							cssOverrides={[
+								topBarColors,
+								...(isSubnavListPath ? [selectedBorder] : []),
+								navHoverBorder,
+							]}
 						/>
 						<TopBarNavigation
 							text="Create subnav"
 							href="/v2/subnavs/new"
 							isSelected={!!isSubnavCreatePath}
 							cssOverrides={[
-								topBarColors(!!isSubnavCreatePath),
+								topBarColors,
+								...(isSubnavCreatePath ? [selectedBorder] : []),
 								navHoverBorder,
 							]}
 						/>
