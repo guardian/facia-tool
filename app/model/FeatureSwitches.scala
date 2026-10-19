@@ -33,12 +33,6 @@ object MultimediaSlideshow
       enabled = false
     )
 
-object HeadlineUpdateIndicator
-    extends FeatureSwitch(
-      key = "headline-update-indicator",
-      title = "Enable headline update indicator on cards",
-      enabled = false
-    )
 
 object MiniNav
     extends FeatureSwitch(
@@ -51,7 +45,6 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    HeadlineUpdateIndicator,
     MultimediaSlideshow,
     MiniNav
   )
