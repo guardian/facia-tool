@@ -262,6 +262,8 @@ function parseRegions(value: string): string[] {
 }
  */
 
+const PACKAGE_REORDER_TYPE = 'application/x-package-item-reorder';
+
 const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	package: pkg,
 	isPersisted,
@@ -282,6 +284,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
 	const [copyMessage, setCopyMessage] = useState('');
+	const [draggedItemKey, setDraggedItemKey] = useState<string | null>(null);
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -367,16 +370,18 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 		});
 	};
 
-	const moveItem = (index: number, direction: -1 | 1) => {
-		const nextIndex = index + direction;
+	const reorderItem = (targetIndex: number) => {
+		if (disabled || draggedItemKey === null) return;
 
-		if (nextIndex < 0 || nextIndex >= pkg.items.length) {
-			throw new Error('Invalid package item move.');
-		}
+		const sourceIndex = pkg.items.findIndex(
+			(item) => packageItemKey(item) === draggedItemKey,
+		);
+
+		if (sourceIndex < 0 || sourceIndex === targetIndex) return;
 
 		const items = [...pkg.items];
-		[items[index], items[nextIndex]] = [items[nextIndex], items[index]];
-
+		const [movedItem] = items.splice(sourceIndex, 1);
+		items.splice(targetIndex, 0, movedItem);
 		changeItems(items);
 	};
 
@@ -384,6 +389,10 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 		event.preventDefault();
 		event.stopPropagation();
 		setDragIntentActive(false);
+
+		if (event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)) {
+			return;
+		}
 
 		if (disabled) {
 			return;
@@ -487,7 +496,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						</div>
 
 						<TextArea
-							label="Description"
+							label="Standfirst"
 							value={pkg.metadata?.bodyText ?? ''}
 							onChange={(bodyText) => changeMetadata({ bodyText })}
 							isDisabled={disabled}
@@ -650,8 +659,56 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							const display = displays[packageItemKey(item)];
 
 							return (
-								<SlotItem key={`${packageItemKey(item)}:${index}`}>
-									{display?.imageUrl && <img src={display.imageUrl} alt="" />}
+								<SlotItem
+									key={packageItemKey(item)}
+									draggable={!disabled}
+									onDragStart={(event) => {
+										if (disabled) {
+											event.preventDefault();
+											return;
+										}
+
+										setDraggedItemKey(packageItemKey(item));
+										event.dataTransfer.effectAllowed = 'move';
+										event.dataTransfer.setData(
+											PACKAGE_REORDER_TYPE,
+											packageItemKey(item),
+										);
+									}}
+									onDragOver={(event) => {
+										if (
+											disabled ||
+											draggedItemKey === null ||
+											!event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)
+										) {
+											return;
+										}
+
+										event.preventDefault();
+										event.stopPropagation();
+										event.dataTransfer.dropEffect = 'move';
+									}}
+									onDrop={(event) => {
+										if (
+											!event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)
+										) {
+											return;
+										}
+
+										event.preventDefault();
+										event.stopPropagation();
+										reorderItem(index);
+										setDraggedItemKey(null);
+									}}
+									onDragEnd={() => setDraggedItemKey(null)}
+									style={{
+										cursor: disabled ? 'default' : 'grab',
+										opacity: draggedItemKey === packageItemKey(item) ? 0.5 : 1,
+									}}
+								>
+									{display?.imageUrl && (
+										<img src={display.imageUrl} alt="" draggable={false} />
+									)}
 
 									<span>
 										{display?.title ?? item.id} ({item.cardType})
@@ -660,24 +717,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 											item.cardType !== 'subcollection' &&
 											' - details unavailable'}
 									</span>
-
-									<Button
-										size="sm"
-										variant="secondary"
-										isDisabled={disabled || index === 0}
-										onPress={() => moveItem(index, -1)}
-									>
-										Up
-									</Button>
-
-									<Button
-										size="sm"
-										variant="secondary"
-										isDisabled={disabled || index === pkg.items.length - 1}
-										onPress={() => moveItem(index, 1)}
-									>
-										Down
-									</Button>
 
 									<Button
 										size="sm"
