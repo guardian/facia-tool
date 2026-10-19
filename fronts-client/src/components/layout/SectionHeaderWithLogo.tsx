@@ -92,7 +92,7 @@ export default ({
 							isSelected={!!isSubnavListPath}
 							cssOverrides={[
 								topBarColors,
-								...(isSubnavListPath ? [selectedBorder] : []),
+								isSubnavListPath && selectedBorder,
 								navHoverBorder,
 							]}
 						/>
@@ -102,7 +102,7 @@ export default ({
 							isSelected={!!isSubnavCreatePath}
 							cssOverrides={[
 								topBarColors,
-								...(isSubnavCreatePath ? [selectedBorder] : []),
+								isSubnavCreatePath && selectedBorder,
 								navHoverBorder,
 							]}
 						/>
