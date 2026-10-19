@@ -478,29 +478,28 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			<BuilderContent>
 				<FirstSection>
 					<LeftColumn>
-						<TextInput
-							label="Display Name"
-							value={pkg.name}
-							onChange={(name) => onPackageChange({ ...pkg, name })}
-							isDisabled={disabled}
-						/>
-
-						<div style={{ width: 'fit-content', gap: '1em', display: 'flex' }}>
-							<VisibilityBadge isHidden={pkg.isHidden} />
-							<Tooltip>
-								<Typography variant="bodyCompactSm">
-									Visibility controls whether the package is shown on fronts.
-									Users with the deep-link will always be able to see it
-								</Typography>
-							</Tooltip>
+						<div>
+							<TextInput
+								label="Display Name"
+								value={pkg.name}
+								onChange={(name) => onPackageChange({ ...pkg, name })}
+								isDisabled={disabled}
+							/>
+							<Typography variant="bodyCompactSm">
+								Keep the display name under 20 characters.
+							</Typography>
 						</div>
-
-						<TextArea
-							label="Standfirst"
-							value={pkg.metadata?.bodyText ?? ''}
-							onChange={(bodyText) => changeMetadata({ bodyText })}
-							isDisabled={disabled}
-						/>
+						<div>
+							<TextArea
+								label="Standfirst"
+								value={pkg.metadata?.bodyText ?? ''}
+								onChange={(bodyText) => changeMetadata({ bodyText })}
+								isDisabled={disabled}
+							/>
+							<Typography variant="bodyCompactSm">
+								Keep the standfirst under 130 characters.
+							</Typography>
+						</div>
 					</LeftColumn>
 
 					<RightColumn>
