@@ -351,7 +351,7 @@ const ManageFeastPackages: React.FC = () => {
 
 			<ContentWrapper>
 				<LeftPanel>
-					<RecipeSearchContainer />
+					<RecipeSearchContainer showClipboard={false} />
 				</LeftPanel>
 
 				<RightPanel>
