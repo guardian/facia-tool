@@ -1,4 +1,4 @@
-import { getMediaLabel } from '../mediaLabel';
+import { getMediaLabel, getMediaLabelParts } from '../mediaLabel';
 
 describe('media label utilities', () => {
 	it('constructs labels correctly for cutouts', () => {
@@ -28,6 +28,38 @@ describe('media label utilities', () => {
 		expect(getMediaLabel('slideshow', 'added', null)).toEqual('Slideshow');
 
 		expect(getMediaLabel('slideshow', 'replaced', null)).toBeNull();
+	});
+
+	it('constructs labels correctly for multimedia slideshows', () => {
+		expect(getMediaLabel('multimedia slideshow', 'main', null)).toBeNull();
+
+		expect(getMediaLabel('multimedia slideshow', 'added', null)).toEqual(
+			'Multimedia slideshow',
+		);
+
+		expect(getMediaLabel('multimedia slideshow', 'replaced', null)).toBeNull();
+	});
+
+	it('selects an added multimedia slideshow when multimediaSlideshowReplace is set', () => {
+		expect(
+			getMediaLabelParts(
+				false,
+				false,
+				false,
+				false,
+				false,
+				false,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				true,
+			),
+		).toEqual({
+			selectedMediaType: 'multimedia slideshow',
+			placementType: 'added',
+			videoFormatType: null,
+		});
 	});
 
 	it('constructs labels correctly for loops', () => {

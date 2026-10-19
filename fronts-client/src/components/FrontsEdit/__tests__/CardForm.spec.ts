@@ -61,7 +61,10 @@ const formValues = {
 	replacementVideoAtom: '',
 	multimediaSlideshowReplace: false,
 	multimediaSlideshowUrl: '',
+	multimediaSlideshowAtomId: '',
 	multimediaSlideshowAtom: '',
+	multimediaSlideshowThumbnail: '',
+	multimediaSlideshowAspectRatio: '',
 };
 
 const createStateWithChangedFormFields = (
@@ -94,13 +97,17 @@ describe('CardForm transform functions', () => {
 					...derivedArticle,
 					multimediaSlideshowReplace: true,
 					multimediaSlideshowUrl: 'https://example.com/atom-id',
-					multimediaSlideshowAtom: 'atom-id',
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+					multimediaSlideshowThumbnail: 'thumbnail.jpg',
+					multimediaSlideshowAspectRatio: '5:4',
 				}),
 			).toEqual({
 				...formValues,
 				multimediaSlideshowReplace: true,
 				multimediaSlideshowUrl: 'https://example.com/atom-id',
-				multimediaSlideshowAtom: 'atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
 			});
 		});
 		it('should handle existing slideshows of any length', () => {
@@ -267,11 +274,14 @@ describe('CardForm transform functions', () => {
 				headline: 'Bill Shorten',
 			});
 		});
-		it('should persist multimedia slideshow fields when dirtied', () => {
+		it('should persist multimedia slideshow fields when dirtied, but not the fetched atom', () => {
 			const values = {
 				multimediaSlideshowReplace: true,
 				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
 				multimediaSlideshowAtom: 'atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
 			};
 			const state = createStateWithChangedFormFields(
 				initialState,
@@ -287,7 +297,9 @@ describe('CardForm transform functions', () => {
 				headline: 'Bill Shorten',
 				multimediaSlideshowReplace: true,
 				multimediaSlideshowUrl: 'https://example.com/atom-id',
-				multimediaSlideshowAtom: 'atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
 			});
 		});
 		it('should remove customKicker and showKickerCustom if the kicker is empty', () => {

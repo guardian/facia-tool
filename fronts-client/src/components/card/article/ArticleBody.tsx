@@ -220,6 +220,7 @@ interface ArticleBodyProps {
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
 	videoReplace?: boolean;
+	multimediaSlideshowReplace?: boolean;
 	mainMediaVideoAtom?: Atom | undefined;
 	replacementVideoAtom?: string | Atom | undefined;
 	tone?: string | undefined;
@@ -325,6 +326,7 @@ const articleBodyDefault = React.memo(
 		hasMainVideo,
 		showMainVideo,
 		videoReplace,
+		multimediaSlideshowReplace,
 		frontId,
 		collectionId,
 		newspaperPageNumber,
@@ -620,6 +622,7 @@ const articleBodyDefault = React.memo(
 									replacementVideoSelfHostedPlayerFormat={
 										replacementVideoSelfHostedPlayerFormat
 									}
+									multimediaSlideshowReplace={multimediaSlideshowReplace}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">

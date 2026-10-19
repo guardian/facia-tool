@@ -40,7 +40,10 @@ export interface CardFormData {
 	slideshow: Array<ImageData | void> | void;
 	multimediaSlideshowReplace: boolean;
 	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtomId: string;
 	multimediaSlideshowAtom: Atom | string;
+	multimediaSlideshowThumbnail: string;
+	multimediaSlideshowAspectRatio: string;
 	showKickerTag: boolean;
 	showKickerSection: boolean;
 	imageReplace: boolean;
@@ -142,7 +145,13 @@ export const getInitialValuesForCardForm = (
 				replaceVideoUri: article.replaceVideoUri || '',
 				multimediaSlideshowReplace: article.multimediaSlideshowReplace || false,
 				multimediaSlideshowUrl: article.multimediaSlideshowUrl || '',
-				multimediaSlideshowAtom: article.multimediaSlideshowAtom || '',
+				multimediaSlideshowAtomId: article.multimediaSlideshowAtomId || '',
+				// Not saved on the card: fetched by id when the form loads
+				multimediaSlideshowAtom: '',
+				multimediaSlideshowThumbnail:
+					article.multimediaSlideshowThumbnail || '',
+				multimediaSlideshowAspectRatio:
+					article.multimediaSlideshowAspectRatio || '',
 				primaryImage: {
 					src: article.imageSrc,
 					width: strToInt(article.imageSrcWidth),
@@ -312,6 +321,7 @@ export const getCardMetaFromFormValues = (
 		'headlineA',
 		'headlineB',
 		'abTestEnabled',
+		'multimediaSlideshowAtom',
 	);
 
 	// We only return dirtied values.

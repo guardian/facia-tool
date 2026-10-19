@@ -384,6 +384,51 @@ export const mayResetVideoReplace = ({
 };
 
 /**
+ * If you move a card with a portrait multimedia slideshow to a landscape slot (or vice versa),
+ * we revert to the trail image and disable the multimedia slideshow
+ * */
+export const mayResetMultimediaSlideshowReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.multimediaSlideshowReplace
+	) {
+		// aspectRatio comes from the slideshow atom, e.g. "5:4" or "4:5"
+		const [width, height] = (card.meta.multimediaSlideshowAspectRatio ?? '')
+			.split(':')
+			.map(Number);
+		if (!width || !height) {
+			return undefined;
+		}
+		const slideshowIsPortrait = width / height < 1;
+
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionIsPortrait: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
+
+		if (slideshowIsPortrait !== toCollectionIsPortrait) {
+			return updateCard(
+				card.uuid,
+				{
+					multimediaSlideshowReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+	return undefined;
+};
+
+/**
  * AB tests are designed to run only on the front(s) they were created on
  * (recorded in `frontsThisTestCanRunOn`). When a card carrying a running test
  * is moved to a different front, we end the test on that trail by setting
@@ -597,6 +642,7 @@ const moveCard = (
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
 					mayResetVideoReplace(actionParams),
+					mayResetMultimediaSlideshowReplace(actionParams),
 					mayEndAbTest(actionParams),
 				];
 

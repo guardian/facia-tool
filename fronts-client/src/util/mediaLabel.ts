@@ -4,7 +4,12 @@ import {
 	videoPlayerFormatMap,
 } from './Video';
 
-type SelectedMediaType = 'image' | 'cutout' | 'video' | 'slideshow';
+type SelectedMediaType =
+	| 'image'
+	| 'cutout'
+	| 'video'
+	| 'slideshow'
+	| 'multimedia slideshow';
 type PlacementType = 'main' | 'added' | 'replaced';
 
 const getSelectedMediaType = (
@@ -13,8 +18,10 @@ const getSelectedMediaType = (
 	imageCutoutReplace?: boolean,
 	showMainVideo?: boolean,
 	videoReplace?: boolean,
+	multimediaSlideshowReplace?: boolean,
 ): SelectedMediaType => {
 	if (imageSlideshowReplace) return 'slideshow';
+	if (multimediaSlideshowReplace) return 'multimedia slideshow';
 	if (imageReplace) return 'image';
 	if (imageCutoutReplace) return 'cutout';
 	if (showMainVideo || videoReplace) return 'video';
@@ -29,7 +36,10 @@ const getPlacementType = (
 	imageReplace?: boolean,
 	imageCutoutReplace?: boolean,
 ): PlacementType => {
-	if (selectedMediaType === 'slideshow') {
+	if (
+		selectedMediaType === 'slideshow' ||
+		selectedMediaType === 'multimedia slideshow'
+	) {
 		return 'added';
 	}
 	if (selectedMediaType === 'video') {
@@ -68,6 +78,7 @@ export const getMediaLabelParts = (
 	mainVideoSelfHostedPlayerFormat?: SelfHostedVideoPlayerFormat,
 	replacementVideoPlatform?: 'youtube' | 'url',
 	replacementVideoSelfHostedPlayerFormat?: SelfHostedVideoPlayerFormat,
+	multimediaSlideshowReplace?: boolean,
 ): {
 	selectedMediaType: SelectedMediaType;
 	placementType: PlacementType;
@@ -79,6 +90,7 @@ export const getMediaLabelParts = (
 		imageCutoutReplace,
 		showMainVideo,
 		videoReplace,
+		multimediaSlideshowReplace,
 	);
 	const placementType = getPlacementType(
 		selectedMediaType,
@@ -114,6 +126,8 @@ export const getMediaLabel = (
 		(selectedMediaType === 'cutout' && placementType !== 'replaced') ||
 		(selectedMediaType === 'image' && placementType !== 'replaced') ||
 		(selectedMediaType === 'slideshow' && placementType !== 'added') ||
+		(selectedMediaType === 'multimedia slideshow' &&
+			placementType !== 'added') ||
 		(selectedMediaType === 'video' && videoFormatType === null) ||
 		(selectedMediaType !== 'video' && videoFormatType !== null)
 	)

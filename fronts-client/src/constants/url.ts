@@ -30,6 +30,9 @@ export default {
 		mediaAtomMakerPath: '/videos/',
 		capiMediaAtomPath: 'atom/video/',
 	},
+	multimediaSlideshow: {
+		capiAtomPath: 'atom/multimediaslideshow/',
+	},
 	capiLiveUrl: '/api/live',
 	capiPreviewUrl: '/api/preview',
 	recipes: 'https://recipes.guardianapis.com',

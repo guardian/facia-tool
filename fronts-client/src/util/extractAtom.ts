@@ -49,6 +49,16 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	return '';
 };
 
+const extractMultimediaSlideshowAtomId = (url: string | undefined): string => {
+	// Atom Workshop, CAPI and embed URLs all contain multimediaslideshow/<id>
+	const atomUuid = url
+		? stripQueryParams(url).match(/multimediaslideshow\/([^/#]+)/i)?.[1]
+		: undefined;
+	return atomUuid
+		? `${urlConstants.multimediaSlideshow.capiAtomPath}${atomUuid}`
+		: '';
+};
+
 const extractVideoImage = (atom: Atom): string | undefined => {
 	const imageFile: string | undefined =
 		atom.data?.media?.trailImage?.assets?.[0]?.file ||
@@ -115,10 +125,17 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	};
 };
 
-const extractFirstSlideImage = (atom: Atom): string | undefined => {
-	const firstSlide = atom.data?.multimediaSlideshow?.slides?.[0];
-	const image = firstSlide?.content?.image;
+const extractFirstSlideshowImage = (atom: Atom): string | undefined => {
+	const image = atom.data?.multimediaSlideshow?.slides?.find(
+		(slide) => slide.content?.image,
+	)?.content.image;
 	return image?.master?.file ?? image?.assets?.[0]?.file;
 };
 
-export { extractAtomId, getActiveAtomProperties, extractFirstSlideImage };
+export {
+	extractAtomId,
+	extractMultimediaSlideshowAtomId,
+	extractVideoImage,
+	getActiveAtomProperties,
+	extractFirstSlideshowImage,
+};

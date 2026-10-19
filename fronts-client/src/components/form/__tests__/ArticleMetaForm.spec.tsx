@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { fireEvent, render, cleanup } from 'react-testing-library';
+import { fireEvent, render, cleanup, wait } from 'react-testing-library';
 import { ThemeProvider } from 'styled-components';
 import { theme } from 'constants/theme';
 import configureStore from 'util/configureStore';
@@ -126,5 +126,87 @@ describe('ArticleMetaForm - headline AB testing', () => {
 
 		expect(headlineAField.disabled).toBe(false);
 		expect(headlineBField.disabled).toBe(false);
+	});
+});
+
+describe('ArticleMetaForm - multimedia slideshow', () => {
+	const slideshowUrl =
+		'https://content.code.dev-guardianapis.com/atom/multimediaslideshow/slideshow-1';
+	const slideshowAtom = {
+		id: 'slideshow-1',
+		atomType: 'multimediaslideshow',
+		data: {
+			multimediaSlideshow: {
+				slides: [
+					{ content: { image: { assets: [], master: { file: 'first.jpg' } } } },
+				],
+			},
+		},
+	};
+
+	const getStateWithSlideshowCard = (meta: Record<string, unknown>): State =>
+		({
+			...initialState,
+			featureSwitches: {
+				'multimedia-slideshow': {
+					key: 'multimedia-slideshow',
+					title: 'Multimedia slideshow',
+					enabled: true,
+				},
+			},
+			cards: {
+				...initialState.cards,
+				[cardId]: {
+					...initialState.cards[cardId],
+					meta: {
+						...initialState.cards[cardId].meta,
+						multimediaSlideshowReplace: true,
+						...meta,
+					},
+				},
+			},
+		}) as State;
+
+	const formValues = (store: ReturnType<typeof configureStore>) =>
+		(store.getState() as any).form[cardId].values;
+
+	beforeEach(() => {
+		(global as any).fetch = jest.fn().mockResolvedValue({
+			json: () =>
+				Promise.resolve({
+					response: { status: 'ok', multimediaslideshow: slideshowAtom },
+				}),
+		});
+	});
+
+	it('fetches the slideshow using the atom id from a pasted URL', async () => {
+		const { store, getByTestId } = renderForm(getStateWithSlideshowCard({}));
+
+		fireEvent.change(getByTestId('multimedia-slideshow-url'), {
+			target: { value: slideshowUrl },
+		});
+
+		expect(formValues(store).multimediaSlideshowAtomId).toBe(
+			'atom/multimediaslideshow/slideshow-1',
+		);
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(slideshowAtom),
+		);
+		expect((global as any).fetch).toHaveBeenCalledWith(
+			'/api/live/atom/multimediaslideshow/slideshow-1',
+		);
+	});
+
+	it('derives the atom id from the saved URL for cards saved without one', async () => {
+		const { store } = renderForm(
+			getStateWithSlideshowCard({ multimediaSlideshowUrl: slideshowUrl }),
+		);
+
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(slideshowAtom),
+		);
+		expect(formValues(store).multimediaSlideshowAtomId).toBe(
+			'atom/multimediaslideshow/slideshow-1',
+		);
 	});
 });

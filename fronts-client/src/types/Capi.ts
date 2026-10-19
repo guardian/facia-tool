@@ -74,6 +74,7 @@ interface AtomData {
 interface MultimediaSlideshowAtom {
 	slides: Slide[];
 	title?: string;
+	aspectRatio?: string;
 }
 
 interface Slide {

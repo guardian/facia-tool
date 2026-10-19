@@ -98,7 +98,11 @@ import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
 import { HeadlineInput } from 'components/inputs/HeadlineInput';
 import { clipboardId } from 'constants/fronts';
-import { extractFirstSlideImage } from '../../util/extractAtom';
+import {
+	extractFirstSlideshowImage,
+	extractMultimediaSlideshowAtomId,
+	extractVideoImage,
+} from '../../util/extractAtom';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 
 interface ComponentProps extends ContainerProps {
@@ -473,7 +477,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}, 500);
 		this.debouncedFetchAndSetMultimediaSlideshowAtom = debounce(async () => {
 			await this.fetchAndSetMultimediaSlideshowAtom(
-				this.props.multimediaSlideshowUrl,
+				this.props.multimediaSlideshowAtomId,
 			);
 		}, 500);
 	}
@@ -492,7 +496,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 		if (
 			this.props.multimediaSlideshowReplace &&
-			prevProps.multimediaSlideshowUrl !== this.props.multimediaSlideshowUrl
+			prevProps.multimediaSlideshowAtomId !==
+				this.props.multimediaSlideshowAtomId
 		) {
 			this.debouncedFetchAndSetMultimediaSlideshowAtom();
 		}
@@ -561,26 +566,22 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 	};
 
-	// Derive the CAPI atom id from the embed URL that an editor pastes in.
-	// The embed URL contains the atom path (e.g. .../atom/multimediaslideshow/<id>);
-	// we fall back to the raw value if it isn't a parseable URL.
-	private extractMultimediaSlideshowAtomId = (url: string): string => {
-		try {
-			return new URL(url).pathname.replace(/^\//, '');
-		} catch {
-			return url.replace(/^\//, '');
-		}
-	};
-
 	private handleMultimediaSlideshowFirstLoad = async () => {
-		if (
-			!this.props.multimediaSlideshowReplace ||
-			!this.props.multimediaSlideshowUrl
-		) {
+		if (!this.props.multimediaSlideshowReplace) {
+			return;
+		}
+		if (!this.props.multimediaSlideshowAtomId) {
+			// Cards saved before the id was stored only have the URL; setting the id triggers the fetch
+			const atomIdFromUrl = extractMultimediaSlideshowAtomId(
+				this.props.multimediaSlideshowUrl,
+			);
+			if (atomIdFromUrl) {
+				this.props.change('multimediaSlideshowAtomId', atomIdFromUrl);
+			}
 			return;
 		}
 		const atomResponse = await this.getMultimediaSlideshowAtom(
-			this.props.multimediaSlideshowUrl,
+			this.props.multimediaSlideshowAtomId,
 		);
 
 		// Redux form prefers empty strings to undefined values
@@ -598,14 +599,41 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	};
 
 	private fetchAndSetMultimediaSlideshowAtom = async (
-		url: string | undefined,
+		atomId: string | undefined,
 	) => {
-		if (url === undefined || url === '') {
-			this.props.change('multimediaSlideshowAtom', '');
-			return;
+		const atomResponse = atomId
+			? await this.getMultimediaSlideshowAtom(atomId)
+			: undefined;
+		const atom = isAtom(atomResponse) ? atomResponse : undefined;
+		const thumbnail = atom
+			? await this.getMultimediaSlideshowThumbnail(atom)
+			: undefined;
+
+		// Redux form prefers empty strings to undefined values
+		this.props.change('multimediaSlideshowAtom', atom ?? '');
+		this.props.change('multimediaSlideshowThumbnail', thumbnail ?? '');
+		this.props.change(
+			'multimediaSlideshowAspectRatio',
+			atom?.data.multimediaSlideshow?.aspectRatio ?? '',
+		);
+	};
+
+	private getMultimediaSlideshowThumbnail = async (
+		atom: Atom,
+	): Promise<string | undefined> => {
+		const firstSlideVideoId =
+			atom.data.multimediaSlideshow?.slides?.[0]?.content?.mediaAtom
+				?.mediaAtomId;
+		if (firstSlideVideoId) {
+			const videoAtom = await this.getAtom(
+				`${url.video.capiMediaAtomPath}${firstSlideVideoId}`,
+			);
+			const videoImage = videoAtom && extractVideoImage(videoAtom);
+			if (videoImage) {
+				return videoImage;
+			}
 		}
-		const atom = await this.getMultimediaSlideshowAtom(url);
-		this.props.change('multimediaSlideshowAtom', isAtom(atom) ? atom : '');
+		return extractFirstSlideshowImage(atom);
 	};
 
 	private getAtomWorkshopUrl = (atom: Atom): string => {
@@ -617,12 +645,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	};
 
 	private getMultimediaSlideshowAtom = async (
-		url: string,
+		atomId: string,
 	): Promise<Atom | undefined> => {
-		const atomId = this.extractMultimediaSlideshowAtomId(url);
-		if (!atomId) {
-			return undefined;
-		}
 		return this.fetchAtom(atomId)
 			.then((response) => response.multimediaslideshow)
 			.catch((error) => {
@@ -707,6 +731,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			multimediaSlideshowEnabled,
 			multimediaSlideshowReplace,
 			multimediaSlideshowAtom,
+			multimediaSlideshowThumbnail,
 		} = this.props;
 		const isEditionsMode = editMode === 'editions';
 
@@ -1155,6 +1180,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											<SelectMediaInput>
 												<Field
 													component={InputRadio}
+													disabled={
+														editableFields.indexOf(
+															'multimediaSlideshowReplace',
+														) === -1
+													}
 													icon={<SlideshowIcon />}
 													usesBlockStyling={true}
 													name="media-select"
@@ -1198,18 +1228,23 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										component={InputText}
 										placeholder="Paste the slideshow atom embed URL"
 										data-testid="multimedia-slideshow-url"
+										onChange={(_event: unknown, newValue?: string) =>
+											change(
+												'multimediaSlideshowAtomId',
+												extractMultimediaSlideshowAtomId(newValue),
+											)
+										}
 									/>
 									{isAtom(multimediaSlideshowAtom) ? (
 										<MultimediaSlideshowPreview>
-											{extractFirstSlideImage(multimediaSlideshowAtom) ? (
+											{multimediaSlideshowThumbnail ? (
 												<MultimediaSlideshowPreviewImage
-													src={extractFirstSlideImage(multimediaSlideshowAtom)}
-													alt="First slide of the multimedia slideshow"
+													src={multimediaSlideshowThumbnail}
+													alt="Thumbnail of the multimedia slideshow"
 												/>
 											) : (
 												<span>
-													Slideshow found, but its first slide has no preview
-													image.
+													Slideshow found, but it has no preview image.
 												</span>
 											)}
 											<MultimediaSlideshowLink
@@ -1499,7 +1534,9 @@ interface ContainerProps {
 	multimediaSlideshowEnabled: boolean;
 	multimediaSlideshowReplace: boolean;
 	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtomId: string;
 	multimediaSlideshowAtom: Atom | undefined | string;
+	multimediaSlideshowThumbnail: string;
 	shouldUseCODELinks: boolean;
 }
 
@@ -1606,7 +1643,15 @@ const createMapStateToProps = () => {
 				'multimediaSlideshowReplace',
 			),
 			multimediaSlideshowUrl: valueSelector(state, 'multimediaSlideshowUrl'),
+			multimediaSlideshowAtomId: valueSelector(
+				state,
+				'multimediaSlideshowAtomId',
+			),
 			multimediaSlideshowAtom: valueSelector(state, 'multimediaSlideshowAtom'),
+			multimediaSlideshowThumbnail: valueSelector(
+				state,
+				'multimediaSlideshowThumbnail',
+			),
 			shouldUseCODELinks: selectShouldUseCODELinks(state),
 		};
 	};

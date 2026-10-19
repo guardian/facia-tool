@@ -79,7 +79,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "5.0.0",
-  "com.gu" %% "fapi-client-play30" % "44.0.0-PREVIEW.glspike-multimedia-atom.2026-10-14T0921.44c491a9",
+  "com.gu" %% "fapi-client-play30" % "44.0.0-PREVIEW.glspike-multimedia-atom.2026-10-18T1910.1d96b33b",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "21.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
