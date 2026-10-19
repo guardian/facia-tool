@@ -24,7 +24,6 @@ import type {
 	PackageItemDisplay,
 } from 'types/Packages';
 import { TextArea } from '@guardian/stand/TextArea';
-import { VisibilityBadge } from './VisibilityBadge';
 import { Tooltip } from '@guardian/stand/Tooltip';
 import { Typography } from '@guardian/stand/Typography';
 import { AppLinkControls } from './AppLinkControls';
