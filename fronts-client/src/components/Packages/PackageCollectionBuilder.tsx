@@ -458,6 +458,36 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			}
 		: undefined;
 
+	const CharacterFeedback = styled.div`
+		margin-top: 4px;
+		font-size: 14px;
+		color: inherit;
+	`;
+
+	const CharacterWarning = styled.p`
+		margin: 4px 0 0;
+		color: #c70000;
+	`;
+
+	const CharacterCount = ({
+		count,
+		limit,
+	}: {
+		count: number;
+		limit: number;
+	}) => (
+		<CharacterFeedback>
+			<span>
+				{count} / {limit} characters
+			</span>
+			{count > limit && (
+				<CharacterWarning role="status">
+					Character limit exceeded by {count - limit}.
+				</CharacterWarning>
+			)}
+		</CharacterFeedback>
+	);
+
 	return (
 		<BuilderContainer>
 			<BuilderHeader>
@@ -484,9 +514,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 								onChange={(name) => onPackageChange({ ...pkg, name })}
 								isDisabled={disabled}
 							/>
-							<Typography variant="bodyCompactSm">
-								Keep the display name under 20 characters.
-							</Typography>
+							<CharacterCount count={pkg.name.length} limit={20} />
 						</div>
 						<div>
 							<TextArea
@@ -495,9 +523,10 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 								onChange={(bodyText) => changeMetadata({ bodyText })}
 								isDisabled={disabled}
 							/>
-							<Typography variant="bodyCompactSm">
-								Keep the standfirst under 130 characters.
-							</Typography>
+							<CharacterCount
+								count={(pkg.metadata?.bodyText ?? '').length}
+								limit={130}
+							/>
 						</div>
 					</LeftColumn>
 
