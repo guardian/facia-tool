@@ -620,7 +620,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 
 							<AppLinkControls
 								deepLink={emailLink}
-								title="Recipe link"
+								title="Deep link"
 								isPublished={isPublished}
 								isDisabled={disabled || !isPublished || !emailLink}
 							/>
