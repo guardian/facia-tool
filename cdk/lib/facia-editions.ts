@@ -1,0 +1,426 @@
+import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
+import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
+import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import type { App } from 'aws-cdk-lib';
+import {
+	Aws,
+	CfnDeletionPolicy,
+	CfnOutput,
+	CfnParameter,
+	Tags,
+} from 'aws-cdk-lib';
+import { CfnSecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { CfnRule } from 'aws-cdk-lib/aws-events';
+import {
+	AccountPrincipal,
+	CompositePrincipal,
+	Effect,
+	Policy,
+	PolicyStatement,
+	Role,
+} from 'aws-cdk-lib/aws-iam';
+import { CfnAlias, CfnKey } from 'aws-cdk-lib/aws-kms';
+import { CfnDBInstance, CfnDBSubnetGroup } from 'aws-cdk-lib/aws-rds';
+import { CfnBucket } from 'aws-cdk-lib/aws-s3';
+import { CfnSubscription, CfnTopic } from 'aws-cdk-lib/aws-sns';
+import { CfnQueue, CfnQueuePolicy } from 'aws-cdk-lib/aws-sqs';
+
+const app = 'facia-tool';
+
+/** Both stages allocate the same storage; only the instance class and MultiAZ differ. */
+const allocatedStorage = '100';
+
+const allow = (actions: string[], resources: string[]) =>
+	new PolicyStatement({ effect: Effect.ALLOW, actions, resources });
+
+export interface FaciaEditionsProps extends GuStackProps {
+	databaseInstanceClass: string;
+	multiAz: boolean;
+}
+
+/**
+ * The fronts database and the editions fan-out, ported from `facia-editions.yml` in
+ * editorial-tools-platform, where it was deployed by hand as `facia-db-<stage>`.
+ *
+ * Every logical ID is overridden to the one the live stack already uses — these are the
+ * resources that must survive, and a changed logical ID means delete-and-recreate.
+ *
+ * Deliberately L1 (`Cfn*`) for everything except IAM. The L2 equivalents all add something
+ * the live template does not have — an explicit egress rule on the security group, a
+ * notification-handler Lambda on the bucket, the key ARN rather than its ID on the topic and
+ * queue — and each of those would be a real change to a production resource. IAM is L2
+ * because `Role` and `Policy` resolve to exactly what is deployed today.
+ */
+export class FaciaEditions extends GuStack {
+	constructor(scope: App, id: string, props: FaciaEditionsProps) {
+		super(scope, id, {
+			description: 'Facia Tool Editions Resources',
+			app,
+			...props,
+		});
+
+		const lowerCaseStage = this.stage.toLowerCase();
+
+		// The two parameters worth keeping, with the names and types the live stack already has.
+		// GuVpc would read the same values from `/account/vpc/primary/*`, but changing a
+		// parameter's type is something Riff-Raff cannot deploy — it sends `UseExistingValue`
+		// for every parameter already on the stack, so the old literal would be looked up as an
+		// SSM key. Converting them needs one manual `update-stack` per stage first.
+		const vpcId = this.parameter('VpcId', {
+			type: 'AWS::EC2::VPC::Id',
+			description: 'The new VPC we look to migrate to',
+		});
+		const privateSubnets = this.parameter('PrivateSubnetsNewVPC', {
+			type: 'List<AWS::EC2::Subnet::Id>',
+			description: 'The list of private SubnetIds in the new VPC',
+		});
+
+		this.database({
+			vpcId: vpcId.valueAsString,
+			subnetIds: privateSubnets.valueAsList,
+			instanceClass: props.databaseInstanceClass,
+			multiAz: props.multiAz,
+		});
+
+		const { previewBucket, publishedBucket } = this.buckets(lowerCaseStage);
+
+		this.editionsBuilder({ previewBucket, publishedBucket });
+		this.publishedEditionUpdates();
+		this.editionsListenerRule(lowerCaseStage);
+	}
+
+	private parameter(
+		name: string,
+		props: { type: string; description: string },
+	): CfnParameter {
+		const parameter = new CfnParameter(this, name, props);
+		parameter.overrideLogicalId(name);
+		return parameter;
+	}
+
+	/**
+	 * The database, and nothing else, carries `DeletionPolicy: Retain` from the YAML template.
+	 * `DBMasterUser` and `DBMasterPassword` were parameters of that template but were referenced
+	 * by nothing in it — the instance predates the file's current shape — so they are not ported.
+	 * The password lives in Parameter Store, which is where the application reads it from.
+	 */
+	private database({
+		vpcId,
+		subnetIds,
+		instanceClass,
+		multiAz,
+	}: {
+		vpcId: string;
+		subnetIds: string[];
+		instanceClass: string;
+		multiAz: boolean;
+	}): void {
+		// `UpdateReplacePolicy` is the one thing deliberately added to these three: the YAML set
+		// only `DeletionPolicy`, which leaves a replacing change free to delete the database.
+		const retain = (
+			resource: CfnSecurityGroup | CfnDBSubnetGroup | CfnDBInstance,
+		) => {
+			resource.cfnOptions.deletionPolicy = CfnDeletionPolicy.RETAIN;
+			resource.cfnOptions.updateReplacePolicy = CfnDeletionPolicy.RETAIN;
+		};
+
+		const securityGroup = new CfnSecurityGroup(this, 'DBSecurityGroupNewVPC', {
+			groupDescription: 'Security group for the database',
+			vpcId,
+		});
+		securityGroup.overrideLogicalId('DBSecurityGroupNewVPC');
+		retain(securityGroup);
+
+		const subnetGroup = new CfnDBSubnetGroup(this, 'DBSubnetGroupNewVPC', {
+			dbSubnetGroupDescription: 'Private subnet group for faciatool database',
+			subnetIds,
+		});
+		subnetGroup.overrideLogicalId('DBSubnetGroupNewVPC');
+		retain(subnetGroup);
+
+		const instance = new CfnDBInstance(this, 'PostgresInstanceNewVPC', {
+			allocatedStorage,
+			dbInstanceClass: instanceClass,
+			multiAz,
+			autoMinorVersionUpgrade: true,
+			dbInstanceIdentifier: `facia-${this.stage}-db-2025`,
+			dbSubnetGroupName: subnetGroup.ref,
+			engine: 'postgres',
+			engineVersion: '14.17',
+			vpcSecurityGroups: [securityGroup.attrGroupId],
+			storageEncrypted: true,
+			storageType: 'gp2',
+			port: '5432',
+			deletionProtection: true,
+		});
+		instance.overrideLogicalId('PostgresInstanceNewVPC');
+		retain(instance);
+		// App, Stack and Stage come from GuStack; this one does not.
+		Tags.of(instance).add('devx-backup-enabled', 'true');
+	}
+
+	private buckets(lowerCaseStage: string): {
+		previewBucket: CfnBucket;
+		publishedBucket: CfnBucket;
+	} {
+		const blockPublicAccess = {
+			blockPublicAcls: true,
+			blockPublicPolicy: true,
+			ignorePublicAcls: true,
+			restrictPublicBuckets: true,
+		};
+
+		const previewBucket = new CfnBucket(this, 'PreviewEditionsBucket', {
+			bucketName: `preview-editions-${lowerCaseStage}`,
+			publicAccessBlockConfiguration: blockPublicAccess,
+			lifecycleConfiguration: {
+				rules: [
+					{
+						id: 'RemoveOldPreviewArtifacts',
+						status: 'Enabled',
+						expirationInDays: 30,
+					},
+				],
+			},
+		});
+		previewBucket.overrideLogicalId('PreviewEditionsBucket');
+
+		const publishedBucket = new CfnBucket(this, 'PublishedEditionsBucket', {
+			bucketName: `published-editions-${lowerCaseStage}`,
+			publicAccessBlockConfiguration: blockPublicAccess,
+			notificationConfiguration: {
+				lambdaConfigurations: [
+					{
+						event: 's3:ObjectCreated:*',
+						// Owned by the mobile account, which also runs the editions builder.
+						function: `arn:aws:lambda:${this.region}:${GuardianAwsAccounts.Mobile}:function:editions-proof-archiver-s3-event-listener-${this.stage}`,
+					},
+				],
+			},
+		});
+		publishedBucket.overrideLogicalId('PublishedEditionsBucket');
+
+		return { previewBucket, publishedBucket };
+	}
+
+	/** Read access to the editions buckets for the builder, wherever it is running. */
+	private editionsBuilder({
+		previewBucket,
+		publishedBucket,
+	}: {
+		previewBucket: CfnBucket;
+		publishedBucket: CfnBucket;
+	}): void {
+		const role = new Role(this, 'EditionsBuilderRole', {
+			assumedBy: new CompositePrincipal(
+				// The builder is mid-migration from the frontend account to the mobile one.
+				new AccountPrincipal(GuardianAwsAccounts.Frontend),
+				new AccountPrincipal(GuardianAwsAccounts.Mobile),
+			),
+		});
+		this.overrideLogicalId(role, {
+			logicalId: 'EditionsBuilderRole',
+			reason: 'Assumed cross-account, so the ARN must not change',
+		});
+
+		const policy = new Policy(this, 'EditionsBuilderPolicy', {
+			policyName: 'EditionsBuilderPolicy',
+			roles: [role],
+			statements: [
+				allow(
+					['s3:ListBucket'],
+					[publishedBucket.attrArn, previewBucket.attrArn],
+				),
+				allow(
+					['s3:GetObject'],
+					[`${publishedBucket.attrArn}/*`, `${previewBucket.attrArn}/*`],
+				),
+				// Legacy bucket access, kept from the YAML template.
+				allow(['s3:ListBucket'], [this.bucketArn('facia-tool-store')]),
+				allow(['s3:GetObject'], [this.bucketArn('facia-tool-store', '*')]),
+			],
+		});
+		this.overrideLogicalId(policy, {
+			logicalId: 'EditionsBuilderPolicy',
+			reason: 'Policy previously defined in the YAML template',
+		});
+
+		const output = new CfnOutput(this, 'EditionsBuilderRoleOutput', {
+			description: 'Editions builder role',
+			value: role.roleArn,
+		});
+		output.overrideLogicalId('EditionsBuilderRole');
+	}
+
+	/**
+	 * An SNS topic other accounts publish edition-published events to, fanned out to a queue the
+	 * tool itself reads. The queue is encrypted, so publishers need the key as well as the topic.
+	 */
+	private publishedEditionUpdates(): void {
+		const key = new CfnKey(this, 'KmsKeySqsQueueFromSns', {
+			description:
+				'Encrypts messages published to an SQS queue from an SNS topic for Edition published event',
+			keyPolicy: {
+				Version: '2012-10-17',
+				Id: 'SNS-to-SQS-Key',
+				Statement: [
+					{
+						Effect: 'Allow',
+						Principal: { AWS: `arn:aws:iam::${Aws.ACCOUNT_ID}:root` },
+						Action: ['kms:*'],
+						Resource: '*',
+					},
+					...['sqs.amazonaws.com', 'sns.amazonaws.com'].map((service) => ({
+						Effect: 'Allow',
+						Principal: { Service: service },
+						Action: ['kms:GenerateDataKey*', 'kms:Decrypt'],
+						Resource: '*',
+					})),
+				],
+			},
+		});
+		key.overrideLogicalId('KmsKeySqsQueueFromSns');
+
+		const alias = new CfnAlias(this, 'KmsKeySqsQueueFromSnsAlias', {
+			aliasName: `alias/facia-tool-editions/sns-to-sqs-${this.stage}`,
+			targetKeyId: key.ref,
+		});
+		alias.overrideLogicalId('KmsKeySqsQueueFromSnsAlias');
+
+		const topic = new CfnTopic(this, 'PublishedEditionUpdateTopic', {
+			kmsMasterKeyId: key.ref,
+		});
+		topic.overrideLogicalId('PublishedEditionUpdateTopic');
+
+		const queue = new CfnQueue(this, 'PublishedEditionUpdateQueue', {
+			queueName: `publish-events-${this.stage}`,
+			receiveMessageWaitTimeSeconds: 20,
+			kmsMasterKeyId: key.ref,
+		});
+		queue.overrideLogicalId('PublishedEditionUpdateQueue');
+
+		// Any principal may send, but only via the topic above.
+		const queuePolicy = new CfnQueuePolicy(
+			this,
+			'PublishedEditionUpdateSQSPolicy',
+			{
+				queues: [queue.ref],
+				policyDocument: {
+					Id: 'sqs-sendmessage',
+					Statement: [
+						{
+							Sid: 'allow-sqs-sendmessage',
+							Effect: 'Allow',
+							Principal: { AWS: '*' },
+							Action: ['SQS:SendMessage'],
+							Resource: queue.attrArn,
+							Condition: { ArnEquals: { 'aws:SourceArn': topic.ref } },
+						},
+					],
+				},
+			},
+		);
+		queuePolicy.overrideLogicalId('PublishedEditionUpdateSQSPolicy');
+
+		const subscription = new CfnSubscription(
+			this,
+			'PublishedEditionUpdateSNSSubscription',
+			{
+				topicArn: topic.ref,
+				endpoint: queue.attrArn,
+				protocol: 'sqs',
+			},
+		);
+		subscription.overrideLogicalId('PublishedEditionUpdateSNSSubscription');
+
+		const role = new Role(this, 'PublishedEditionUpdateRole', {
+			assumedBy: new CompositePrincipal(
+				new AccountPrincipal(GuardianAwsAccounts.Frontend),
+				new AccountPrincipal(GuardianAwsAccounts.Mobile),
+				// Publishes recipe progress notifications.
+				new AccountPrincipal(GuardianAwsAccounts.CAPI),
+			),
+		});
+		this.overrideLogicalId(role, {
+			logicalId: 'PublishedEditionUpdateRole',
+			reason: 'Assumed cross-account, so the ARN must not change',
+		});
+
+		const policy = new Policy(this, 'PublishedEditionUpdatePolicy', {
+			policyName: 'PublishedEditionUpdatePolicy',
+			roles: [role],
+			statements: [
+				allow(['kms:GenerateDataKey*', 'kms:Decrypt'], [key.attrArn]),
+				allow(['sns:Publish'], [topic.ref]),
+			],
+		});
+		this.overrideLogicalId(policy, {
+			logicalId: 'PublishedEditionUpdatePolicy',
+			reason: 'Policy previously defined in the YAML template',
+		});
+
+		const roleOutput = new CfnOutput(this, 'PublishedEditionUpdateRoleOutput', {
+			description: 'Published edition update role',
+			value: role.roleArn,
+		});
+		roleOutput.overrideLogicalId('PublishedEditionUpdateRole');
+
+		const topicOutput = new CfnOutput(
+			this,
+			'PublishedEditionUpdateTopicOutput',
+			{
+				description: 'Topic to send published edition updates to',
+				value: topic.ref,
+			},
+		);
+		topicOutput.overrideLogicalId('PublishedEditionUpdateTopic');
+
+		const aliasOutput = new CfnOutput(
+			this,
+			'KmsKeySqsQueueFromSnsAliasOutput',
+			{
+				description: 'KMS key alais used to encrypt publish events',
+				value: alias.ref,
+			},
+		);
+		aliasOutput.overrideLogicalId('KmsKeySqsQueueFromSnsAlias');
+	}
+
+	/** Forwards writes to the published bucket to the mobile account's default event bus. */
+	private editionsListenerRule(lowerCaseStage: string): void {
+		const rule = new CfnRule(this, 'S3ListenerEventsRule', {
+			description:
+				'Rule to trigger the editions listener lambda when a change is made to the editions published bucket',
+			eventPattern: {
+				source: ['aws.s3'],
+				'detail-type': ['AWS API Call via CloudTrail'],
+				detail: {
+					eventSource: ['s3.amazonaws.com'],
+					eventName: ['PutObject'],
+					requestParameters: {
+						bucketName: [`published-editions-${lowerCaseStage}`],
+					},
+				},
+			},
+			name: `editions-listener-event-${this.stage}`,
+			state: 'ENABLED',
+			targets: [
+				{
+					arn: `arn:aws:events:${this.region}:${GuardianAwsAccounts.Mobile}:event-bus/default`,
+					id: `editions-mobile-event-bus-${this.stage}`,
+				},
+			],
+		});
+		rule.overrideLogicalId('S3ListenerEventsRule');
+	}
+
+	private bucketArn(bucketName: string, key?: string): string {
+		return this.formatArn({
+			service: 's3',
+			region: '',
+			account: '',
+			resource: bucketName,
+			resourceName: key,
+		});
+	}
+}

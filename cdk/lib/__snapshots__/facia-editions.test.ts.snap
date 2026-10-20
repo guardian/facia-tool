@@ -1,0 +1,1617 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`The FaciaEditions stack matches the CODE snapshot 1`] = `
+{
+  "Description": "Facia Tool Editions Resources",
+  "Metadata": {
+    "gu:cdk:constructs": [],
+    "gu:cdk:version": "TEST",
+  },
+  "Outputs": {
+    "EditionsBuilderRole": {
+      "Description": "Editions builder role",
+      "Value": {
+        "Fn::GetAtt": [
+          "EditionsBuilderRole",
+          "Arn",
+        ],
+      },
+    },
+    "KmsKeySqsQueueFromSnsAlias": {
+      "Description": "KMS key alais used to encrypt publish events",
+      "Value": {
+        "Ref": "KmsKeySqsQueueFromSnsAlias",
+      },
+    },
+    "PublishedEditionUpdateRole": {
+      "Description": "Published edition update role",
+      "Value": {
+        "Fn::GetAtt": [
+          "PublishedEditionUpdateRole",
+          "Arn",
+        ],
+      },
+    },
+    "PublishedEditionUpdateTopic": {
+      "Description": "Topic to send published edition updates to",
+      "Value": {
+        "Ref": "PublishedEditionUpdateTopic",
+      },
+    },
+  },
+  "Parameters": {
+    "PrivateSubnetsNewVPC": {
+      "Description": "The list of private SubnetIds in the new VPC",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+    },
+    "VpcId": {
+      "Description": "The new VPC we look to migrate to",
+      "Type": "AWS::EC2::VPC::Id",
+    },
+  },
+  "Resources": {
+    "DBSecurityGroupNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "GroupDescription": "Security group for the database",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DBSubnetGroupNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DBSubnetGroupDescription": "Private subnet group for faciatool database",
+        "SubnetIds": {
+          "Ref": "PrivateSubnetsNewVPC",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "EditionsBuilderPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PublishedEditionsBucket",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::GetAtt": [
+                    "PreviewEditionsBucket",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PublishedEditionsBucket",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PreviewEditionsBucket",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EditionsBuilderPolicy",
+        "Roles": [
+          {
+            "Ref": "EditionsBuilderRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EditionsBuilderRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000007:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000033:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "KmsKeySqsQueueFromSns": {
+      "Properties": {
+        "Description": "Encrypts messages published to an SQS queue from an SNS topic for Edition published event",
+        "KeyPolicy": {
+          "Id": "SNS-to-SQS-Key",
+          "Statement": [
+            {
+              "Action": [
+                "kms:*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sqs.amazonaws.com",
+              },
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::KMS::Key",
+    },
+    "KmsKeySqsQueueFromSnsAlias": {
+      "Properties": {
+        "AliasName": "alias/facia-tool-editions/sns-to-sqs-CODE",
+        "TargetKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+      },
+      "Type": "AWS::KMS::Alias",
+    },
+    "PostgresInstanceNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AllocatedStorage": "100",
+        "AutoMinorVersionUpgrade": true,
+        "DBInstanceClass": "db.t4g.small",
+        "DBInstanceIdentifier": "facia-CODE-db-2025",
+        "DBSubnetGroupName": {
+          "Ref": "DBSubnetGroupNewVPC",
+        },
+        "DeletionProtection": true,
+        "Engine": "postgres",
+        "EngineVersion": "14.17",
+        "MultiAZ": false,
+        "Port": "5432",
+        "StorageEncrypted": true,
+        "StorageType": "gp2",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "VPCSecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "DBSecurityGroupNewVPC",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBInstance",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PreviewEditionsBucket": {
+      "Properties": {
+        "BucketName": "preview-editions-code",
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 30,
+              "Id": "RemoveOldPreviewArtifacts",
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+    },
+    "PublishedEditionUpdatePolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "KmsKeySqsQueueFromSns",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PublishedEditionUpdateTopic",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PublishedEditionUpdatePolicy",
+        "Roles": [
+          {
+            "Ref": "PublishedEditionUpdateRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "PublishedEditionUpdateQueue": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+        "QueueName": "publish-events-CODE",
+        "ReceiveMessageWaitTimeSeconds": 20,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::Queue",
+    },
+    "PublishedEditionUpdateRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000007:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000033:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000025:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PublishedEditionUpdateSNSSubscription": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "PublishedEditionUpdateQueue",
+            "Arn",
+          ],
+        },
+        "Protocol": "sqs",
+        "TopicArn": {
+          "Ref": "PublishedEditionUpdateTopic",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "PublishedEditionUpdateSQSPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "sqs-sendmessage",
+          "Statement": [
+            {
+              "Action": [
+                "SQS:SendMessage",
+              ],
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "PublishedEditionUpdateTopic",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PublishedEditionUpdateQueue",
+                  "Arn",
+                ],
+              },
+              "Sid": "allow-sqs-sendmessage",
+            },
+          ],
+        },
+        "Queues": [
+          {
+            "Ref": "PublishedEditionUpdateQueue",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "PublishedEditionUpdateTopic": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "PublishedEditionsBucket": {
+      "Properties": {
+        "BucketName": "published-editions-code",
+        "NotificationConfiguration": {
+          "LambdaConfigurations": [
+            {
+              "Event": "s3:ObjectCreated:*",
+              "Function": "arn:aws:lambda:eu-west-1:000000000033:function:editions-proof-archiver-s3-event-listener-CODE",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+    },
+    "S3ListenerEventsRule": {
+      "Properties": {
+        "Description": "Rule to trigger the editions listener lambda when a change is made to the editions published bucket",
+        "EventPattern": {
+          "detail": {
+            "eventName": [
+              "PutObject",
+            ],
+            "eventSource": [
+              "s3.amazonaws.com",
+            ],
+            "requestParameters": {
+              "bucketName": [
+                "published-editions-code",
+              ],
+            },
+          },
+          "detail-type": [
+            "AWS API Call via CloudTrail",
+          ],
+          "source": [
+            "aws.s3",
+          ],
+        },
+        "Name": "editions-listener-event-CODE",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "CODE",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": "arn:aws:events:eu-west-1:000000000033:event-bus/default",
+            "Id": "editions-mobile-event-bus-CODE",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+  },
+}
+`;
+
+exports[`The FaciaEditions stack matches the PROD snapshot 1`] = `
+{
+  "Description": "Facia Tool Editions Resources",
+  "Metadata": {
+    "gu:cdk:constructs": [],
+    "gu:cdk:version": "TEST",
+  },
+  "Outputs": {
+    "EditionsBuilderRole": {
+      "Description": "Editions builder role",
+      "Value": {
+        "Fn::GetAtt": [
+          "EditionsBuilderRole",
+          "Arn",
+        ],
+      },
+    },
+    "KmsKeySqsQueueFromSnsAlias": {
+      "Description": "KMS key alais used to encrypt publish events",
+      "Value": {
+        "Ref": "KmsKeySqsQueueFromSnsAlias",
+      },
+    },
+    "PublishedEditionUpdateRole": {
+      "Description": "Published edition update role",
+      "Value": {
+        "Fn::GetAtt": [
+          "PublishedEditionUpdateRole",
+          "Arn",
+        ],
+      },
+    },
+    "PublishedEditionUpdateTopic": {
+      "Description": "Topic to send published edition updates to",
+      "Value": {
+        "Ref": "PublishedEditionUpdateTopic",
+      },
+    },
+  },
+  "Parameters": {
+    "PrivateSubnetsNewVPC": {
+      "Description": "The list of private SubnetIds in the new VPC",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+    },
+    "VpcId": {
+      "Description": "The new VPC we look to migrate to",
+      "Type": "AWS::EC2::VPC::Id",
+    },
+  },
+  "Resources": {
+    "DBSecurityGroupNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "GroupDescription": "Security group for the database",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DBSubnetGroupNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "DBSubnetGroupDescription": "Private subnet group for faciatool database",
+        "SubnetIds": {
+          "Ref": "PrivateSubnetsNewVPC",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "EditionsBuilderPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PublishedEditionsBucket",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::GetAtt": [
+                    "PreviewEditionsBucket",
+                    "Arn",
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PublishedEditionsBucket",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PreviewEditionsBucket",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "EditionsBuilderPolicy",
+        "Roles": [
+          {
+            "Ref": "EditionsBuilderRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "EditionsBuilderRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000007:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000033:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "KmsKeySqsQueueFromSns": {
+      "Properties": {
+        "Description": "Encrypts messages published to an SQS queue from an SNS topic for Edition published event",
+        "KeyPolicy": {
+          "Id": "SNS-to-SQS-Key",
+          "Statement": [
+            {
+              "Action": [
+                "kms:*",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sqs.amazonaws.com",
+              },
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com",
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::KMS::Key",
+    },
+    "KmsKeySqsQueueFromSnsAlias": {
+      "Properties": {
+        "AliasName": "alias/facia-tool-editions/sns-to-sqs-PROD",
+        "TargetKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+      },
+      "Type": "AWS::KMS::Alias",
+    },
+    "PostgresInstanceNewVPC": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AllocatedStorage": "100",
+        "AutoMinorVersionUpgrade": true,
+        "DBInstanceClass": "db.t4g.medium",
+        "DBInstanceIdentifier": "facia-PROD-db-2025",
+        "DBSubnetGroupName": {
+          "Ref": "DBSubnetGroupNewVPC",
+        },
+        "DeletionProtection": true,
+        "Engine": "postgres",
+        "EngineVersion": "14.17",
+        "MultiAZ": true,
+        "Port": "5432",
+        "StorageEncrypted": true,
+        "StorageType": "gp2",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "VPCSecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "DBSecurityGroupNewVPC",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBInstance",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "PreviewEditionsBucket": {
+      "Properties": {
+        "BucketName": "preview-editions-prod",
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 30,
+              "Id": "RemoveOldPreviewArtifacts",
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+    },
+    "PublishedEditionUpdatePolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kms:GenerateDataKey*",
+                "kms:Decrypt",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "KmsKeySqsQueueFromSns",
+                  "Arn",
+                ],
+              },
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PublishedEditionUpdateTopic",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "PublishedEditionUpdatePolicy",
+        "Roles": [
+          {
+            "Ref": "PublishedEditionUpdateRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "PublishedEditionUpdateQueue": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+        "QueueName": "publish-events-PROD",
+        "ReceiveMessageWaitTimeSeconds": 20,
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::Queue",
+    },
+    "PublishedEditionUpdateRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000007:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000033:root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::000000000025:root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "PublishedEditionUpdateSNSSubscription": {
+      "Properties": {
+        "Endpoint": {
+          "Fn::GetAtt": [
+            "PublishedEditionUpdateQueue",
+            "Arn",
+          ],
+        },
+        "Protocol": "sqs",
+        "TopicArn": {
+          "Ref": "PublishedEditionUpdateTopic",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "PublishedEditionUpdateSQSPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Id": "sqs-sendmessage",
+          "Statement": [
+            {
+              "Action": [
+                "SQS:SendMessage",
+              ],
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "PublishedEditionUpdateTopic",
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PublishedEditionUpdateQueue",
+                  "Arn",
+                ],
+              },
+              "Sid": "allow-sqs-sendmessage",
+            },
+          ],
+        },
+        "Queues": [
+          {
+            "Ref": "PublishedEditionUpdateQueue",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "PublishedEditionUpdateTopic": {
+      "Properties": {
+        "KmsMasterKeyId": {
+          "Ref": "KmsKeySqsQueueFromSns",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "PublishedEditionsBucket": {
+      "Properties": {
+        "BucketName": "published-editions-prod",
+        "NotificationConfiguration": {
+          "LambdaConfigurations": [
+            {
+              "Event": "s3:ObjectCreated:*",
+              "Function": "arn:aws:lambda:eu-west-1:000000000033:function:editions-proof-archiver-s3-event-listener-PROD",
+            },
+          ],
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+      },
+      "Type": "AWS::S3::Bucket",
+    },
+    "S3ListenerEventsRule": {
+      "Properties": {
+        "Description": "Rule to trigger the editions listener lambda when a change is made to the editions published bucket",
+        "EventPattern": {
+          "detail": {
+            "eventName": [
+              "PutObject",
+            ],
+            "eventSource": [
+              "s3.amazonaws.com",
+            ],
+            "requestParameters": {
+              "bucketName": [
+                "published-editions-prod",
+              ],
+            },
+          },
+          "detail-type": [
+            "AWS API Call via CloudTrail",
+          ],
+          "source": [
+            "aws.s3",
+          ],
+        },
+        "Name": "editions-listener-event-PROD",
+        "State": "ENABLED",
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "PROD",
+          },
+        ],
+        "Targets": [
+          {
+            "Arn": "arn:aws:events:eu-west-1:000000000033:event-bus/default",
+            "Id": "editions-mobile-event-bus-PROD",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+  },
+}
+`;

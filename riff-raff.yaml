@@ -20,6 +20,18 @@ deployments:
           AmigoStage: PROD
           BuiltBy: amigo
       amiEncrypted: true
+  # The database and the editions fan-out, ported from facia-editions.yml in
+  # editorial-tools-platform. Nothing else in this project depends on it, and it depends on
+  # nothing, so it is deployed alongside the service rather than before or after it.
+  cfn-facia-editions:
+    type: cloud-formation
+    app: facia-tool
+    parameters:
+      templateStagePaths:
+        CODE: FaciaEditions-euwest-1-CODE.template.json
+        PROD: FaciaEditions-euwest-1-PROD.template.json
+      cloudFormationStackName: facia-db
+      prependStackToCloudFormationStackName: false
   facia-tool:
     type: autoscaling
     dependencies:
