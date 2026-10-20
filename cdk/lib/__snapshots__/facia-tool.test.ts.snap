@@ -1312,26 +1312,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "ssm:GetParameter",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/facia-tool/cms-fronts/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
               "Action": "kms:Decrypt",
               "Condition": {
                 "StringEquals": {
@@ -1581,26 +1561,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "PolicyDocument": {
           "Statement": [
             {
-              "Action": "ssm:GetParameter",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/facia-tool/cms-fronts/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
               "Action": "kms:Decrypt",
               "Condition": {
                 "StringEquals": {
@@ -1791,6 +1751,26 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Effect": "Allow",
               "Resource": {
                 "Ref": "CapiPreviewRole",
+              },
+            },
+            {
+              "Action": "ssm:GetParameter",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/CODE/cms-fronts/facia-tool/*",
+                  ],
+                ],
               },
             },
             {
@@ -3906,26 +3886,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Properties": {
         "PolicyDocument": {
           "Statement": [
-            {
-              "Action": "ssm:GetParameter",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":ssm:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":parameter/facia-tool/cms-fronts/PROD/*",
-                  ],
-                ],
-              },
-            },
             {
               "Action": "kms:Decrypt",
               "Condition": {

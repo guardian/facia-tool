@@ -481,6 +481,19 @@ export class FaciaTool extends GuStack {
 
 				// Developer-only below here: the instance gets these from GuInstanceRole, reads
 				// different objects, or does not need them at all.
+
+				// The instance gets this from `GuParameterStoreReadPolicy`; this policy is not
+				// included in sharedAccess, so it needs its own grant.
+				allow(
+					['ssm:GetParameter'],
+					[
+						this.formatArn({
+							service: 'ssm',
+							resource: 'parameter',
+							resourceName: `${this.stage}/${this.stack}/${app}/*`,
+						}),
+					],
+				),
 				allow(
 					['s3:GetObject'],
 					[
@@ -569,17 +582,9 @@ EOF`,
 		switchboardBucket,
 	}: SharedAccessTargets): Record<string, PolicyStatement[]> {
 		return {
+			// `ssm:GetParameter` is deliberately absent: `GuParameterStoreReadPolicy` already
+			// grants the instance the convention path. Decryption is not covered by it.
 			ParameterStorePolicy: [
-				allow(
-					['ssm:GetParameter'],
-					[
-						this.formatArn({
-							service: 'ssm',
-							resource: 'parameter',
-							resourceName: `${app}/${this.stack}/${this.stage}/*`,
-						}),
-					],
-				),
 				new PolicyStatement({
 					effect: Effect.ALLOW,
 					actions: ['kms:Decrypt'],
