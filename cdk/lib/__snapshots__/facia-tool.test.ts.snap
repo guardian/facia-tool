@@ -2416,7 +2416,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "InstanceMetadataTags": "enabled",
           },
           "Monitoring": {
-            "Enabled": false,
+            "Enabled": true,
           },
           "SecurityGroupIds": [
             {
@@ -4684,7 +4684,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             "InstanceMetadataTags": "enabled",
           },
           "Monitoring": {
-            "Enabled": false,
+            "Enabled": true,
           },
           "SecurityGroupIds": [
             {

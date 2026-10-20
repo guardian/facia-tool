@@ -111,7 +111,7 @@ export class FaciaTool extends GuStack {
 				unhealthyInstancesAlarm: true,
 			},
 			applicationLogging: { enabled: true },
-			instanceMetricGranularity: '5Minute',
+			instanceMetricGranularity: '1Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
 			userData: this.buildUserData({
 				frontendRoleToAssume: frontendRoleArn,
