@@ -483,7 +483,7 @@ export class FaciaTool extends GuStack {
 				// different objects, or does not need them at all.
 
 				// The instance gets this from `GuParameterStoreReadPolicy`; this policy is not
-				// attached to the instance role, so it needs its own grant.
+				// included in sharedAccess, so it needs its own grant.
 				allow(
 					['ssm:GetParameter'],
 					[
