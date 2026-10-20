@@ -11,6 +11,7 @@
     "diff": "cdk diff --path-metadata false --version-reporting false"
   },
   "devDependencies": {
+    "@guardian/aws-account-setup": "github:guardian/aws-account-setup#shared@2.2.0",
     "@guardian/cdk": "64.4.0",
     "@guardian/eslint-config": "14.0.1",
     "@guardian/prettier": "5.0.0",

@@ -84,6 +84,8 @@ interface ComponentProps extends ArticleComponentProps {
 	textSize?: CardSizes;
 	children: React.ReactNode;
 	onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
+	hasCapiHeadlineChanged: boolean;
+	isHeadlineUpdateIndicatorEnabled: boolean;
 }
 
 interface ComponentState {
@@ -128,6 +130,8 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			otherCollectionsOnSameFrontThisCardIsOn,
 			hasLiveAbTest,
 			headlineTestError,
+			hasCapiHeadlineChanged,
+			isHeadlineUpdateIndicatorEnabled,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -203,6 +207,10 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								}
 								hasLiveAbTest={hasLiveAbTest}
 								headlineTestError={headlineTestError}
+								hasCapiHeadlineChanged={hasCapiHeadlineChanged}
+								isHeadlineUpdateIndicatorEnabled={
+									isHeadlineUpdateIndicatorEnabled
+								}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -226,6 +234,8 @@ const createMapStateToProps = () => {
 		featureFlagPageViewData: boolean;
 		hasLiveAbTest?: boolean;
 		headlineTestError: AbTestHeadlineErrorType | null;
+		hasCapiHeadlineChanged: boolean;
+		isHeadlineUpdateIndicatorEnabled: boolean;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
@@ -237,7 +247,6 @@ const createMapStateToProps = () => {
 		);
 		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
 		const headlineTestError = getCurrentAbTestHeadlineError(card);
-
 		return {
 			article,
 			isLoading: selectors.selectIsLoadingInitialDataById(state, card.id),
@@ -247,6 +256,11 @@ const createMapStateToProps = () => {
 			),
 			hasLiveAbTest: hasLiveAbTest,
 			headlineTestError: headlineTestError,
+			hasCapiHeadlineChanged: article?.hasCapiHeadlineChanged ?? false,
+			isHeadlineUpdateIndicatorEnabled: selectFeatureValue(
+				getState(state),
+				'headline-update-indicator',
+			),
 		};
 	};
 };

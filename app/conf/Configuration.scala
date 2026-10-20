@@ -186,7 +186,7 @@ class ApplicationConfiguration(
       if (isProd) {
         val request = GetParameterRequest
           .builder()
-          .name(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+          .name(s"/$stageFromProperties/cms-fronts/facia-tool/db/password")
           .withDecryption(true)
           .build()
 

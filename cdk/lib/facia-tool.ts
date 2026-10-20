@@ -1,3 +1,4 @@
+import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
 import { GuEc2App } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
@@ -10,7 +11,21 @@ import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
 import { Aws, CfnOutput, CfnParameter, Duration, Tags } from 'aws-cdk-lib';
-import { CfnDistribution } from 'aws-cdk-lib/aws-cloudfront';
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import {
+	AllowedMethods,
+	CachedMethods,
+	CachePolicy,
+	Distribution,
+	HttpVersion,
+	OriginProtocolPolicy,
+	OriginRequestPolicy,
+	PriceClass,
+	SecurityPolicyProtocol,
+	SSLMethod,
+	ViewerProtocolPolicy,
+} from 'aws-cdk-lib/aws-cloudfront';
+import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import {
 	InstanceType,
@@ -31,6 +46,9 @@ import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
 
 const app = 'facia-tool';
 const applicationPort = 9000;
+
+/** Owned by the frontend account; granted to us by its own trust policy, so the name is fixed. */
+const frontendRoleArn = `arn:aws:iam::${GuardianAwsAccounts.Frontend}:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX`;
 
 const allow = (actions: string[], resources: string[]) =>
 	new PolicyStatement({ effect: Effect.ALLOW, actions, resources });
@@ -55,8 +73,6 @@ export interface FaciaToolProps extends GuStackProps {
 	 * object the instance is allowed to read.
 	 */
 	authDomain: string;
-	/** CloudFront alias for the static assets distribution. */
-	staticDomainName: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
 	instanceType: string;
@@ -73,7 +89,6 @@ export class FaciaTool extends GuStack {
 
 		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
 
-		const frontendRoleToAssume = parameter('FrontendRoleToAssume');
 		const { frontPressedTable } = props;
 		const lowerCaseStage = this.stage.toLowerCase();
 
@@ -99,7 +114,7 @@ export class FaciaTool extends GuStack {
 			instanceMetricGranularity: '5Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
 			userData: this.buildUserData({
-				frontendRoleToAssume,
+				frontendRoleToAssume: frontendRoleArn,
 				frontPressedTable,
 				userDataTable: userDataTable.tableName,
 			}),
@@ -110,7 +125,7 @@ export class FaciaTool extends GuStack {
 			},
 			healthcheck: { path: '/_healthcheck' },
 			additionalPolicies: this.applicationPolicies({
-				frontendRoleToAssume,
+				frontendRoleToAssume: frontendRoleArn,
 				frontPressedTable,
 				lowerCaseStage,
 				authDomain: props.authDomain,
@@ -132,7 +147,6 @@ export class FaciaTool extends GuStack {
 		this.cloudFront({
 			parameter,
 			domainName: props.domainName,
-			staticDomainName: props.staticDomainName,
 			originDomainName: ec2App.loadBalancer.loadBalancerDnsName,
 		});
 
@@ -195,52 +209,10 @@ export class FaciaTool extends GuStack {
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
 			{
-				name: 'FrontendRoleToAssume',
-				type: 'String',
-				description: 'Frontend Role to assume for cross account policies',
-				default:
-					'arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX',
-			},
-			{
 				name: 'SwitchboardBucket',
 				type: 'String',
 				description: 'Bucket where switchboard writes switches status',
 				default: 'arn:aws:s3:::facia-switches/*',
-			},
-			{
-				name: 'FrontendAccountID',
-				type: 'String',
-				description: 'AWS account ID of frontend',
-			},
-			{
-				name: 'MobileAPIAccountID',
-				type: 'String',
-				description: 'AWS account ID of MAPI',
-			},
-			{
-				name: 'MobileAPITeamcityAccountID',
-				type: 'String',
-				description: 'AWS account ID of MAPI - used for CI',
-			},
-			{
-				name: 'OphanAccountID',
-				type: 'String',
-				description: 'AWS account ID of Ophan',
-			},
-			{
-				name: 'ContentAPIAccountID',
-				type: 'String',
-				description: 'AWS account ID of CAPI',
-			},
-			{
-				name: 'SupportAccountID',
-				type: 'String',
-				description: 'AWS account ID of Support',
-			},
-			{
-				name: 'StaticBucketName',
-				type: 'String',
-				description: 'Bucket containing static files',
 			},
 			{
 				name: 'CloudFrontCertificateArn',
@@ -285,107 +257,59 @@ export class FaciaTool extends GuStack {
 	}
 
 	/**
-	 * The two distributions are defined as L1 constructs so they keep the legacy `ForwardedValues`
-	 * cache settings, which the L2 `Distribution` construct cannot express. Moving them to cache
-	 * policies would change caching behaviour, so it is deliberately not part of this migration.
+	 * `FaciaCloudfront` is a pass-through, not a cache: the legacy `ForwardedValues` spelling of
+	 * `headers: ['*']` tells CloudFront not to cache at all.
 	 */
 	private cloudFront({
 		parameter,
 		domainName,
-		staticDomainName,
 		originDomainName,
 	}: {
 		parameter: (name: string) => string;
 		domainName: string;
-		staticDomainName: string;
 		originDomainName: string;
 	}): void {
-		const viewerCertificate = {
-			acmCertificateArn: parameter('CloudFrontCertificateArn'),
-			minimumProtocolVersion: 'TLSv1.2_2021',
-			sslSupportMethod: 'sni-only',
-		};
+		const certificateArn = parameter('CloudFrontCertificateArn');
 
-		const distribution = new CfnDistribution(this, 'FaciaCloudfront', {
-			distributionConfig: {
-				httpVersion: 'http2',
-				ipv6Enabled: true,
-				aliases: [domainName],
-				origins: [
-					{
-						customOriginConfig: {
-							httpsPort: 443,
-							originProtocolPolicy: 'https-only',
-						},
-						domainName: originDomainName,
-						id: app,
-					},
-				],
-				defaultRootObject: 'v2',
-				defaultCacheBehavior: {
-					allowedMethods: [
-						'DELETE',
-						'GET',
-						'HEAD',
-						'OPTIONS',
-						'PATCH',
-						'POST',
-						'PUT',
-					],
-					compress: true,
-					forwardedValues: {
-						headers: ['*'],
-						queryString: true,
-						cookies: { forward: 'all' },
-					},
-					targetOriginId: app,
-					viewerProtocolPolicy: 'redirect-to-https',
-				},
-				priceClass: 'PriceClass_All',
-				enabled: true,
-				viewerCertificate,
+		const distribution = new Distribution(this, 'FaciaCloudfront', {
+			domainNames: [domainName],
+			certificate: Certificate.fromCertificateArn(
+				this,
+				'CloudFrontCertificate',
+				certificateArn,
+			),
+			minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+			sslSupportMethod: SSLMethod.SNI,
+			defaultRootObject: 'v2',
+			httpVersion: HttpVersion.HTTP2,
+			enableIpv6: true,
+			priceClass: PriceClass.PRICE_CLASS_ALL,
+			enabled: true,
+			defaultBehavior: {
+				origin: new HttpOrigin(originDomainName, {
+					originId: app,
+					protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+					httpsPort: 443,
+				}),
+				allowedMethods: AllowedMethods.ALLOW_ALL,
+				cachedMethods: CachedMethods.CACHE_GET_HEAD,
+				compress: true,
+				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+				cachePolicy: CachePolicy.CACHING_DISABLED,
+				// ALL_VIEWER, not ALL_VIEWER_EXCEPT_HOST_HEADER: the ALB certificate and
+				// pan-domain auth both depend on the origin receiving the viewer's Host header.
+				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
 			},
 		});
-		distribution.overrideLogicalId('FaciaCloudfront');
-
-		const staticDistribution = new CfnDistribution(this, 'StaticCloudfront', {
-			distributionConfig: {
-				httpVersion: 'http2',
-				ipv6Enabled: true,
-				aliases: [staticDomainName],
-				origins: [
-					{
-						s3OriginConfig: { originAccessIdentity: '' },
-						domainName: `${parameter('StaticBucketName')}.s3.amazonaws.com`,
-						id: `static-${app}`,
-						originPath: `/${this.stage}/static-${app}`,
-					},
-				],
-				defaultRootObject: 'index.html',
-				defaultCacheBehavior: {
-					compress: true,
-					forwardedValues: { queryString: false },
-					targetOriginId: `static-${app}`,
-					viewerProtocolPolicy: 'redirect-to-https',
-				},
-				priceClass: 'PriceClass_All',
-				enabled: true,
-				viewerCertificate,
-			},
+		this.overrideLogicalId(distribution, {
+			logicalId: 'FaciaCloudfront',
+			reason: 'Distribution previously defined in the YAML template',
 		});
-		staticDistribution.overrideLogicalId('StaticCloudfront');
 
 		new GuCname(this, 'DnsRecord', {
 			app,
 			domainName,
-			resourceRecord: `${distribution.attrDomainName}.`,
-			ttl: Duration.seconds(900),
-		});
-
-		new GuCname(this, 'StaticCloudFrontDnsRecord', {
-			app,
-			domainName: staticDomainName,
-			resourceRecord: `${staticDistribution.attrDomainName}.`,
+			resourceRecord: `${distribution.distributionDomainName}.`,
 			ttl: Duration.seconds(900),
 		});
 	}
@@ -442,9 +366,9 @@ export class FaciaTool extends GuStack {
 		);
 
 		const subscribers = {
-			MobileAccount: 'MobileAPIAccountID',
-			FrontendAccount: 'FrontendAccountID',
-			OphanAccount: 'OphanAccountID',
+			MobileAccount: GuardianAwsAccounts.Mobile,
+			FrontendAccount: GuardianAwsAccounts.Frontend,
+			OphanAccount: GuardianAwsAccounts.Ophan,
 		};
 		const frontsUpdateTopicPolicy = new CfnTopicPolicy(
 			this,
@@ -452,15 +376,13 @@ export class FaciaTool extends GuStack {
 			{
 				topics: [frontsUpdateTopic.topicArn],
 				policyDocument: {
-					Statement: Object.entries(subscribers).map(
-						([sid, accountIdParameter]) => ({
-							Sid: sid,
-							Effect: 'Allow',
-							Principal: { AWS: parameter(accountIdParameter) },
-							Action: 'sns:Subscribe',
-							Resource: frontsUpdateTopic.topicArn,
-						}),
-					),
+					Statement: Object.entries(subscribers).map(([sid, accountId]) => ({
+						Sid: sid,
+						Effect: 'Allow',
+						Principal: { AWS: accountId },
+						Action: 'sns:Subscribe',
+						Resource: frontsUpdateTopic.topicArn,
+					})),
 				},
 			},
 		);
@@ -471,13 +393,13 @@ export class FaciaTool extends GuStack {
 			path: '/',
 			assumedBy: new CompositePrincipal(
 				...[
-					'FrontendAccountID',
-					'MobileAPIAccountID',
-					'MobileAPITeamcityAccountID',
-					'OphanAccountID',
-					'ContentAPIAccountID',
-					'SupportAccountID',
-				].map((name) => new AccountPrincipal(parameter(name))),
+					GuardianAwsAccounts.Frontend,
+					GuardianAwsAccounts.Mobile,
+					GuardianAwsAccounts.DeployTools,
+					GuardianAwsAccounts.Ophan,
+					GuardianAwsAccounts.CAPI,
+					GuardianAwsAccounts.Membership,
+				].map((accountId) => new AccountPrincipal(accountId)),
 			),
 		});
 		this.overrideLogicalId(storageConsumerRole, retained('StorageConsumerRole'));

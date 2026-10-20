@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { styled } from 'constants/theme';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Button } from '@guardian/stand/Button';
@@ -27,6 +27,7 @@ import { TextArea } from '@guardian/stand/TextArea';
 import { VisibilityBadge } from './VisibilityBadge';
 import { Tooltip } from '@guardian/stand/Tooltip';
 import { Typography } from '@guardian/stand/Typography';
+import { AppLinkControls } from './AppLinkControls';
 
 const BuilderContainer = styled.div`
 	display: flex;
@@ -158,11 +159,6 @@ const DragDropZone = styled.div`
 	}
 `;
 
-const PublishActions = styled.div`
-	display: flex;
-	gap: 10px;
-`;
-
 const CheckboxLabel = styled.label`
 	display: flex;
 	align-items: center;
@@ -224,6 +220,19 @@ const ThemeFormContainer = styled.div`
 	margin-top: 12px;
 `;
 
+const PublishActions = styled.div`
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+`;
+
+const ActionButtons = styled.div`
+	display: flex;
+	gap: 10px;
+`;
+
 interface PackageCollectionBuilderProps {
 	package: FeastPackage;
 	isPersisted: boolean;
@@ -233,6 +242,7 @@ interface PackageCollectionBuilderProps {
 	onSave: () => void;
 	onPublish: () => void;
 	onClose: () => void;
+	isPublished: boolean;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -261,6 +271,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	onSave,
 	onPublish,
 	onClose,
+	isPublished,
 }) => {
 	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
@@ -270,6 +281,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [loadingDisplays, setLoadingDisplays] = useState(true);
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
+	const [copyMessage, setCopyMessage] = useState('');
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -277,6 +289,16 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	// const [excludedRegions, setExcludedRegions] = useState(
 	// 	pkg.metadata?.excludedRegions?.join(', ') ?? '',
 	// );
+
+	const appLink = useMemo(
+		() => `feastbraze://recipecollection/${pkg.id}`,
+		[pkg],
+	);
+	const emailLink = useMemo(
+		() =>
+			`https://guardian-feast.go.link/recipecollection/${pkg.id}?adj_t=1csm4hw1&adj_fallback%3Dhttps%253A%252F%252Fapps.apple.com%252Fgy%252Fapp%252Fguardian-feast%252Fid6468674686%26adj_redirect_macos%3Dhttps%253A%252F%252Fapps.apple.com%252Fgy%252Fapp%252Fguardian-feast%252Fid6468674686`,
+		[pkg],
+	);
 
 	const itemSignature = JSON.stringify(
 		pkg.items.map(({ id, cardType }) => ({ id, cardType })),
@@ -319,6 +341,14 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			active = false;
 		};
 	}, [itemSignature, displayRefresh]);
+
+	useEffect(() => {
+		//notification message to appear for 10 seconds
+		if (!copyMessage) return;
+
+		const timeout = window.setTimeout(() => setCopyMessage(''), 10_000);
+		return () => window.clearTimeout(timeout);
+	}, [copyMessage]);
 
 	const changeMetadata = (patch: Partial<FeastPackageMetadata>) => {
 		onPackageChange({
@@ -545,39 +575,56 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				</FirstSection>
 				<Section>
 					<PublishActions>
-						<Button
-							variant="secondary"
-							size="md"
-							isDisabled={disabled || !isModified || !pkg.name.trim()}
-							onPress={onSave}
-						>
-							Save
-						</Button>
+						<PublishActions>
+							<ActionButtons>
+								<Button
+									variant="secondary"
+									size="md"
+									isDisabled={disabled || !isModified || !pkg.name.trim()}
+									onPress={onSave}
+								>
+									Save
+								</Button>
 
-						<Button
-							variant="primary"
-							size="md"
-							isDisabled={
-								disabled || !isPersisted || isModified || !pkg.name.trim()
-							}
-							onPress={onPublish}
-						>
-							Publish
-						</Button>
+								<Button
+									variant="primary"
+									size="md"
+									isDisabled={
+										disabled || !isPersisted || isModified || !pkg.name.trim()
+									}
+									onPress={onPublish}
+								>
+									Publish
+								</Button>
+
+								{(!isPersisted || isModified) && (
+									<Typography variant="bodyCompactItalicSm">
+										Save your changes before publishing
+									</Typography>
+								)}
+
+								<Tooltip placement="start">
+									<Typography variant="bodyCompactSm">
+										Save updates the stored package. Publish sends the saved
+										package to the Feast app
+									</Typography>
+								</Tooltip>
+							</ActionButtons>
+
+							<AppLinkControls
+								deepLink={emailLink}
+								title="Recipe link"
+								isPublished={isPublished}
+								isDisabled={disabled || !isPublished || !emailLink}
+							/>
+							<AppLinkControls
+								deepLink={appLink}
+								title="Push notification link"
+								isPublished={isPublished}
+								isDisabled={disabled || !isPublished || !appLink}
+							/>
+						</PublishActions>
 					</PublishActions>
-
-					{(!isPersisted || isModified) && (
-						<Typography variant="bodyCompactItalicSm">
-							Save your changes before publishing
-						</Typography>
-					)}
-
-					<Tooltip placement="start">
-						<Typography variant="bodyCompactSm">
-							Save updates the stored package. Publish sends the saved package
-							to the Feast app
-						</Typography>
-					</Tooltip>
 				</Section>
 
 				<SlotsContainer>
