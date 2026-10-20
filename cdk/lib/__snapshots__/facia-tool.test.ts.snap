@@ -2073,24 +2073,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::000000000018:root",
-                    ],
-                  ],
-                },
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
                       ":iam::000000000031:root",
                     ],
                   ],
@@ -2110,24 +2092,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                         "Ref": "AWS::Partition",
                       },
                       ":iam::000000000025:root",
-                    ],
-                  ],
-                },
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::000000000012:root",
                     ],
                   ],
                 },
@@ -4338,24 +4302,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":iam::000000000018:root",
-                    ],
-                  ],
-                },
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
                       ":iam::000000000031:root",
                     ],
                   ],
@@ -4375,24 +4321,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                         "Ref": "AWS::Partition",
                       },
                       ":iam::000000000025:root",
-                    ],
-                  ],
-                },
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":iam::000000000012:root",
                     ],
                   ],
                 },

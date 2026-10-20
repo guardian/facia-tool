@@ -397,10 +397,8 @@ export class FaciaTool extends GuStack {
 				...[
 					GuardianAwsAccounts.Frontend,
 					GuardianAwsAccounts.Mobile,
-					GuardianAwsAccounts.DeployTools,
 					GuardianAwsAccounts.Ophan,
 					GuardianAwsAccounts.CAPI,
-					GuardianAwsAccounts.Membership,
 				].map((accountId) => new AccountPrincipal(accountId)),
 			),
 		});
