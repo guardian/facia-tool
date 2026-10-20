@@ -33,27 +33,6 @@ export interface FaciaEditionsProps extends GuStackProps {
 	multiAz: boolean;
 }
 
-/**
- * The fronts database and the editions fan-out, ported from `facia-editions.yml` in
- * editorial-tools-platform, where it was deployed by hand as `facia-db-<stage>`.
- *
- * Every logical ID is overridden to the one the live stack already uses — these are the
- * resources that must survive, and a changed logical ID means delete-and-recreate.
- *
- * Deliberately L1 (`Cfn*`) for everything except IAM. The L2 equivalents all add something
- * the live template does not have — an explicit egress rule on the security group, a
- * notification-handler Lambda on the bucket, the key ARN rather than its ID on the topic and
- * queue — and each of those would be a real change to a production resource. IAM is L2
- * because `Role` and `Policy` resolve to exactly what is deployed today.
- *
- * The VPC and the subnets come from `GuVpc`, which reads them from `/account/vpc/primary/*`
- * rather than from the literals the YAML template carried as `VpcId` and
- * `PrivateSubnetsNewVPC`. That is a parameter *type* change, which Riff-Raff cannot deploy:
- * it sends `UseExistingValue` for every parameter already on the stack, so the old literal
- * would be looked up as an SSM key and change-set creation would fail. **Both stages need one
- * manual `update-stack` with this template before it is merged** — see the PR for the
- * commands. After that the stored values are the SSM paths and Riff-Raff is correct again.
- */
 export class FaciaEditions extends GuStack {
 	constructor(scope: App, id: string, props: FaciaEditionsProps) {
 		super(scope, id, {
@@ -83,12 +62,6 @@ export class FaciaEditions extends GuStack {
 		this.editionsListenerRule(lowerCaseStage);
 	}
 
-	/**
-	 * The database, and nothing else, carries `DeletionPolicy: Retain` from the YAML template.
-	 * `DBMasterUser` and `DBMasterPassword` were parameters of that template but were referenced
-	 * by nothing in it — the instance predates the file's current shape — so they are not ported.
-	 * The password lives in Parameter Store, which is where the application reads it from.
-	 */
 	private database({
 		vpcId,
 		subnetIds,
@@ -100,8 +73,6 @@ export class FaciaEditions extends GuStack {
 		instanceClass: string;
 		multiAz: boolean;
 	}): void {
-		// `UpdateReplacePolicy` is the one thing deliberately added to these three: the YAML set
-		// only `DeletionPolicy`, which leaves a replacing change free to delete the database.
 		const retain = (
 			resource: CfnSecurityGroup | CfnDBSubnetGroup | CfnDBInstance,
 		) => {

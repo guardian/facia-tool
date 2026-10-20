@@ -5,8 +5,6 @@ allowedStages:
   - PROD
 
 deployments:
-  # The database and the editions fan-out, ported from facia-editions.yml in
-  # editorial-tools-platform.
   cfn-facia-editions:
     type: cloud-formation
     app: facia-tool
@@ -19,8 +17,6 @@ deployments:
   cfn-facia-tool:
     type: cloud-formation
     app: facia-tool
-    # The service stack is to take the database's security group from this one rather than
-    # from the untracked DBSecurityGroupIdNewVPC parameter, so order them now.
     dependencies:
         - cfn-facia-editions
     parameters:
