@@ -16,10 +16,8 @@ task 6.
 
 ## Status
 
-Tasks 1, 2, 4a, 4b, 6a, 6b/6f, 7, 8 and the first part of 6g are merged, as are
-steps 1–2 of task 5. Left open: step 6 of task 5 (behind
-[#2137](https://github.com/guardian/facia-tool/pull/2137)), the second part of
-6g, the disposal of the static assets bucket, and task 9.
+Tasks 1, 2, 4a, 4b, 5, 6a, 6b/6f, 7, 8 and the first part of 6g are done. Left
+open: the second part of 6g, and task 9.
 
 | Task | PR | State |
 | --- | --- | --- |
@@ -28,8 +26,8 @@ steps 1–2 of task 5. Left open: step 6 of task 5 (behind
 | 4a — policy refactor | [#2115](https://github.com/guardian/facia-tool/pull/2115) | Merged |
 | 4b — policy narrowing | [#2116](https://github.com/guardian/facia-tool/pull/2116) | Merged |
 | 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Merged |
-| 5 — SSM path (steps 4–5) | [#2137](https://github.com/guardian/facia-tool/pull/2137) | Open |
-| 5 — SSM path (step 6) | — | Not started; must follow #2137 |
+| 5 — SSM path (steps 4–5) | [#2137](https://github.com/guardian/facia-tool/pull/2137) | Merged and deployed to both stages |
+| 5 — SSM path (step 6) | — | **Done.** Legacy parameters deleted 2026-10-20; see 5 |
 | 6a — network parameters | [#2117](https://github.com/guardian/facia-tool/pull/2117) | Merged (needed a manual `update-stack` first — see below) |
 | 6b, 6f — account IDs | [#2134](https://github.com/guardian/facia-tool/pull/2134) | Merged. Seven parameters removed via `@guardian/aws-account-setup` |
 | 6c — `CapiPreviewRole` | — | **Closed, no change.** A documented operator knob; see 6c |
@@ -493,6 +491,28 @@ machine you run it on.
   same PR, or developers break at step 6:
   [scripts/setup-ssh-tunnel.sh](../scripts/setup-ssh-tunnel.sh) and the Postgres
   troubleshooting section of [README.md](../README.md).
+
+**Steps 4–5 done — [#2137](https://github.com/guardian/facia-tool/pull/2137)**,
+merged and deployed to both stages. The live templates then granted only the
+convention path, and `origin/main` had no reference to the legacy one left.
+
+**Step 6 done.** Both `/facia-tool/cms-fronts/<stage>/db/password` parameters
+were deleted on 2026-10-20, and the CODE deploy afterwards came up healthy. The
+preconditions were checked first, and the checks are worth repeating for any
+similar deletion:
+
+- **CloudTrail showed a clean cutover.** The `ResourceName` lookup attribute
+  does **not** work for SSM parameters — it returns nothing even for a parameter
+  that is demonstrably being read — so the events have to be tallied by
+  `requestParameters.name` instead. Doing that over the retention window gave
+  205 CODE / 264 PROD reads of the legacy path, the last on 2026-10-15, against
+  reads of the convention path starting the same morning and continuing to the
+  day of deletion. No un-rebased branch had deployed in between.
+- **The convention-path copy was a complete copy**, confirmed by comparing
+  `--with-decryption` output through `sha256sum` without printing either value.
+  No separate backup was needed.
+- **`db/password` was the only parameter under the `/facia-tool/` prefix**, so
+  the wildcard grant #2137 removed had nothing else behind it.
 
 ---
 
