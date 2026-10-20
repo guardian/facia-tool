@@ -19,6 +19,7 @@ export interface FaciaToolCertificateProps extends GuStackProps {
  *
  * ```sh
  * STAGE=CODE  # then repeat with PROD
+ * DOMAIN=fronts.code.dev-gutools.co.uk  # fronts.gutools.co.uk for PROD
  *
  * ARN=$(aws cloudformation describe-stack-resources \
  *   --profile cmsFronts --region us-east-1 \
@@ -30,7 +31,7 @@ export interface FaciaToolCertificateProps extends GuStackProps {
  *   --certificate-arn "$ARN" --query Certificate.Status --output text  # expect ISSUED
  *
  * aws ssm put-parameter --profile cmsFronts --region eu-west-1 \
- *   --name "/$STAGE/cms-fronts/facia-tool/cloudfront/certificate-arn" \
+ *   --name "/INFRA/$DOMAIN/cloudFrontCertificateArn" \
  *   --type String --value "$ARN" \
  *   --description "CloudFront viewer certificate for facia-tool ($STAGE), issued in us-east-1"
  * ```
