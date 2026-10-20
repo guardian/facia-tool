@@ -1,14 +1,9 @@
 import { GuardianAwsAccounts } from '@guardian/aws-account-setup';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
+import { GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import type { App } from 'aws-cdk-lib';
-import {
-	Aws,
-	CfnDeletionPolicy,
-	CfnOutput,
-	CfnParameter,
-	Tags,
-} from 'aws-cdk-lib';
+import { Aws, CfnDeletionPolicy, CfnOutput, Tags } from 'aws-cdk-lib';
 import { CfnSecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
 import {
@@ -50,6 +45,14 @@ export interface FaciaEditionsProps extends GuStackProps {
  * notification-handler Lambda on the bucket, the key ARN rather than its ID on the topic and
  * queue — and each of those would be a real change to a production resource. IAM is L2
  * because `Role` and `Policy` resolve to exactly what is deployed today.
+ *
+ * The VPC and the subnets come from `GuVpc`, which reads them from `/account/vpc/primary/*`
+ * rather than from the literals the YAML template carried as `VpcId` and
+ * `PrivateSubnetsNewVPC`. That is a parameter *type* change, which Riff-Raff cannot deploy:
+ * it sends `UseExistingValue` for every parameter already on the stack, so the old literal
+ * would be looked up as an SSM key and change-set creation would fail. **Both stages need one
+ * manual `update-stack` with this template before it is merged** — see the PR for the
+ * commands. After that the stored values are the SSM paths and Riff-Raff is correct again.
  */
 export class FaciaEditions extends GuStack {
 	constructor(scope: App, id: string, props: FaciaEditionsProps) {
@@ -61,23 +64,14 @@ export class FaciaEditions extends GuStack {
 
 		const lowerCaseStage = this.stage.toLowerCase();
 
-		// The two parameters worth keeping, with the names and types the live stack already has.
-		// GuVpc would read the same values from `/account/vpc/primary/*`, but changing a
-		// parameter's type is something Riff-Raff cannot deploy — it sends `UseExistingValue`
-		// for every parameter already on the stack, so the old literal would be looked up as an
-		// SSM key. Converting them needs one manual `update-stack` per stage first.
-		const vpcId = this.parameter('VpcId', {
-			type: 'AWS::EC2::VPC::Id',
-			description: 'The new VPC we look to migrate to',
-		});
-		const privateSubnets = this.parameter('PrivateSubnetsNewVPC', {
-			type: 'List<AWS::EC2::Subnet::Id>',
-			description: 'The list of private SubnetIds in the new VPC',
+		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
+		const privateSubnets = GuVpc.subnetsFromParameter(this, {
+			type: SubnetType.PRIVATE,
 		});
 
 		this.database({
-			vpcId: vpcId.valueAsString,
-			subnetIds: privateSubnets.valueAsList,
+			vpcId: vpc.vpcId,
+			subnetIds: privateSubnets.map(({ subnetId }) => subnetId),
 			instanceClass: props.databaseInstanceClass,
 			multiAz: props.multiAz,
 		});
@@ -87,15 +81,6 @@ export class FaciaEditions extends GuStack {
 		this.editionsBuilder({ previewBucket, publishedBucket });
 		this.publishedEditionUpdates();
 		this.editionsListenerRule(lowerCaseStage);
-	}
-
-	private parameter(
-		name: string,
-		props: { type: string; description: string },
-	): CfnParameter {
-		const parameter = new CfnParameter(this, name, props);
-		parameter.overrideLogicalId(name);
-		return parameter;
 	}
 
 	/**

@@ -4,7 +4,10 @@ exports[`The FaciaEditions stack matches the CODE snapshot 1`] = `
 {
   "Description": "Facia Tool Editions Resources",
   "Metadata": {
-    "gu:cdk:constructs": [],
+    "gu:cdk:constructs": [
+      "GuVpcParameter",
+      "GuSubnetListParameter",
+    ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
@@ -40,13 +43,15 @@ exports[`The FaciaEditions stack matches the CODE snapshot 1`] = `
     },
   },
   "Parameters": {
-    "PrivateSubnetsNewVPC": {
-      "Description": "The list of private SubnetIds in the new VPC",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+    "PrivateSubnets": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -88,7 +93,7 @@ exports[`The FaciaEditions stack matches the CODE snapshot 1`] = `
       "Properties": {
         "DBSubnetGroupDescription": "Private subnet group for faciatool database",
         "SubnetIds": {
-          "Ref": "PrivateSubnetsNewVPC",
+          "Ref": "PrivateSubnets",
         },
         "Tags": [
           {
@@ -812,7 +817,10 @@ exports[`The FaciaEditions stack matches the PROD snapshot 1`] = `
 {
   "Description": "Facia Tool Editions Resources",
   "Metadata": {
-    "gu:cdk:constructs": [],
+    "gu:cdk:constructs": [
+      "GuVpcParameter",
+      "GuSubnetListParameter",
+    ],
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
@@ -848,13 +856,15 @@ exports[`The FaciaEditions stack matches the PROD snapshot 1`] = `
     },
   },
   "Parameters": {
-    "PrivateSubnetsNewVPC": {
-      "Description": "The list of private SubnetIds in the new VPC",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+    "PrivateSubnets": {
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -896,7 +906,7 @@ exports[`The FaciaEditions stack matches the PROD snapshot 1`] = `
       "Properties": {
         "DBSubnetGroupDescription": "Private subnet group for faciatool database",
         "SubnetIds": {
-          "Ref": "PrivateSubnetsNewVPC",
+          "Ref": "PrivateSubnets",
         },
         "Tags": [
           {
