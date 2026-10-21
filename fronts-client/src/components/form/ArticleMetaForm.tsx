@@ -33,6 +33,7 @@ import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
 import InputImage from 'components/inputs/InputImage';
 import InputGroup from 'components/inputs/InputGroup';
+import InputContainer from 'components/inputs/InputContainer';
 import InputButton from 'components/inputs/InputButton';
 import Row from '../Row';
 import Col from '../Col';
@@ -223,6 +224,21 @@ const InvalidText = styled.div`
 	color: ${error.primary};
 	font-size: 12px;
 	margin-left: 4px;
+`;
+
+const MiniNavUrlRow = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	> :first-child {
+		flex: 1;
+		min-width: 0;
+	}
+`;
+
+const MiniNavWarning = styled.span`
+	color: ${error.primary};
+	font-size: 12px;
 `;
 
 const ExtraVideoControls = styled.div`
@@ -563,6 +579,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleCapiFieldValues,
 			pristine,
 			showByline,
+			showMiniNav,
+			miniNavUrl,
 			abTestEnabled,
 			hasActiveABTest,
 			hasActiveABTestOnLiveCard,
@@ -813,6 +831,48 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								type="checkbox"
 							/>
 						</CheckboxFieldsContainer>
+						<CheckboxFieldsContainer
+							editableFields={editableFields}
+							size={this.props.size}
+						>
+							{[
+								<Field
+									key="showMiniNav"
+									name="showMiniNav"
+									component={InputCheckboxToggleInline}
+									label="Enable mini nav"
+									id={getInputId(cardId, 'mini-nav')}
+									type="checkbox"
+								/>,
+							]}
+						</CheckboxFieldsContainer>
+						{showMiniNav && shouldRenderField('miniNavUrl', editableFields) && (
+							<InputContainer>
+								<InputLabel htmlFor={getInputId(cardId, 'mini-nav-url')}>
+									Custom nav URL
+								</InputLabel>
+								<MiniNavUrlRow>
+									<Field
+										name="miniNavUrl"
+										component={InputText}
+										id={getInputId(cardId, 'mini-nav-url')}
+										aria-describedby={
+											miniNavUrl
+												? getInputId(cardId, 'mini-nav-warning')
+												: undefined
+										}
+									/>
+									{miniNavUrl && (
+										<MiniNavWarning
+											id={getInputId(cardId, 'mini-nav-warning')}
+											role="status"
+										>
+											Not implimented
+										</MiniNavWarning>
+									)}
+								</MiniNavUrlRow>
+							</InputContainer>
+						)}
 						{showByline && (
 							<ConditionalField
 								permittedFields={editableFields}
@@ -1306,6 +1366,8 @@ interface ContainerProps {
 	kickerOptions: ArticleTag;
 	pickedKicker: string | undefined;
 	showByline: boolean;
+	showMiniNav: boolean;
+	miniNavUrl: string;
 	abTestEnabled: boolean;
 	hasActiveABTest: boolean;
 	hasActiveABTestOnLiveCard: boolean;
@@ -1398,6 +1460,8 @@ const createMapStateToProps = () => {
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
+			showMiniNav: valueSelector(state, 'showMiniNav'),
+			miniNavUrl: valueSelector(state, 'miniNavUrl'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			hasActiveABTest: hasActiveAbTestOnCard(selectCard(state, cardId)),
 			hasActiveABTestOnLiveCard: hasActiveAbTestOnCard(liveCard),
