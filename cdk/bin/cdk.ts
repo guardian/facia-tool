@@ -1,5 +1,6 @@
 import 'source-map-support/register';
 import { GuRoot } from '@guardian/cdk/lib/constructs/root';
+import { FaciaEditions } from '../lib/facia-editions';
 import { FaciaTool } from '../lib/facia-tool';
 import { FaciaToolCertificate } from '../lib/facia-tool-certificate';
 
@@ -46,4 +47,23 @@ new FaciaTool(app, 'FaciaTool-euwest-1-PROD', {
 	instanceType: 't4g.medium',
 	minimumInstances: 3,
 	maximumInstances: 6,
+});
+
+// The database and the editions fan-out, which keep the `facia-db-<stage>` stacks they have
+// always been deployed to.
+new FaciaEditions(app, 'FaciaEditions-euwest-1-CODE', {
+	stack: 'cms-fronts',
+	stage: 'CODE',
+	env: { region: 'eu-west-1' },
+	cloudFormationStackName: 'facia-db-CODE',
+	databaseInstanceClass: 'db.t4g.small',
+	multiAz: false,
+});
+new FaciaEditions(app, 'FaciaEditions-euwest-1-PROD', {
+	stack: 'cms-fronts',
+	stage: 'PROD',
+	env: { region: 'eu-west-1' },
+	cloudFormationStackName: 'facia-db-PROD',
+	databaseInstanceClass: 'db.t4g.medium',
+	multiAz: true,
 });
