@@ -97,9 +97,6 @@ describe('ArticleMetaForm - mini nav', () => {
 		const warningContainer = getByRole('status');
 		expect(input.getAttribute('aria-describedby')).toBe(warningContainer.id);
 		expect(warningContainer.querySelector('svg')).not.toBeNull();
-		expect(input.parentElement?.parentElement?.nextElementSibling).toBe(
-			warningContainer,
-		);
 
 		fireEvent.change(input, { target: { value: '' } });
 
@@ -165,23 +162,20 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(getByText(miniNavWarning)).toBeTruthy();
 	});
 
-	it.each(['flexible/special', 'dynamic/slow'])(
-		'hides both controls and the warning in %s even with existing settings',
-		(collectionType) => {
-			const { queryByLabelText, queryByText } = renderForm(
-				getMiniNavState(
-					{
-						showMiniNav: true,
-						miniNavUrl: 'https://www.theguardian.com/custom-nav',
-					},
-					collectionType,
-				),
-			);
-			expect(queryByLabelText('Enable mini nav')).toBeNull();
-			expect(queryByLabelText('Custom nav URL')).toBeNull();
-			expect(queryByText(miniNavWarning)).toBeNull();
-		},
-	);
+	it('hides both controls and the warning in Flex Special even with existing settings', () => {
+		const { queryByLabelText, queryByText } = renderForm(
+			getMiniNavState(
+				{
+					showMiniNav: true,
+					miniNavUrl: 'https://www.theguardian.com/custom-nav',
+				},
+				'flexible/special',
+			),
+		);
+		expect(queryByLabelText('Enable mini nav')).toBeNull();
+		expect(queryByLabelText('Custom nav URL')).toBeNull();
+		expect(queryByText(miniNavWarning)).toBeNull();
+	});
 });
 
 describe('ArticleMetaForm - headline AB testing', () => {

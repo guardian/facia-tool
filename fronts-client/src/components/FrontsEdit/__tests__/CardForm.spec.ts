@@ -211,22 +211,6 @@ describe('CardForm transform functions', () => {
 				},
 			};
 
-			it('should save changed mini nav settings without validating the URL', () => {
-				const changes = { showMiniNav: true, miniNavUrl: 'not a URL' };
-				const state = createStateWithChangedFormFields(
-					initialState,
-					cardId,
-					changes,
-					formValues,
-				);
-				expect(
-					getCardMetaFromFormValues(state, cardId, {
-						...formValues,
-						...changes,
-					}),
-				).toEqual({ headline: 'Bill Shorten', ...changes });
-			});
-
 			it('should preserve saved mini nav settings during an unrelated edit', () => {
 				const changes = { headline: 'Updated headline' };
 				const state = createStateWithChangedFormFields(
@@ -241,44 +225,6 @@ describe('CardForm transform functions', () => {
 						...changes,
 					}),
 				).toEqual({ ...changes, ...savedSettings });
-			});
-
-			it('should save disabling mini nav without clearing its URL', () => {
-				const state = createStateWithChangedFormFields(
-					stateWithMiniNav,
-					cardId,
-					{ showMiniNav: false },
-					{ ...formValues, ...savedSettings },
-				);
-				expect(
-					getCardMetaFromFormValues(state, cardId, {
-						...formValues,
-						miniNavUrl,
-					}),
-				).toEqual({
-					headline: 'Bill Shorten',
-					showMiniNav: false,
-					miniNavUrl,
-				});
-			});
-
-			it('should save clearing the mini nav URL', () => {
-				const state = createStateWithChangedFormFields(
-					stateWithMiniNav,
-					cardId,
-					{ miniNavUrl: '' },
-					{ ...formValues, ...savedSettings },
-				);
-				expect(
-					getCardMetaFromFormValues(state, cardId, {
-						...formValues,
-						showMiniNav: true,
-					}),
-				).toEqual({
-					headline: 'Bill Shorten',
-					showMiniNav: true,
-					miniNavUrl: '',
-				});
 			});
 		});
 

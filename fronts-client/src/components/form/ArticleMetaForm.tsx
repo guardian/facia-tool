@@ -815,21 +815,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								id={getInputId(cardId, 'show-updates')}
 								type="checkbox"
 							/>
-						</CheckboxFieldsContainer>
-						<CheckboxFieldsContainer
-							editableFields={editableFields}
-							size={this.props.size}
-						>
-							{[
-								<Field
-									key="showMiniNav"
-									name="showMiniNav"
-									component={InputCheckboxToggleInline}
-									label="Enable mini nav"
-									id={getInputId(cardId, 'mini-nav')}
-									type="checkbox"
-								/>,
-							]}
+							<Field
+								name="showMiniNav"
+								component={InputCheckboxToggleInline}
+								label="Enable mini nav"
+								id={getInputId(cardId, 'mini-nav')}
+								type="checkbox"
+							/>
 						</CheckboxFieldsContainer>
 						{showMiniNav && shouldRenderField('miniNavUrl', editableFields) && (
 							<InputContainer>

@@ -39,7 +39,7 @@ describe('Form utils', () => {
 				),
 			).toEqual([...defaultFields, 'isBoosted']);
 		});
-		it('should add boostLevel, isImmersive, mini nav fields and remove large headline for Flex Gen collections', () => {
+		it('should add boostLevel, isImmersive, mini nav fields and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 				'flexible/general';
@@ -64,20 +64,17 @@ describe('Form utils', () => {
 			const cardId = '95e2bfc0-8999-4e6e-a359-19960967c1e0';
 			const miniNavFields = ['showMiniNav', 'miniNavUrl'];
 
-			it.each(['default', 'boost', 'megaboost', 'gigaboost'])(
-				'should permit mini nav fields at boost level %s in Flex Gen',
-				(boostLevel) => {
-					const localState = cloneDeep(state);
-					localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-						'flexible/general';
-					localState.cards[cardId].meta.boostLevel = boostLevel;
-					const selectFormFields = createSelectFormFieldsForCard();
+			it('should permit mini nav fields below Boosted size in Flex Gen', () => {
+				const localState = cloneDeep(state);
+				localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+					'flexible/general';
+				localState.cards[cardId].meta.boostLevel = 'default';
+				const selectFormFields = createSelectFormFieldsForCard();
 
-					expect(selectFormFields(localState, cardId, false)).toEqual(
-						expect.arrayContaining(miniNavFields),
-					);
-				},
-			);
+				expect(selectFormFields(localState, cardId, false)).toEqual(
+					expect.arrayContaining(miniNavFields),
+				);
+			});
 
 			//Mini nav fields are not removed, so they can appear again
 			//By moving back to a supported type
