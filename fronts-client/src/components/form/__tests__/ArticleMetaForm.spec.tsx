@@ -54,6 +54,8 @@ const renderForm = (state: State, onSave = jest.fn()) => {
 };
 
 describe('ArticleMetaForm - mini nav', () => {
+	const miniNavWarning =
+		'Not implemented: you can save this url but the mini nav will not yet show';
 	const getMiniNavState = (
 		meta: CardMeta = {},
 		collectionType = 'flexible/general',
@@ -82,21 +84,26 @@ describe('ArticleMetaForm - mini nav', () => {
 	});
 
 	it('shows an associated red warning for entered text and removes it when cleared', () => {
-		const { getByLabelText, getByText, queryByText } = renderForm(
+		const { getByLabelText, getByText, getByRole, queryByText } = renderForm(
 			getMiniNavState({ showMiniNav: true }),
 		);
 		const input = getByLabelText('Custom nav URL');
-		expect(queryByText('Not implimented')).toBeNull();
+		expect(queryByText(miniNavWarning)).toBeNull();
 
 		fireEvent.change(input, { target: { value: 'not a valid URL' } });
 
-		const warning = getByText('Not implimented');
+		const warning = getByText(miniNavWarning);
 		expect(warning).toHaveStyleRule('color', error.primary);
-		expect(input.getAttribute('aria-describedby')).toBe(warning.id);
+		const warningContainer = getByRole('status');
+		expect(input.getAttribute('aria-describedby')).toBe(warningContainer.id);
+		expect(warningContainer.querySelector('svg')).not.toBeNull();
+		expect(input.parentElement?.parentElement?.nextElementSibling).toBe(
+			warningContainer,
+		);
 
 		fireEvent.change(input, { target: { value: '' } });
 
-		expect(queryByText('Not implimented')).toBeNull();
+		expect(queryByText(miniNavWarning)).toBeNull();
 		expect(input.hasAttribute('aria-describedby')).toBe(false);
 	});
 
@@ -111,7 +118,7 @@ describe('ArticleMetaForm - mini nav', () => {
 
 		fireEvent.click(toggle);
 		expect(queryByLabelText('Custom nav URL')).toBeNull();
-		expect(queryByText('Not implimented')).toBeNull();
+		expect(queryByText(miniNavWarning)).toBeNull();
 
 		fireEvent.click(toggle);
 		expect((getByLabelText('Custom nav URL') as HTMLInputElement).value).toBe(
@@ -129,7 +136,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		fireEvent.change(getByLabelText('Custom nav URL'), {
 			target: { value: 'not a valid URL' },
 		});
-		expect(getByText('Not implimented')).toBeTruthy();
+		expect(getByText(miniNavWarning)).toBeTruthy();
 
 		fireEvent.click(getByTestId('edit-form-save-button'));
 
@@ -155,7 +162,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect((getByLabelText('Custom nav URL') as HTMLInputElement).value).toBe(
 			'https://www.theguardian.com/custom-nav',
 		);
-		expect(getByText('Not implimented')).toBeTruthy();
+		expect(getByText(miniNavWarning)).toBeTruthy();
 	});
 
 	it.each(['flexible/special', 'dynamic/slow'])(
@@ -172,7 +179,7 @@ describe('ArticleMetaForm - mini nav', () => {
 			);
 			expect(queryByLabelText('Enable mini nav')).toBeNull();
 			expect(queryByLabelText('Custom nav URL')).toBeNull();
-			expect(queryByText('Not implimented')).toBeNull();
+			expect(queryByText(miniNavWarning)).toBeNull();
 		},
 	);
 });

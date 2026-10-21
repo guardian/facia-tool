@@ -226,21 +226,6 @@ const InvalidText = styled.div`
 	margin-left: 4px;
 `;
 
-const MiniNavUrlRow = styled.div`
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	> :first-child {
-		flex: 1;
-		min-width: 0;
-	}
-`;
-
-const MiniNavWarning = styled.span`
-	color: ${error.primary};
-	font-size: 12px;
-`;
-
 const ExtraVideoControls = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -851,26 +836,24 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								<InputLabel htmlFor={getInputId(cardId, 'mini-nav-url')}>
 									Custom nav URL
 								</InputLabel>
-								<MiniNavUrlRow>
-									<Field
-										name="miniNavUrl"
-										component={InputText}
-										id={getInputId(cardId, 'mini-nav-url')}
-										aria-describedby={
-											miniNavUrl
-												? getInputId(cardId, 'mini-nav-warning')
-												: undefined
-										}
-									/>
-									{miniNavUrl && (
-										<MiniNavWarning
-											id={getInputId(cardId, 'mini-nav-warning')}
-											role="status"
-										>
-											Not implimented
-										</MiniNavWarning>
-									)}
-								</MiniNavUrlRow>
+								<Field
+									name="miniNavUrl"
+									component={InputText}
+									id={getInputId(cardId, 'mini-nav-url')}
+									aria-describedby={
+										miniNavUrl
+											? getInputId(cardId, 'mini-nav-warning')
+											: undefined
+									}
+								/>
+								{miniNavUrl && (
+									<div
+										id={getInputId(cardId, 'mini-nav-warning')}
+										role="status"
+									>
+										<InvalidWarning warning="Not implemented: you can save this url but the mini nav will not yet show" />
+									</div>
+								)}
 							</InputContainer>
 						)}
 						{showByline && (
