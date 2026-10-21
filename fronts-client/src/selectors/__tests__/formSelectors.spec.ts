@@ -39,7 +39,7 @@ describe('Form utils', () => {
 				),
 			).toEqual([...defaultFields, 'isBoosted']);
 		});
-		it('should add boostLevel and isImmersive and remove large headline for flexible collection configs', () => {
+		it('should add boostLevel, isImmersive, mini nav fields and remove large headline for Flex Gen collections', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 				'flexible/general';
@@ -51,9 +51,51 @@ describe('Form utils', () => {
 					false,
 				),
 			).toEqual(
-				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
-					(t) => t !== 'showLargeHeadline',
-				),
+				[
+					...defaultFields,
+					'boostLevel',
+					'isImmersive',
+					'showMiniNav',
+					'miniNavUrl',
+				].filter((t) => t !== 'showLargeHeadline'),
+			);
+		});
+		describe('mini nav fields', () => {
+			const cardId = '95e2bfc0-8999-4e6e-a359-19960967c1e0';
+			const miniNavFields = ['showMiniNav', 'miniNavUrl'];
+
+			it.each(['default', 'boost', 'megaboost', 'gigaboost'])(
+				'should permit mini nav fields at boost level %s in Flex Gen',
+				(boostLevel) => {
+					const localState = cloneDeep(state);
+					localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+						'flexible/general';
+					localState.cards[cardId].meta.boostLevel = boostLevel;
+					const selectFormFields = createSelectFormFieldsForCard();
+
+					expect(selectFormFields(localState, cardId, false)).toEqual(
+						expect.arrayContaining(miniNavFields),
+					);
+				},
+			);
+
+			//Mini nav fields are not removed, so they can appear again
+			//By moving back to a supported type
+			it.each(['flexible/special', 'dynamic/slow', 'type'])(
+				'should exclude mini nav fields in %s when they exist',
+				(collectionType) => {
+					const localState = cloneDeep(state);
+					localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+						collectionType;
+					localState.cards[cardId].meta = {
+						showMiniNav: true,
+						miniNavUrl: 'https://www.theguardian.com/custom-nav',
+					};
+					const selectFormFields = createSelectFormFieldsForCard();
+					const fields = selectFormFields(localState, cardId, false);
+
+					miniNavFields.forEach((field) => expect(fields).not.toContain(field));
+				},
 			);
 		});
 		it('should add showLivePlayable for live blogs', () => {

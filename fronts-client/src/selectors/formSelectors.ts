@@ -108,7 +108,7 @@ export const createSelectFormFieldsForCard = () => {
 				fields = without(fields, 'showLargeHeadline');
 			}
 			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
-				fields.push('isImmersive');
+				fields.push('isImmersive', 'showMiniNav', 'miniNavUrl');
 			}
 			if (isCollectionConfigDynamic(parentCollectionConfig)) {
 				fields.push('isBoosted');
