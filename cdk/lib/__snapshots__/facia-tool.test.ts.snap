@@ -127,9 +127,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "DBSecurityGroupIdNewVPC": {
-      "Type": "String",
-    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -398,7 +395,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Properties": {
         "Description": "Postgres",
         "DestinationSecurityGroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
+          "Fn::ImportValue": "facia-db-CODE-DatabaseSecurityGroupId",
         },
         "FromPort": 5432,
         "GroupId": {
@@ -417,7 +414,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "Description": "Postgres",
         "FromPort": 5432,
         "GroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
+          "Fn::ImportValue": "facia-db-CODE-DatabaseSecurityGroupId",
         },
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": {
@@ -2703,9 +2700,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
-    "DBSecurityGroupIdNewVPC": {
-      "Type": "String",
-    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -2974,7 +2968,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Properties": {
         "Description": "Postgres",
         "DestinationSecurityGroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
+          "Fn::ImportValue": "facia-db-PROD-DatabaseSecurityGroupId",
         },
         "FromPort": 5432,
         "GroupId": {
@@ -2993,7 +2987,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         "Description": "Postgres",
         "FromPort": 5432,
         "GroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
+          "Fn::ImportValue": "facia-db-PROD-DatabaseSecurityGroupId",
         },
         "IpProtocol": "tcp",
         "SourceSecurityGroupId": {
