@@ -10,10 +10,14 @@ the numbering of the original review so the two documents can be read together.
 Item 3 was considered and dropped. Task 9 was added later, during review of
 task 6.
 
+> **Most of this is done.** For the work that is actually left, read
+> [remaining-cleanup.md](remaining-cleanup.md). Keep this file for the history:
+> what was decided, what was measured, and what was deliberately not acted on.
+
 ## Status
 
-Tasks 1, 2, 4a, 4b, 6a, 7 and 8 are merged, as is step 2 of task 5. The rest of
-task 5, the rest of task 6, and task 9 are open.
+Tasks 1, 2, 4a, 4b, 5, 6a, 6b/6f, 7, 8 and the first part of 6g are done. Left
+open: the second part of 6g, and task 9.
 
 | Task | PR | State |
 | --- | --- | --- |
@@ -22,16 +26,17 @@ task 5, the rest of task 6, and task 9 are open.
 | 4a — policy refactor | [#2115](https://github.com/guardian/facia-tool/pull/2115) | Merged |
 | 4b — policy narrowing | [#2116](https://github.com/guardian/facia-tool/pull/2116) | Merged |
 | 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Merged |
-| 5 — SSM path (steps 4–6) | — | Not started; must follow #2132 being deployed to both stages |
+| 5 — SSM path (steps 4–5) | [#2137](https://github.com/guardian/facia-tool/pull/2137) | Merged and deployed to both stages |
+| 5 — SSM path (step 6) | — | **Done.** Legacy parameters deleted 2026-10-20; see 5 |
 | 6a — network parameters | [#2117](https://github.com/guardian/facia-tool/pull/2117) | Merged (needed a manual `update-stack` first — see below) |
-| 6b, 6f — account IDs | [#2134](https://github.com/guardian/facia-tool/pull/2134) | Draft. Seven parameters removed via `@guardian/aws-account-setup`; CI green |
+| 6b, 6f — account IDs | [#2134](https://github.com/guardian/facia-tool/pull/2134) | Merged. Seven parameters removed via `@guardian/aws-account-setup` |
 | 6c — `CapiPreviewRole` | — | **Closed, no change.** A documented operator knob; see 6c |
 | 6c — `DBSecurityGroupIdNewVPC` | — | Deferred to task 9 |
 | 6d, 6e — `StaticBucketName`, `AMIFaciatool` | — | No action needed; see below |
-| 6g — CloudFront certificate (part 1) | [#2133](https://github.com/guardian/facia-tool/pull/2133) | Draft. Creates the certificate; **blocked on [riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827)** |
-| 6g — CloudFront certificate (part 2) | — | Not started; must follow #2133 being deployed and `ISSUED` |
+| 6g — CloudFront certificate (part 1) | [#2133](https://github.com/guardian/facia-tool/pull/2133) | Merged and deployed; both certificates `ISSUED` ([riffraff-platform#827](https://github.com/guardian/riffraff-platform/pull/827) merged) |
+| 6g — CloudFront certificate (part 2) | [#2138](https://github.com/guardian/facia-tool/pull/2138) | Draft. Blocked on two manual steps needing write credentials — see 6g |
 | 7 — CloudFront L2 | [#2118](https://github.com/guardian/facia-tool/pull/2118) | Merged. `FaciaCloudfront` only; see revised task 7 |
-| 8 — static bucket OAC | [#2121](https://github.com/guardian/facia-tool/pull/2121) | Merged — deleted the distribution rather than adding OAC; see revised task 8 |
+| 8 — static bucket OAC | [#2121](https://github.com/guardian/facia-tool/pull/2121) | Merged — deleted the distribution rather than adding OAC; bucket **retained** with an explanatory readme. See revised task 8 |
 | 9 — absorb `facia-editions.yml` | — | Not started. Added after review; subsumes the `DBSecurityGroupIdNewVPC` half of 6c |
 
 Three findings change the plan as written; each is folded into the relevant
@@ -487,6 +492,28 @@ machine you run it on.
   [scripts/setup-ssh-tunnel.sh](../scripts/setup-ssh-tunnel.sh) and the Postgres
   troubleshooting section of [README.md](../README.md).
 
+**Steps 4–5 done — [#2137](https://github.com/guardian/facia-tool/pull/2137)**,
+merged and deployed to both stages. The live templates then granted only the
+convention path, and `origin/main` had no reference to the legacy one left.
+
+**Step 6 done.** Both `/facia-tool/cms-fronts/<stage>/db/password` parameters
+were deleted on 2026-10-20, and the CODE deploy afterwards came up healthy. The
+preconditions were checked first, and the checks are worth repeating for any
+similar deletion:
+
+- **CloudTrail showed a clean cutover.** The `ResourceName` lookup attribute
+  does **not** work for SSM parameters — it returns nothing even for a parameter
+  that is demonstrably being read — so the events have to be tallied by
+  `requestParameters.name` instead. Doing that over the retention window gave
+  205 CODE / 264 PROD reads of the legacy path, the last on 2026-10-15, against
+  reads of the convention path starting the same morning and continuing to the
+  day of deletion. No un-rebased branch had deployed in between.
+- **The convention-path copy was a complete copy**, confirmed by comparing
+  `--with-decryption` output through `sha256sum` without printing either value.
+  No separate backup was needed.
+- **`db/password` was the only parameter under the `/facia-tool/` prefix**, so
+  the wildcard grant #2137 removed had nothing else behind it.
+
 ---
 
 ## Task 6 — move invisible configuration out of CloudFormation parameters
@@ -883,12 +910,9 @@ does:
   someone with Riff-Raff admin has to grant it deploy permissions before the
   first run.
 - The existing `CloudFrontCertificateArn` template parameter stays, but becomes
-  `GuStringParameter(this, 'CloudFrontCertificateArn', { fromSSM: true, default:
-  '<ssm path>' })` — same logical ID, now `AWS::SSM::Parameter::Value<String>`.
-  presence-indicator's path is `/INFRA/<domainName>/cloudFrontCertificateArn`;
-  the convention path is used here instead, so the parameter is
-  `/<stage>/cms-fronts/facia-tool/cloudfront/certificate-arn` — matching the
-  commands in the `FaciaToolCertificate` doc comment.
+  an SSM lookup — same logical ID, now `AWS::SSM::Parameter::Value<String>`.
+  presence-indicator's path is `/INFRA/<domainName>/cloudFrontCertificateArn`,
+  and that is what was used; see the part-two note below for why.
 - Someone with write credentials sets that eu-west-1 SSM parameter to the new
   ARN once, per stage. **This is the only manual link** — the two stacks are
   otherwise both CI-built and Riff-Raff-deployed.
@@ -952,8 +976,36 @@ facia-tool change. Leave the 2018 certificate in place (`GuCertificate` applies
 > time, so that prop is only there to keep `cdk diff` pointed at the right stack.
 > The SSM hand-off commands are in the doc comment on `FaciaToolCertificate`.
 >
-> **Part two is not started**: create the SSM parameters, then convert
-> `CloudFrontCertificateArn` to `fromSSM` and repoint the distribution.
+> **Part two — [#2138](https://github.com/guardian/facia-tool/pull/2138)**,
+> draft. Both stacks are deployed and both certificates are `ISSUED`
+> (`fronts.code.dev-gutools.co.uk`, `fronts.gutools.co.uk`). The code change
+> converting `CloudFrontCertificateArn` to an SSM lookup is done; the deploy is
+> gated on the two manual steps below. Three corrections to the sketch above:
+>
+> - **There is no distribution to repoint.** `cloudFront()` already passes the
+>   parameter's value to `Certificate.fromCertificateArn`, so changing the
+>   parameter's *type and default* is the whole change. `cdk diff` against PROD
+>   reports exactly one difference and no resource changes at all.
+> - **`GuStringParameter(…, { fromSSM: true })` was not used.** The parameter
+>   belongs to the existing `templateParameters()` list, which builds raw
+>   `CfnParameter`s so it can pin logical IDs; it is typed
+>   `AWS::SSM::Parameter::Value<String>` directly, as `CapiEndpointSsmKeyNewVPC`
+>   already is. Same result, one mechanism in the file rather than two.
+> - **The SSM path follows the cross-repo convention, not the GuCDK one.** The
+>   plan above proposed `/<stage>/cms-fronts/facia-tool/cloudfront/certificate-arn`;
+>   it is instead `` `/INFRA/${props.domainName}/cloudFrontCertificateArn` ``.
+>   [presence-indicator](https://github.com/guardian/presence-indicator),
+>   [sftp-user-manager](https://github.com/guardian/sftp-user-manager) and
+>   [gudocs2](https://github.com/guardian/gudocs2) all use exactly that path,
+>   with the same parameter description, for exactly this problem — handing a
+>   us-east-1 certificate ARN to a stack in another region. Keying by domain
+>   rather than by stage also suits the value better: it describes a certificate
+>   for a domain, not configuration for an app-stage. Nothing *reads* the path
+>   automatically; it is a convention, not a library contract.
+>
+> **Still to do, both needing write credentials:** create the two SSM parameters,
+> then one manual `update-stack` per stage (the type change hits the Riff-Raff
+> `UseExistingValue` constraint). Only then can Riff-Raff deploy it.
 
 **Verify (all waves).** For each, the only acceptable `cdk diff` is one where
 every *resolved* value is identical and only the mechanism changed. Deploy CODE,
@@ -1097,8 +1149,31 @@ distribution and a DNS record is irreversible enough to want a second opinion,
 even when the evidence says it is dead.
 
 > **Done — [#2121](https://github.com/guardian/facia-tool/pull/2121)**, merged
-> after that second opinion was obtained. Step 3 (the bucket and its contents) is
-> still outstanding and deliberately separate.
+> after that second opinion was obtained.
+>
+> **Step 3 is also done, and the answer is "keep it".** It is policy not to
+> delete an S3 bucket that has been used in production, so
+> `cms-fronts-static-assets` is **retained**. Instead, a readme was uploaded to
+> the bucket recording what it was for and why it fell out of use, so the next
+> person to find it does not have to repeat this investigation.
+>
+> The bucket served **two** applications, and both stopped within a month of
+> each other, deliberately —
+> [facia-tool#1510](https://github.com/guardian/facia-tool/pull/1510) (merged
+> 2023-07-03, `<STAGE>/static-facia-tool/`) and
+> [story-packages#179](https://github.com/guardian/story-packages/pull/179)
+> (merged 2023-08-07, `<STAGE>/static-story-packages/`), the latter citing the
+> former and giving "reduce the number of public buckets" as a reason. #1510
+> removed the `static-facia-tool` `aws-s3` deployment from
+> [riff-raff.yaml](../riff-raff.yaml); the last objects are PROD 2023-06-29 and
+> CODE 2023-06-30, i.e. the last routine deploy before it merged.
+>
+> **That also explains the 403s**, which the plan above could only guess at. The
+> upload set `publicReadAcl: true`, so objects were readable anonymously through
+> **object ACLs** — exactly what `StaticCloudfront`'s empty
+> `originAccessIdentity` relied on, and exactly what the bucket's later public
+> access block disables. story-packages never had a distribution at all; it was
+> fetched straight from the bucket's public S3 URL.
 
 **Risk.** Low to do, but only after someone confirms the service really is
 unused.
