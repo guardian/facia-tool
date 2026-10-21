@@ -195,7 +195,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 				//It seems that some null values got into the `chefSearchIds` list
 				return chefSearchIds
 					.filter((chefId) => !!chefId)
-					.map((chefId) => <ChefFeedItem key={chefId} id={chefId} />);
+					.map((chefId, idx) => <ChefFeedItem key={idx} id={chefId} />);
 		}
 	};
 
