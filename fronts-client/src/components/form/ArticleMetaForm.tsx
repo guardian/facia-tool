@@ -90,6 +90,7 @@ import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
+import { selectShouldUseCODELinks } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
@@ -97,6 +98,12 @@ import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
 import { HeadlineInput } from 'components/inputs/HeadlineInput';
 import { clipboardId } from 'constants/fronts';
+import {
+	extractFirstSlideshowImage,
+	extractMultimediaSlideshowAtomId,
+	extractVideoImage,
+} from '../../util/extractAtom';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -134,6 +141,29 @@ const SlideshowRowContainer = styled(RowContainer)`
 	margin-top: 4px;
 	margin-left: ${(props: { size?: string }) =>
 		props.size !== 'wide' ? 0 : '10px'};
+`;
+
+const MultimediaSlideshowContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 8px;
+`;
+
+const MultimediaSlideshowPreview = styled.div`
+	margin-top: 6px;
+	font-size: 12px;
+	color: ${theme.colors.greyMedium};
+`;
+
+const MultimediaSlideshowPreviewImage = styled.img`
+	display: block;
+	max-width: 100%;
+	height: auto;
+`;
+
+const MultimediaSlideshowLink = styled.a`
+	font-size: 12px;
 `;
 
 const slideshowGutter = 5;
@@ -439,10 +469,16 @@ interface FormComponentState {
 class FormComponent extends React.Component<Props, FormComponentState> {
 	private isFirstLoad = true;
 	private debouncedFetchAndSetReplacementVideoAtom: () => void;
+	private debouncedFetchAndSetMultimediaSlideshowAtom: () => void;
 	constructor(props: Props) {
 		super(props);
 		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
 			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
+		}, 500);
+		this.debouncedFetchAndSetMultimediaSlideshowAtom = debounce(async () => {
+			await this.fetchAndSetMultimediaSlideshowAtom(
+				this.props.multimediaSlideshowAtomId,
+			);
 		}, 500);
 	}
 
@@ -450,11 +486,20 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		if (this.isFirstLoad) {
 			this.isFirstLoad = false;
 			await this.handleFirstLoad();
+			await this.handleMultimediaSlideshowFirstLoad();
 			return;
 		}
 
 		if (this.props.videoReplace && prevProps.atomId !== this.props.atomId) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
+		}
+
+		if (
+			this.props.multimediaSlideshowReplace &&
+			prevProps.multimediaSlideshowAtomId !==
+				this.props.multimediaSlideshowAtomId
+		) {
+			this.debouncedFetchAndSetMultimediaSlideshowAtom();
 		}
 	}
 
@@ -519,6 +564,95 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		} else {
 			return data?.response;
 		}
+	};
+
+	private handleMultimediaSlideshowFirstLoad = async () => {
+		if (!this.props.multimediaSlideshowReplace) {
+			return;
+		}
+		if (!this.props.multimediaSlideshowAtomId) {
+			// Cards saved before the id was stored only have the URL; setting the id triggers the fetch
+			const atomIdFromUrl = extractMultimediaSlideshowAtomId(
+				this.props.multimediaSlideshowUrl,
+			);
+			if (atomIdFromUrl) {
+				this.props.change('multimediaSlideshowAtomId', atomIdFromUrl);
+			}
+			return;
+		}
+		const atomResponse = await this.getMultimediaSlideshowAtom(
+			this.props.multimediaSlideshowAtomId,
+		);
+
+		// Redux form prefers empty strings to undefined values
+		const atom = isAtom(atomResponse) ? atomResponse : '';
+
+		if (this.props.pristine) {
+			// Reinitialise so the hydrated atom doesn't make a pristine form appear unsaved.
+			this.props.initialize({
+				...this.props.initialValues,
+				multimediaSlideshowAtom: atom,
+			});
+		} else {
+			this.props.change('multimediaSlideshowAtom', atom);
+		}
+	};
+
+	private fetchAndSetMultimediaSlideshowAtom = async (
+		atomId: string | undefined,
+	) => {
+		const atomResponse = atomId
+			? await this.getMultimediaSlideshowAtom(atomId)
+			: undefined;
+		const atom = isAtom(atomResponse) ? atomResponse : undefined;
+		const thumbnail = atom
+			? await this.getMultimediaSlideshowThumbnail(atom)
+			: undefined;
+
+		// Redux form prefers empty strings to undefined values
+		this.props.change('multimediaSlideshowAtom', atom ?? '');
+		this.props.change('multimediaSlideshowThumbnail', thumbnail ?? '');
+		this.props.change(
+			'multimediaSlideshowAspectRatio',
+			atom?.data.multimediaSlideshow?.aspectRatio ?? '',
+		);
+	};
+
+	private getMultimediaSlideshowThumbnail = async (
+		atom: Atom,
+	): Promise<string | undefined> => {
+		const firstSlideVideoId =
+			atom.data.multimediaSlideshow?.slides?.[0]?.content?.mediaAtom
+				?.mediaAtomId;
+		if (firstSlideVideoId) {
+			const videoAtom = await this.getAtom(
+				`${url.video.capiMediaAtomPath}${firstSlideVideoId}`,
+			);
+			const videoImage = videoAtom && extractVideoImage(videoAtom);
+			if (videoImage) {
+				return videoImage;
+			}
+		}
+		return extractFirstSlideshowImage(atom);
+	};
+
+	private getAtomWorkshopUrl = (atom: Atom): string => {
+		const base = this.props.shouldUseCODELinks
+			? url.atomWorkshopUrlCODE
+			: url.atomWorkshopUrlPROD;
+		const atomUuid = atom.id.split('/').pop() ?? atom.id;
+		return `${base}/atoms/multimediaslideshow/${atomUuid}/edit`;
+	};
+
+	private getMultimediaSlideshowAtom = async (
+		atomId: string,
+	): Promise<Atom | undefined> => {
+		return this.fetchAtom(atomId)
+			.then((response) => response.multimediaslideshow)
+			.catch((error) => {
+				console.error(error);
+				return undefined;
+			});
 	};
 
 	private getAtom = async (atomId: string): Promise<Atom | undefined> => {
@@ -594,8 +728,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			collectionType,
 			form,
 			snapType,
+			multimediaSlideshowEnabled,
+			multimediaSlideshowReplace,
+			multimediaSlideshowAtom,
+			multimediaSlideshowThumbnail,
 		} = this.props;
-
 		const isEditionsMode = editMode === 'editions';
 
 		const imageDefined = (img: ImageData | undefined) => img && img.src;
@@ -920,7 +1057,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									{primaryImage &&
 										!!primaryImage.src &&
 										!this.props.showMainVideo &&
-										!this.props.imageSlideshowReplace && (
+										!this.props.imageSlideshowReplace &&
+										!this.props.multimediaSlideshowReplace && (
 											<InputGroup>
 												<ConditionalField
 													permittedFields={editableFields}
@@ -1038,6 +1176,29 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												}
 											/>
 										</SelectMediaInput>
+										{multimediaSlideshowEnabled && (
+											<SelectMediaInput>
+												<Field
+													component={InputRadio}
+													disabled={
+														editableFields.indexOf(
+															'multimediaSlideshowReplace',
+														) === -1
+													}
+													icon={<SlideshowIcon />}
+													usesBlockStyling={true}
+													name="media-select"
+													type="radio"
+													label="Multimedia slideshow"
+													id={getInputId(cardId, 'select-multimedia-slideshow')}
+													value="select-multimedia-slideshow"
+													onClick={() =>
+														this.changeMediaField('multimediaSlideshowReplace')
+													}
+													checked={!!this.props.multimediaSlideshowReplace}
+												/>
+											</SelectMediaInput>
+										)}
 									</Col>
 								)}
 							</Row>
@@ -1056,6 +1217,46 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
 									/>
 								</SlideshowRowContainer>
+							)}
+							{multimediaSlideshowReplace && (
+								<MultimediaSlideshowContainer>
+									<InputLabel htmlFor="multimediaSlideshowUrl">
+										Slideshow atom embed URL
+									</InputLabel>
+									<Field
+										name="multimediaSlideshowUrl"
+										component={InputText}
+										placeholder="Paste the slideshow atom embed URL"
+										data-testid="multimedia-slideshow-url"
+										onChange={(_event: unknown, newValue?: string) =>
+											change(
+												'multimediaSlideshowAtomId',
+												extractMultimediaSlideshowAtomId(newValue),
+											)
+										}
+									/>
+									{isAtom(multimediaSlideshowAtom) ? (
+										<MultimediaSlideshowPreview>
+											{multimediaSlideshowThumbnail ? (
+												<MultimediaSlideshowPreviewImage
+													src={multimediaSlideshowThumbnail}
+													alt="Thumbnail of the multimedia slideshow"
+												/>
+											) : (
+												<span>
+													Slideshow found, but it has no preview image.
+												</span>
+											)}
+											<MultimediaSlideshowLink
+												href={this.getAtomWorkshopUrl(multimediaSlideshowAtom)}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												Edit this slideshow in Atom Workshop
+											</MultimediaSlideshowLink>
+										</MultimediaSlideshowPreview>
+									) : null}
+								</MultimediaSlideshowContainer>
 							)}
 						</ImageRowContainer>
 					</ImageOptionsInputGroup>
@@ -1118,6 +1319,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					(videoReplace && !isAtom(replacementVideoAtom)) ? (
 						<InvalidWarning warning="You need to provide a valid video" />
 					) : null}
+					{multimediaSlideshowReplace && !isAtom(multimediaSlideshowAtom) ? (
+						<InvalidWarning warning="You need to provide a valid slideshow atom embed URL" />
+					) : null}
 				</div>
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
@@ -1133,7 +1337,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							!valid ||
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !isAtom(replacementVideoAtom))
+							(videoReplace && !isAtom(replacementVideoAtom)) ||
+							(multimediaSlideshowReplace && !isAtom(multimediaSlideshowAtom))
 						}
 						size="l"
 						data-testid="edit-form-save-button"
@@ -1195,6 +1400,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			'showMainVideo',
 			'coverCardImageReplace',
 			'videoReplace',
+			'multimediaSlideshowReplace',
 		];
 
 		allMediaFields.forEach((field) => {
@@ -1325,6 +1531,13 @@ interface ContainerProps {
 	atomId: string;
 	replacementVideoAtom: Atom | undefined | string;
 	videoBaseUrl: string | null;
+	multimediaSlideshowEnabled: boolean;
+	multimediaSlideshowReplace: boolean;
+	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtomId: string;
+	multimediaSlideshowAtom: Atom | undefined | string;
+	multimediaSlideshowThumbnail: string;
+	shouldUseCODELinks: boolean;
 }
 
 interface InterfaceProps {
@@ -1421,6 +1634,25 @@ const createMapStateToProps = () => {
 			atomId: valueSelector(state, 'atomId'),
 			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
 			videoBaseUrl: selectVideoBaseUrl(state),
+			multimediaSlideshowEnabled: selectFeatureValue(
+				state,
+				'multimedia-slideshow',
+			),
+			multimediaSlideshowReplace: valueSelector(
+				state,
+				'multimediaSlideshowReplace',
+			),
+			multimediaSlideshowUrl: valueSelector(state, 'multimediaSlideshowUrl'),
+			multimediaSlideshowAtomId: valueSelector(
+				state,
+				'multimediaSlideshowAtomId',
+			),
+			multimediaSlideshowAtom: valueSelector(state, 'multimediaSlideshowAtom'),
+			multimediaSlideshowThumbnail: valueSelector(
+				state,
+				'multimediaSlideshowThumbnail',
+			),
+			shouldUseCODELinks: selectShouldUseCODELinks(state),
 		};
 	};
 };

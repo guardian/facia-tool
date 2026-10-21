@@ -55,6 +55,18 @@ describe('CAPIUtils', () => {
 				'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg',
 			);
 		});
+		it('should get a thumbnail from cardMeta if multimediaSlideshowReplace is true', () => {
+			expect(
+				getThumbnail(
+					{
+						...cardMeta,
+						multimediaSlideshowReplace: true,
+						multimediaSlideshowThumbnail: 'slideshowThumbnail.jpg',
+					},
+					capiArticleWithElementsThumbnail,
+				),
+			).toEqual('slideshowThumbnail.jpg');
+		});
 		it('should get a thumbnail from cardMeta slideshows if imageSlideshowReplace is true', () => {
 			expect(
 				getThumbnail(

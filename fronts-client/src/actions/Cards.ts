@@ -355,7 +355,7 @@ export const mayResetVideoReplace = ({
 		//  we can infer something from the posterImage (if available)
 		//  Ideally we would add some data to the atom to make this easier
 		const dimensions = videoAtom?.atomType
-			? videoAtom.data.media.posterImage?.master?.dimensions
+			? videoAtom.data.media?.posterImage?.master?.dimensions
 			: undefined;
 		const replacementVideoAspectRatio: number = dimensions
 			? dimensions.width / dimensions.height
@@ -381,6 +381,51 @@ export const mayResetVideoReplace = ({
 		}
 		return undefined;
 	}
+};
+
+/**
+ * If you move a card with a portrait multimedia slideshow to a landscape slot (or vice versa),
+ * we revert to the trail image and disable the multimedia slideshow
+ * */
+export const mayResetMultimediaSlideshowReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.multimediaSlideshowReplace
+	) {
+		// aspectRatio comes from the slideshow atom, e.g. "5:4" or "4:5"
+		const [width, height] = (card.meta.multimediaSlideshowAspectRatio ?? '')
+			.split(':')
+			.map(Number);
+		if (!width || !height) {
+			return undefined;
+		}
+		const slideshowIsPortrait = width / height < 1;
+
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionIsPortrait: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
+
+		if (slideshowIsPortrait !== toCollectionIsPortrait) {
+			return updateCard(
+				card.uuid,
+				{
+					multimediaSlideshowReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+	return undefined;
 };
 
 /**
@@ -597,6 +642,7 @@ const moveCard = (
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
 					mayResetVideoReplace(actionParams),
+					mayResetMultimediaSlideshowReplace(actionParams),
 					mayEndAbTest(actionParams),
 				];
 
