@@ -466,6 +466,7 @@ describe('Shared selectors', () => {
 				cutoutThumbnail: undefined,
 				firstPublicationDate: undefined,
 				frontPublicationDate: undefined,
+				hasCapiHeadlineChanged: false,
 			});
 		});
 	});

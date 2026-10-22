@@ -71,14 +71,14 @@ type ABStatusMessage =
 
 type ABTestTheme = 'active' | 'draft' | 'error';
 
-type ABTestPalette = {
+type Palette = {
 	background: string;
 	text: string;
 	icon: string;
 };
 type ABTestStatus = {
 	message: ABStatusMessage;
-	palette: ABTestPalette;
+	palette: Palette;
 };
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -152,14 +152,18 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
+const getABTestThemeColors = (abTestTheme: ABTestTheme): Palette =>
 	theme.abTestBadge[abTestTheme];
 
-const getABTestBadgeStyles = (palette: ABTestPalette) => css`
+const BadgeWrapper = styled.div`
 	position: absolute;
 	bottom: 1px;
 	right: 1px;
 	gap: 4px;
+	display: flex;
+	flex-direction: column;
+`;
+const getBadgeStyles = (palette: Palette) => css`
 	flex-shrink: 0;
 	white-space: nowrap;
 	background: ${palette.background};
@@ -177,9 +181,7 @@ const ThumbnailArea = styled(ImageAndGraphWrapper)<{
 
 interface ArticleBodyProps {
 	newspaperPageNumber?: number;
-
 	promotionMetric?: number;
-
 	newspaperEditionDate?: string;
 	firstPublicationDate?: string;
 	frontPublicationDate?: number;
@@ -237,6 +239,8 @@ interface ArticleBodyProps {
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
+	hasCapiHeadlineChanged: boolean;
+	isHeadlineUpdateIndicatorEnabled: boolean;
 }
 
 const determineABTestStatus = (
@@ -335,6 +339,8 @@ const articleBodyDefault = React.memo(
 		abTestEnabled,
 		hasLiveAbTest,
 		headlineTestError,
+		hasCapiHeadlineChanged,
+		isHeadlineUpdateIndicatorEnabled,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -536,7 +542,13 @@ const articleBodyDefault = React.memo(
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
 				</CardContent>
-				<ThumbnailArea size={size} $reserveBadgeSpace={shouldShowAbTestStatus}>
+				<ThumbnailArea
+					size={size}
+					$reserveBadgeSpace={
+						shouldShowAbTestStatus ||
+						(isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged)
+					}
+				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
 							<ArticleGraph
@@ -617,21 +629,34 @@ const articleBodyDefault = React.memo(
 							</DraggableArticleImageContainer>
 						))}
 				</ThumbnailArea>
-				{shouldShowAbTestStatus && (
-					<Badge
-						size="sm"
-						weight="strong"
-						cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
-						data-testid="ab-test-status"
-					>
-						<ConicalFlaskCircleIcon
-							size={'s'}
-							fill={abTestStatus.palette.icon}
-						/>
 
-						{abTestStatus.message}
-					</Badge>
-				)}
+				<BadgeWrapper>
+					{isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && (
+						<Badge
+							size="sm"
+							weight="strong"
+							cssOverrides={getBadgeStyles(theme.headlineUpdateBadge)}
+						>
+							Headline has been updated
+						</Badge>
+					)}
+					{shouldShowAbTestStatus && (
+						<Badge
+							size="sm"
+							weight="strong"
+							cssOverrides={getBadgeStyles(abTestStatus.palette)}
+							data-testid="ab-test-status"
+						>
+							<ConicalFlaskCircleIcon
+								size={'s'}
+								fill={abTestStatus.palette.icon}
+							/>
+
+							{abTestStatus.message}
+						</Badge>
+					)}
+				</BadgeWrapper>
+
 				<HoverActionsAreaOverlay disabled={isUneditable}>
 					<HoverActionsButtonWrapper
 						size={size}

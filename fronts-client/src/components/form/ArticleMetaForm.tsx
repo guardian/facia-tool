@@ -49,6 +49,7 @@ import {
 	getCardTestFromFormValues,
 } from 'util/form';
 import { CapiFields } from 'util/form';
+import { shouldRebaselineCapiHeadline } from 'util/headlineUpdate';
 import { Dispatch } from 'types/Store';
 import {
 	landScapeCardImageCriteria,
@@ -1251,16 +1252,33 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 		// mergeProps, or thread state through the component, to achieve the same
 		// result -- this seemed to be the most concise way.
 		dispatch((_, getState) => {
+			const state = getState();
 			const meta: CardMeta = getCardMetaFromFormValues(
-				getState(),
+				state,
 				props.cardId,
 				values,
 			);
-			const maybeTest = getCardTestFromFormValues(
-				getState(),
+			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
+
+			const preSaveCard = selectCard(state, props.cardId);
+			const currentCapiHeadline = selectExternalArticleFromCard(
+				state,
 				props.cardId,
-				values,
-			);
+			)?.fields.headline;
+
+			// When the card is in sync with CAPI (at creation, while the custom headline is mirroring CAPI,
+			// or when adopting an updated headline) we re-baseline to the
+			// current CAPI headline so the "headline changed" indicator - which is
+			// derived from this baseline - stays correct.
+			if (
+				shouldRebaselineCapiHeadline(
+					preSaveCard?.meta.headline,
+					meta.headline,
+					currentCapiHeadline,
+				)
+			) {
+				meta.baselineCapiHeadline = currentCapiHeadline;
+			}
 
 			props.onSave(meta, maybeTest);
 		});

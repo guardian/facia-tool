@@ -351,7 +351,7 @@ const ManageFeastPackages: React.FC = () => {
 
 			<ContentWrapper>
 				<LeftPanel>
-					<RecipeSearchContainer />
+					<RecipeSearchContainer showClipboard={false} />
 				</LeftPanel>
 
 				<RightPanel>
@@ -392,6 +392,8 @@ const ManageFeastPackages: React.FC = () => {
 								void handlePublish();
 							}}
 							onClose={handleClosePackage}
+							isPublished={true}
+							// {editor.value.publicationStatus === 'Published'} Need to check how to align with server response
 						/>
 					) : loading ? (
 						<p role="status">Loading packages...</p>
