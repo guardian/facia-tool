@@ -46,9 +46,11 @@ export const SubnavEditRoute = ({
 	const hasLive = config.live.some((s) => s.id === id);
 	const hasDraft = config.draft.some((s) => s.id === id);
 
-	// Re-seed the form whenever the server version changes (after a save,
-	// discard, or unpublish) so its state stays in sync with the config.
-	const formKey = `${id}:${subnav.lastUpdated}:${hasLive}:${hasDraft}`;
+	// Re-seed the form when the live/draft state changes (after a discard or
+	// unpublish) so its state stays in sync with the config. We deliberately
+	// exclude lastUpdated so routine autosaves don't remount the form and
+	// steal focus while the user is still typing.
+	const formKey = `${id}:${hasLive}:${hasDraft}`;
 
 	return (
 		<SubnavForm
@@ -66,22 +68,8 @@ export const SubnavEditRoute = ({
 					'Discard draft changes and revert to the live version?',
 				)
 			}
-			onUnpublish={() =>
-				runAction(
-					id,
-					unpublishSubnav,
-					hasDraft
-						? 'Take this subnav down? You have draft changes — taking it down will undo them.'
-						: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
-				)
-			}
-			onDelete={() =>
-				runAction(
-					id,
-					deleteSubnav,
-					'Delete this subnav entirely? This removes both the live and draft versions.',
-				)
-			}
+			onUnpublish={() => runAction(id, unpublishSubnav)}
+			onDelete={() => runAction(id, deleteSubnav)}
 			saving={saving}
 		/>
 	);
