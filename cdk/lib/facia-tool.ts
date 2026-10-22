@@ -75,6 +75,8 @@ export interface FaciaToolProps extends GuStackProps {
 	authDomain: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
+	/** The database's security group, from the `FaciaEditions` stack. */
+	databaseSecurityGroupId: string;
 	instanceType: string;
 	minimumInstances: number;
 	maximumInstances: number;
@@ -84,7 +86,7 @@ export class FaciaTool extends GuStack {
 	constructor(scope: App, id: string, props: FaciaToolProps) {
 		super(scope, id, { description: 'Facia Tool Service', ...props });
 
-		const parameters = this.templateParameters();
+		const parameters = this.templateParameters(props.domainName);
 		const parameter = (name: string) => parameters(name).valueAsString;
 
 		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
@@ -111,7 +113,7 @@ export class FaciaTool extends GuStack {
 				unhealthyInstancesAlarm: true,
 			},
 			applicationLogging: { enabled: true },
-			instanceMetricGranularity: '5Minute',
+			instanceMetricGranularity: '1Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
 			userData: this.buildUserData({
 				frontendRoleToAssume: frontendRoleArn,
@@ -153,7 +155,7 @@ export class FaciaTool extends GuStack {
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
 			this,
 			'DatabaseSecurityGroup',
-			parameter('DBSecurityGroupIdNewVPC'),
+			props.databaseSecurityGroupId,
 			{ mutable: true },
 		);
 
@@ -204,7 +206,7 @@ export class FaciaTool extends GuStack {
 	 * Parameters inherited from the YAML template this stack replaced. Riff-Raff carries the
 	 * previous value over for the ones without a default, so they keep the values they already have.
 	 */
-	private templateParameters(): (name: string) => CfnParameter {
+	private templateParameters(domainName: string): (name: string) => CfnParameter {
 		const definitions: Array<
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
@@ -216,9 +218,10 @@ export class FaciaTool extends GuStack {
 			},
 			{
 				name: 'CloudFrontCertificateArn',
-				type: 'String',
+				type: 'AWS::SSM::Parameter::Value<String>',
 				description:
-					'x509 certificate ARN for CloudFront - must be in us-east-1',
+					'The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.',
+				default: `/INFRA/${domainName}/cloudFrontCertificateArn`,
 			},
 			{
 				name: 'CapiPreviewRole',
@@ -230,7 +233,6 @@ export class FaciaTool extends GuStack {
 				type: 'String',
 				default: 'fronts-user-data-table',
 			},
-			{ name: 'DBSecurityGroupIdNewVPC', type: 'String' },
 			{
 				name: 'CapiEndpointSsmKeyNewVPC',
 				type: 'AWS::SSM::Parameter::Value<String>',
@@ -481,6 +483,19 @@ export class FaciaTool extends GuStack {
 
 				// Developer-only below here: the instance gets these from GuInstanceRole, reads
 				// different objects, or does not need them at all.
+
+				// The instance gets this from `GuParameterStoreReadPolicy`; this policy is not
+				// included in sharedAccess, so it needs its own grant.
+				allow(
+					['ssm:GetParameter'],
+					[
+						this.formatArn({
+							service: 'ssm',
+							resource: 'parameter',
+							resourceName: `${this.stage}/${this.stack}/${app}/*`,
+						}),
+					],
+				),
 				allow(
 					['s3:GetObject'],
 					[
@@ -569,17 +584,9 @@ EOF`,
 		switchboardBucket,
 	}: SharedAccessTargets): Record<string, PolicyStatement[]> {
 		return {
+			// `ssm:GetParameter` is deliberately absent: `GuParameterStoreReadPolicy` already
+			// grants the instance the convention path. Decryption is not covered by it.
 			ParameterStorePolicy: [
-				allow(
-					['ssm:GetParameter'],
-					[
-						this.formatArn({
-							service: 'ssm',
-							resource: 'parameter',
-							resourceName: `${app}/${this.stack}/${this.stage}/*`,
-						}),
-					],
-				),
 				new PolicyStatement({
 					effect: Effect.ALLOW,
 					actions: ['kms:Decrypt'],
