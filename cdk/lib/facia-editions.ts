@@ -34,6 +34,9 @@ export interface FaciaEditionsProps extends GuStackProps {
 }
 
 export class FaciaEditions extends GuStack {
+	/** `Fn::ImportValue` for the database's security group, for the service stack to reach it. */
+	readonly databaseSecurityGroupId: string;
+
 	constructor(scope: App, id: string, props: FaciaEditionsProps) {
 		super(scope, id, {
 			description: 'Facia Tool Editions Resources',
@@ -48,12 +51,18 @@ export class FaciaEditions extends GuStack {
 			type: SubnetType.PRIVATE,
 		});
 
-		this.database({
+		const databaseSecurityGroup = this.database({
 			vpcId: vpc.vpcId,
 			subnetIds: privateSubnets.map(({ subnetId }) => subnetId),
 			instanceClass: props.databaseInstanceClass,
 			multiAz: props.multiAz,
 		});
+
+		// Named rather than left to CDK, because an export name cannot change while it is imported.
+		this.databaseSecurityGroupId = this.exportValue(
+			databaseSecurityGroup.attrGroupId,
+			{ name: `facia-db-${this.stage}-DatabaseSecurityGroupId` },
+		);
 
 		const { previewBucket, publishedBucket } = this.buckets(lowerCaseStage);
 
@@ -72,7 +81,7 @@ export class FaciaEditions extends GuStack {
 		subnetIds: string[];
 		instanceClass: string;
 		multiAz: boolean;
-	}): void {
+	}): CfnSecurityGroup {
 		const retain = (
 			resource: CfnSecurityGroup | CfnDBSubnetGroup | CfnDBInstance,
 		) => {
@@ -113,6 +122,8 @@ export class FaciaEditions extends GuStack {
 		retain(instance);
 		// App, Stack and Stage come from GuStack; this one does not.
 		Tags.of(instance).add('devx-backup-enabled', 'true');
+
+		return securityGroup;
 	}
 
 	private buckets(lowerCaseStage: string): {
