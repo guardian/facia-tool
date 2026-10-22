@@ -40,12 +40,20 @@ object HeadlineUpdateIndicator
       enabled = false
     )
 
+object MiniNav
+    extends FeatureSwitch(
+      key = "mini-nav",
+      title = "Enable custom mini nav controls on Flex Gen cards",
+      enabled = false
+    )
+
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
     EventGraphics,
-    HeadlineUpdateIndicator
+    HeadlineUpdateIndicator,
+    MiniNav
   )
 
   def updateFeatureSwitchesForUser(
