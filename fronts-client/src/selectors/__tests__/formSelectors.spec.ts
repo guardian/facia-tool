@@ -39,7 +39,7 @@ describe('Form utils', () => {
 				),
 			).toEqual([...defaultFields, 'isBoosted']);
 		});
-		it('should add boostLevel, isImmersive, mini nav fields and remove large headline for flexible collection configs', () => {
+		it('should add boostLevel, isImmersive and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 				'flexible/general';
@@ -51,13 +51,9 @@ describe('Form utils', () => {
 					false,
 				),
 			).toEqual(
-				[
-					...defaultFields,
-					'boostLevel',
-					'isImmersive',
-					'showMiniNav',
-					'miniNavUrl',
-				].filter((t) => t !== 'showLargeHeadline'),
+				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
+					(t) => t !== 'showLargeHeadline',
+				),
 			);
 		});
 		describe('mini nav fields', () => {
@@ -69,6 +65,11 @@ describe('Form utils', () => {
 				localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 					'flexible/general';
 				localState.cards[cardId].meta.boostLevel = 'default';
+				localState.featureSwitches['mini-nav'] = {
+					key: 'mini-nav',
+					title: 'Mini nav',
+					enabled: true,
+				};
 				const selectFormFields = createSelectFormFieldsForCard();
 
 				expect(selectFormFields(localState, cardId, false)).toEqual(
@@ -84,6 +85,11 @@ describe('Form utils', () => {
 					const localState = cloneDeep(state);
 					localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 						collectionType;
+					localState.featureSwitches['mini-nav'] = {
+						key: 'mini-nav',
+						title: 'Mini nav',
+						enabled: true,
+					};
 					localState.cards[cardId].meta = {
 						showMiniNav: true,
 						miniNavUrl: 'https://www.theguardian.com/custom-nav',

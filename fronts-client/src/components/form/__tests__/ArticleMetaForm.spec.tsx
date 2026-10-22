@@ -67,8 +67,30 @@ describe('ArticleMetaForm - mini nav', () => {
 		state.fronts.frontsConfig.data.collections[collectionId].type =
 			collectionType;
 		state.cards[cardId].meta = { ...state.cards[cardId].meta, ...meta };
+		state.featureSwitches['mini-nav'] = {
+			key: 'mini-nav',
+			title: 'Mini nav',
+			enabled: true,
+		};
 		return state;
 	};
+
+	it('hides mini nav controls when the feature switch is disabled without clearing saved settings', () => {
+		const savedSettings = {
+			showMiniNav: true,
+			miniNavUrl: 'https://www.theguardian.com/custom-nav',
+		};
+		const state = getMiniNavState(savedSettings);
+
+		state.featureSwitches['mini-nav'].enabled = false;
+
+		const { queryByLabelText, queryByText, store } = renderForm(state);
+
+		expect(queryByLabelText('Enable mini nav')).toBeNull();
+		expect(queryByLabelText('Custom nav URL')).toBeNull();
+		expect(queryByText(miniNavWarning)).toBeNull();
+		expect(store.getState().cards[cardId].meta).toMatchObject(savedSettings);
+	});
 
 	it('is off by default and reveals an empty text input when enabled', () => {
 		const { getByLabelText, queryByLabelText } = renderForm(getMiniNavState());
