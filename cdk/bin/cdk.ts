@@ -24,6 +24,26 @@ new FaciaToolCertificate(app, 'FaciaToolCertificate-useast-1-PROD', {
 	domainName: 'fronts.gutools.co.uk',
 });
 
+// The database and the editions fan-out, which keep the `facia-db-<stage>` stacks they have
+// always been deployed to. Declared first, because the service stack imports the database's
+// security group from here.
+const editionsCode = new FaciaEditions(app, 'FaciaEditions-euwest-1-CODE', {
+	stack: 'cms-fronts',
+	stage: 'CODE',
+	env: { region: 'eu-west-1' },
+	cloudFormationStackName: 'facia-db-CODE',
+	databaseInstanceClass: 'db.t4g.small',
+	multiAz: false,
+});
+const editionsProd = new FaciaEditions(app, 'FaciaEditions-euwest-1-PROD', {
+	stack: 'cms-fronts',
+	stage: 'PROD',
+	env: { region: 'eu-west-1' },
+	cloudFormationStackName: 'facia-db-PROD',
+	databaseInstanceClass: 'db.t4g.medium',
+	multiAz: true,
+});
+
 new FaciaTool(app, 'FaciaTool-euwest-1-CODE', {
 	stack: 'cms-fronts',
 	stage: 'CODE',
@@ -32,6 +52,7 @@ new FaciaTool(app, 'FaciaTool-euwest-1-CODE', {
 	domainName: 'fronts.code.dev-gutools.co.uk',
 	authDomain: 'code.dev-gutools.co.uk',
 	frontPressedTable: 'front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU',
+	databaseSecurityGroupId: editionsCode.databaseSecurityGroupId,
 	instanceType: 't4g.small',
 	minimumInstances: 1,
 	maximumInstances: 2,
@@ -44,26 +65,8 @@ new FaciaTool(app, 'FaciaTool-euwest-1-PROD', {
 	domainName: 'fronts.gutools.co.uk',
 	authDomain: 'gutools.co.uk',
 	frontPressedTable: 'front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W',
+	databaseSecurityGroupId: editionsProd.databaseSecurityGroupId,
 	instanceType: 't4g.medium',
 	minimumInstances: 3,
 	maximumInstances: 6,
-});
-
-// The database and the editions fan-out, which keep the `facia-db-<stage>` stacks they have
-// always been deployed to.
-new FaciaEditions(app, 'FaciaEditions-euwest-1-CODE', {
-	stack: 'cms-fronts',
-	stage: 'CODE',
-	env: { region: 'eu-west-1' },
-	cloudFormationStackName: 'facia-db-CODE',
-	databaseInstanceClass: 'db.t4g.small',
-	multiAz: false,
-});
-new FaciaEditions(app, 'FaciaEditions-euwest-1-PROD', {
-	stack: 'cms-fronts',
-	stage: 'PROD',
-	env: { region: 'eu-west-1' },
-	cloudFormationStackName: 'facia-db-PROD',
-	databaseInstanceClass: 'db.t4g.medium',
-	multiAz: true,
 });
