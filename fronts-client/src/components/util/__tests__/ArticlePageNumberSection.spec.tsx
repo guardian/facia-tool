@@ -19,7 +19,6 @@ const testCapiArticleWithPageNumber: CapiArticle = {
 			imageHide: false,
 			imageReplace: false,
 			imageSlideshowReplace: false,
-			isBoosted: false,
 			isBreaking: false,
 			showLargeHeadline: false,
 			showByline: false,

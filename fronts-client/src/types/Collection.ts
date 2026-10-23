@@ -88,8 +88,6 @@ type RegularCardMeta = {
 	imageCutoutSrcHeight?: string;
 	imageCutoutSrcOrigin?: string;
 	isBreaking?: boolean;
-	/** For dynamic collections only */
-	isBoosted?: boolean;
 	/** For flexible collections only */
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;

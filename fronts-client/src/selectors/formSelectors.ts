@@ -3,7 +3,6 @@ import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
-	isCollectionConfigDynamic,
 	isCollectionConfigFlexible,
 	isCollectionConfigFlexibleGeneral,
 } from '../util/frontsUtils';
@@ -95,7 +94,6 @@ export const createSelectFormFieldsForCard = () => {
 			let fields = defaultFields.slice();
 
 			// Flexible collections have various boost levels options.
-			// The previously existing dynamic collections only have one boost level (isBoosted)."
 			if (
 				isCollectionConfigFlexible(parentCollectionConfig) ||
 				(derivedArticle.boostLevel &&
@@ -109,9 +107,6 @@ export const createSelectFormFieldsForCard = () => {
 			}
 			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
 				fields.push('isImmersive');
-			}
-			if (isCollectionConfigDynamic(parentCollectionConfig)) {
-				fields.push('isBoosted');
 			}
 			if (derivedArticle.liveBloggingNow === 'true') {
 				fields.push('showLivePlayable');
