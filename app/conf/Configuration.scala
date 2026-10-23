@@ -72,12 +72,6 @@ class ApplicationConfiguration(
       )
     )
 
-  def getMandatoryStringPropertiesSplitByComma(
-      propertyName: String
-  ): List[String] = {
-    getMandatoryString(propertyName).split(",").toList.filter(_.nonEmpty)
-  }
-
   object environment {
     val stage = stageFromProperties.toLowerCase
 
@@ -291,16 +285,6 @@ class ApplicationConfiguration(
     lazy val host = getMandatoryString("pandomain.host")
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
-    lazy val roleArn = getMandatoryString("pandomain.roleArn")
-    lazy val bucketName = getMandatoryString("pandomain.bucketName")
-    lazy val settingsFileKey = s"$domain.settings"
-    lazy val userGroups = getMandatoryStringPropertiesSplitByComma(
-      "pandomain.user.groups"
-    )
-  }
-
-  object permission {
-    lazy val cache = getMandatoryString("permissions.cache")
   }
 
   object sentry {
