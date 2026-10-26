@@ -11,12 +11,10 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { RecipeSearchContainer } from './RecipeSearchContainer';
 import { EventGraphicsSearchContainer } from './EventGraphicsSearchContainer';
-import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 
 interface Props {
 	isClipboardOpen: boolean;
 	isFeast: boolean;
-	showEventGraphics: boolean;
 }
 
 export enum FeedSource {
@@ -103,22 +101,12 @@ const FrontsFeed = () => {
 	);
 };
 
-const FeedSection = ({
-	isClipboardOpen,
-	isFeast,
-	showEventGraphics,
-}: Props) => (
+const FeedSection = ({ isClipboardOpen, isFeast }: Props) => (
 	<FeedSectionContainer>
 		<FeedSectionHeader />
 		<FeedSectionContent>
 			<FeedWrapper isClipboardOpen={isClipboardOpen}>
-				{isFeast ? (
-					<RecipeSearchContainer />
-				) : showEventGraphics ? (
-					<FrontsFeed />
-				) : (
-					<CapiSearchContainer />
-				)}
+				{isFeast ? <RecipeSearchContainer /> : <FrontsFeed />}
 			</FeedWrapper>
 			<Clipboard />
 		</FeedSectionContent>
@@ -127,7 +115,6 @@ const FeedSection = ({
 
 const mapStateToProps = (state: State) => ({
 	isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
-	showEventGraphics: selectFeatureValue(state, 'event-graphics'),
 });
 
 export default connect(mapStateToProps)(FeedSection);
