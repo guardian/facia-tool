@@ -185,9 +185,6 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
       case "flexible/general" =>
         Some(Seq(FullMedia75, HalfHl3))
 
-      case "flexible/special" =>
-        Some(Seq(FullMedia75, QuarterQuarterQuarterQuarter))
-
       case "scrollable/highlights" =>
         Some(Seq(ScrollableHighlightsSlice))
 

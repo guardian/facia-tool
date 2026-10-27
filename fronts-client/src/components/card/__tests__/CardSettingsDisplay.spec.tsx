@@ -18,12 +18,6 @@ describe('getBoostLevelLabel', () => {
 		expect(getBoostLevelLabel('boost', 1, 'flexible/general')).toBeUndefined();
 	});
 
-	it('returns correct label for flexible/special group', () => {
-		expect(getBoostLevelLabel('gigaboost', 0, 'flexible/special')).toBe(
-			'Giga Boost',
-		);
-	});
-
 	it('returns undefined for invalid boost level', () => {
 		expect(
 			getBoostLevelLabel(undefined, 0, 'flexible/general'),
