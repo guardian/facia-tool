@@ -11,6 +11,7 @@ import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
 import { FormFields } from 'util/form';
 import without from 'lodash/without';
+import { selectFeatureValue } from './featureSwitchesSelectors';
 
 export const defaultFields = [
 	'headline',
@@ -75,12 +76,14 @@ export const createSelectFormFieldsForCard = () => {
 		selectIsSupporting,
 		selectEditMode,
 		selectPriority,
+		(state: State) => selectFeatureValue(state, 'mini-nav'),
 		(
 			derivedArticle,
 			parentCollectionConfig,
 			isSupporting,
 			editMode,
 			priority,
+			isMiniNavEnabled,
 		) => {
 			if (!derivedArticle) {
 				return [];
@@ -107,6 +110,9 @@ export const createSelectFormFieldsForCard = () => {
 			}
 			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
 				fields.push('isImmersive');
+				if (isMiniNavEnabled) {
+					fields.push('showMiniNav', 'miniNavUrl');
+				}
 			}
 			if (derivedArticle.liveBloggingNow === 'true') {
 				fields.push('showLivePlayable');

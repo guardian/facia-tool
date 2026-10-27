@@ -91,6 +91,8 @@ type RegularCardMeta = {
 	/** For flexible collections only */
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
+	showMiniNav?: boolean;
+	miniNavUrl?: string;
 	showLivePlayable?: boolean;
 	showMainVideo?: boolean;
 	showLargeHeadline?: boolean;

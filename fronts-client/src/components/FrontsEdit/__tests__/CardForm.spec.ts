@@ -30,6 +30,8 @@ const formValues = {
 	imageReplace: false,
 	imageSlideshowReplace: false,
 	boostLevel: 'default',
+	showMiniNav: false,
+	miniNavUrl: '',
 	isImmersive: false,
 	isBreaking: false,
 	showLivePlayable: false,
@@ -83,6 +85,21 @@ describe('CardForm transform functions', () => {
 	describe('Derive form values from a derived article', () => {
 		it('should derive values', () => {
 			expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
+		});
+		it('should restore existing mini nav settings', () => {
+			expect(
+				getInitialValuesForCardForm({
+					...derivedArticle,
+					showMiniNav: true,
+					miniNavUrl:
+						'https://fronts.fake.dev-gutools.co.uk/v2/subnavs/6d4a8d7a-1048-4a55-87f3-ee6399e36d34',
+				}),
+			).toEqual({
+				...formValues,
+				showMiniNav: true,
+				miniNavUrl:
+					'https://fronts.fake.dev-gutools.co.uk/v2/subnavs/6d4a8d7a-1048-4a55-87f3-ee6399e36d34',
+			});
 		});
 		it('should handle existing slideshows of any length', () => {
 			const exampleImage = {
@@ -172,6 +189,44 @@ describe('CardForm transform functions', () => {
 		});
 	});
 	describe('Derive card meta from form values', () => {
+		describe('mini nav settings', () => {
+			const cardId = 'exampleId';
+			const miniNavUrl = 'https://www.theguardian.com/custom-nav';
+			const savedSettings = {
+				showMiniNav: true,
+				miniNavUrl,
+			};
+			const stateWithMiniNav = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					[cardId]: {
+						...initialState.cards[cardId],
+						meta: {
+							...initialState.cards[cardId].meta,
+							...savedSettings,
+						},
+					},
+				},
+			};
+
+			it('should preserve saved mini nav settings during an unrelated edit', () => {
+				const changes = { headline: 'Updated headline' };
+				const state = createStateWithChangedFormFields(
+					stateWithMiniNav,
+					cardId,
+					changes,
+					{ ...formValues, ...savedSettings },
+				);
+				expect(
+					getCardMetaFromFormValues(state, cardId, {
+						...formValues,
+						...changes,
+					}),
+				).toEqual({ ...changes, ...savedSettings });
+			});
+		});
+
 		it('should return existing meta if no form values were dirtied', () => {
 			const state = createStateWithChangedFormFields(
 				initialState,
