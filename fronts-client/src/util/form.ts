@@ -21,6 +21,8 @@ export interface CardFormData {
 	headlineB: string;
 	isBoosted: boolean;
 	boostLevel: string;
+	showMiniNav: boolean;
+	miniNavUrl: string;
 	showQuotedHeadline: boolean;
 	showLargeHeadline: boolean;
 	customKicker: string;
@@ -125,6 +127,8 @@ export const getInitialValuesForCardForm = (
 				headlineB: article.headlineB || '',
 				isBoosted: article.isBoosted || false,
 				boostLevel: article.boostLevel || 'default',
+				showMiniNav: article.showMiniNav || false,
+				miniNavUrl: article.miniNavUrl || '',
 				showQuotedHeadline: article.showQuotedHeadline || false,
 				showLargeHeadline: article.showLargeHeadline || false,
 				showKickerTag: article.showKickerTag || false,

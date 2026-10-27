@@ -33,6 +33,7 @@ import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
 import InputImage from 'components/inputs/InputImage';
 import InputGroup from 'components/inputs/InputGroup';
+import InputContainer from 'components/inputs/InputContainer';
 import InputButton from 'components/inputs/InputButton';
 import Row from '../Row';
 import Col from '../Col';
@@ -697,6 +698,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleCapiFieldValues,
 			pristine,
 			showByline,
+			showMiniNav,
+			miniNavUrl,
 			abTestEnabled,
 			hasActiveABTest,
 			hasActiveABTestOnLiveCard,
@@ -949,7 +952,39 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								id={getInputId(cardId, 'show-updates')}
 								type="checkbox"
 							/>
+							<Field
+								name="showMiniNav"
+								component={InputCheckboxToggleInline}
+								label="Enable mini nav"
+								id={getInputId(cardId, 'mini-nav')}
+								type="checkbox"
+							/>
 						</CheckboxFieldsContainer>
+						{showMiniNav && shouldRenderField('miniNavUrl', editableFields) && (
+							<InputContainer>
+								<InputLabel htmlFor={getInputId(cardId, 'mini-nav-url')}>
+									Custom nav URL
+								</InputLabel>
+								<Field
+									name="miniNavUrl"
+									component={InputText}
+									id={getInputId(cardId, 'mini-nav-url')}
+									aria-describedby={
+										miniNavUrl
+											? getInputId(cardId, 'mini-nav-warning')
+											: undefined
+									}
+								/>
+								{miniNavUrl && (
+									<div
+										id={getInputId(cardId, 'mini-nav-warning')}
+										role="status"
+									>
+										<InvalidWarning warning="Not implemented: you can save this url but the mini nav will not yet show" />
+									</div>
+								)}
+							</InputContainer>
+						)}
 						{showByline && (
 							<ConditionalField
 								permittedFields={editableFields}
@@ -1512,6 +1547,8 @@ interface ContainerProps {
 	kickerOptions: ArticleTag;
 	pickedKicker: string | undefined;
 	showByline: boolean;
+	showMiniNav: boolean;
+	miniNavUrl: string;
 	abTestEnabled: boolean;
 	hasActiveABTest: boolean;
 	hasActiveABTestOnLiveCard: boolean;
@@ -1611,6 +1648,8 @@ const createMapStateToProps = () => {
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
+			showMiniNav: valueSelector(state, 'showMiniNav'),
+			miniNavUrl: valueSelector(state, 'miniNavUrl'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			hasActiveABTest: hasActiveAbTestOnCard(selectCard(state, cardId)),
 			hasActiveABTestOnLiveCard: hasActiveAbTestOnCard(liveCard),
