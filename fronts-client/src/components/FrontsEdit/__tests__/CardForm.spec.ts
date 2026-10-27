@@ -109,7 +109,8 @@ describe('CardForm transform functions', () => {
 				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
 				multimediaSlideshowThumbnail: 'thumbnail.jpg',
 				multimediaSlideshowAspectRatio: '5:4',
-    });
+			});
+		});
 		it('should restore existing mini nav settings', () => {
 			expect(
 				getInitialValuesForCardForm({
@@ -123,6 +124,7 @@ describe('CardForm transform functions', () => {
 				showMiniNav: true,
 				miniNavUrl:
 					'https://fronts.fake.dev-gutools.co.uk/v2/subnavs/6d4a8d7a-1048-4a55-87f3-ee6399e36d34',
+			});
 		});
 		it('should handle existing slideshows of any length', () => {
 			const exampleImage = {
