@@ -275,6 +275,9 @@ jobs:
                       cfn-facia-tool:
                         - cdk/cdk.out/FaciaTool-euwest-1-CODE.template.json
                         - cdk/cdk.out/FaciaTool-euwest-1-PROD.template.json
+                      cfn-facia-editions:
+                        - cdk/cdk.out/FaciaEditions-euwest-1-CODE.template.json
+                        - cdk/cdk.out/FaciaEditions-euwest-1-PROD.template.json
             - name: Upload certificates project to riff-raff
               uses: guardian/actions-riff-raff@v4
               with:

@@ -24,7 +24,6 @@ import type {
 	PackageItemDisplay,
 } from 'types/Packages';
 import { TextArea } from '@guardian/stand/TextArea';
-import { VisibilityBadge } from './VisibilityBadge';
 import { Tooltip } from '@guardian/stand/Tooltip';
 import { Typography } from '@guardian/stand/Typography';
 import { AppLinkControls } from './AppLinkControls';
@@ -262,6 +261,8 @@ function parseRegions(value: string): string[] {
 }
  */
 
+const PACKAGE_REORDER_TYPE = 'application/x-package-item-reorder';
+
 const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	package: pkg,
 	isPersisted,
@@ -282,6 +283,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
 	const [copyMessage, setCopyMessage] = useState('');
+	const [draggedItemKey, setDraggedItemKey] = useState<string | null>(null);
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -367,16 +369,18 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 		});
 	};
 
-	const moveItem = (index: number, direction: -1 | 1) => {
-		const nextIndex = index + direction;
+	const reorderItem = (targetIndex: number) => {
+		if (disabled || draggedItemKey === null) return;
 
-		if (nextIndex < 0 || nextIndex >= pkg.items.length) {
-			throw new Error('Invalid package item move.');
-		}
+		const sourceIndex = pkg.items.findIndex(
+			(item) => packageItemKey(item) === draggedItemKey,
+		);
+
+		if (sourceIndex < 0 || sourceIndex === targetIndex) return;
 
 		const items = [...pkg.items];
-		[items[index], items[nextIndex]] = [items[nextIndex], items[index]];
-
+		const [movedItem] = items.splice(sourceIndex, 1);
+		items.splice(targetIndex, 0, movedItem);
 		changeItems(items);
 	};
 
@@ -384,6 +388,10 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 		event.preventDefault();
 		event.stopPropagation();
 		setDragIntentActive(false);
+
+		if (event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)) {
+			return;
+		}
 
 		if (disabled) {
 			return;
@@ -450,6 +458,36 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			}
 		: undefined;
 
+	const CharacterFeedback = styled.div`
+		margin-top: 4px;
+		font-size: 14px;
+		color: inherit;
+	`;
+
+	const CharacterWarning = styled.p`
+		margin: 4px 0 0;
+		color: #c70000;
+	`;
+
+	const CharacterCount = ({
+		count,
+		limit,
+	}: {
+		count: number;
+		limit: number;
+	}) => (
+		<CharacterFeedback>
+			<span>
+				{count} / {limit} characters
+			</span>
+			{count > limit && (
+				<CharacterWarning role="status">
+					Character limit exceeded by {count - limit}.
+				</CharacterWarning>
+			)}
+		</CharacterFeedback>
+	);
+
 	return (
 		<BuilderContainer>
 			<BuilderHeader>
@@ -469,29 +507,27 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			<BuilderContent>
 				<FirstSection>
 					<LeftColumn>
-						<TextInput
-							label="Display Name"
-							value={pkg.name}
-							onChange={(name) => onPackageChange({ ...pkg, name })}
-							isDisabled={disabled}
-						/>
-
-						<div style={{ width: 'fit-content', gap: '1em', display: 'flex' }}>
-							<VisibilityBadge isHidden={pkg.isHidden} />
-							<Tooltip>
-								<Typography variant="bodyCompactSm">
-									Visibility controls whether the package is shown on fronts.
-									Users with the deep-link will always be able to see it
-								</Typography>
-							</Tooltip>
+						<div>
+							<TextInput
+								label="Display Name"
+								value={pkg.name}
+								onChange={(name) => onPackageChange({ ...pkg, name })}
+								isDisabled={disabled}
+							/>
+							<CharacterCount count={pkg.name.length} limit={20} />
 						</div>
-
-						<TextArea
-							label="Description"
-							value={pkg.metadata?.bodyText ?? ''}
-							onChange={(bodyText) => changeMetadata({ bodyText })}
-							isDisabled={disabled}
-						/>
+						<div>
+							<TextArea
+								label="Standfirst"
+								value={pkg.metadata?.bodyText ?? ''}
+								onChange={(bodyText) => changeMetadata({ bodyText })}
+								isDisabled={disabled}
+							/>
+							<CharacterCount
+								count={(pkg.metadata?.bodyText ?? '').length}
+								limit={130}
+							/>
+						</div>
 					</LeftColumn>
 
 					<RightColumn>
@@ -613,7 +649,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 
 							<AppLinkControls
 								deepLink={emailLink}
-								title="Recipe link"
+								title="Deep link"
 								isPublished={isPublished}
 								isDisabled={disabled || !isPublished || !emailLink}
 							/>
@@ -650,8 +686,56 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							const display = displays[packageItemKey(item)];
 
 							return (
-								<SlotItem key={`${packageItemKey(item)}:${index}`}>
-									{display?.imageUrl && <img src={display.imageUrl} alt="" />}
+								<SlotItem
+									key={packageItemKey(item)}
+									draggable={!disabled}
+									onDragStart={(event) => {
+										if (disabled) {
+											event.preventDefault();
+											return;
+										}
+
+										setDraggedItemKey(packageItemKey(item));
+										event.dataTransfer.effectAllowed = 'move';
+										event.dataTransfer.setData(
+											PACKAGE_REORDER_TYPE,
+											packageItemKey(item),
+										);
+									}}
+									onDragOver={(event) => {
+										if (
+											disabled ||
+											draggedItemKey === null ||
+											!event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)
+										) {
+											return;
+										}
+
+										event.preventDefault();
+										event.stopPropagation();
+										event.dataTransfer.dropEffect = 'move';
+									}}
+									onDrop={(event) => {
+										if (
+											!event.dataTransfer.types.includes(PACKAGE_REORDER_TYPE)
+										) {
+											return;
+										}
+
+										event.preventDefault();
+										event.stopPropagation();
+										reorderItem(index);
+										setDraggedItemKey(null);
+									}}
+									onDragEnd={() => setDraggedItemKey(null)}
+									style={{
+										cursor: disabled ? 'default' : 'grab',
+										opacity: draggedItemKey === packageItemKey(item) ? 0.5 : 1,
+									}}
+								>
+									{display?.imageUrl && (
+										<img src={display.imageUrl} alt="" draggable={false} />
+									)}
 
 									<span>
 										{display?.title ?? item.id} ({item.cardType})
@@ -660,24 +744,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 											item.cardType !== 'subcollection' &&
 											' - details unavailable'}
 									</span>
-
-									<Button
-										size="sm"
-										variant="secondary"
-										isDisabled={disabled || index === 0}
-										onPress={() => moveItem(index, -1)}
-									>
-										Up
-									</Button>
-
-									<Button
-										size="sm"
-										variant="secondary"
-										isDisabled={disabled || index === pkg.items.length - 1}
-										onPress={() => moveItem(index, 1)}
-									>
-										Down
-									</Button>
 
 									<Button
 										size="sm"

@@ -75,6 +75,8 @@ export interface FaciaToolProps extends GuStackProps {
 	authDomain: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
+	/** The database's security group, from the `FaciaEditions` stack. */
+	databaseSecurityGroupId: string;
 	instanceType: string;
 	minimumInstances: number;
 	maximumInstances: number;
@@ -111,7 +113,7 @@ export class FaciaTool extends GuStack {
 				unhealthyInstancesAlarm: true,
 			},
 			applicationLogging: { enabled: true },
-			instanceMetricGranularity: '5Minute',
+			instanceMetricGranularity: '1Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
 			userData: this.buildUserData({
 				frontendRoleToAssume: frontendRoleArn,
@@ -153,7 +155,7 @@ export class FaciaTool extends GuStack {
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
 			this,
 			'DatabaseSecurityGroup',
-			parameter('DBSecurityGroupIdNewVPC'),
+			props.databaseSecurityGroupId,
 			{ mutable: true },
 		);
 
@@ -231,7 +233,6 @@ export class FaciaTool extends GuStack {
 				type: 'String',
 				default: 'fronts-user-data-table',
 			},
-			{ name: 'DBSecurityGroupIdNewVPC', type: 'String' },
 			{
 				name: 'CapiEndpointSsmKeyNewVPC',
 				type: 'AWS::SSM::Parameter::Value<String>',
@@ -396,10 +397,8 @@ export class FaciaTool extends GuStack {
 				...[
 					GuardianAwsAccounts.Frontend,
 					GuardianAwsAccounts.Mobile,
-					GuardianAwsAccounts.DeployTools,
 					GuardianAwsAccounts.Ophan,
 					GuardianAwsAccounts.CAPI,
-					GuardianAwsAccounts.Membership,
 				].map((accountId) => new AccountPrincipal(accountId)),
 			),
 		});
