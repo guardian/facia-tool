@@ -54,7 +54,7 @@ val capiModelsVersion = "52.0.0"
 val capiClientVersion = "50.0.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.14.10"
-val awsSdkVersion = "2.49.6"
+val awsSdkVersion = "2.57.5"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
@@ -68,6 +68,8 @@ libraryDependencies ++= Seq(
   filters,
   evolutions,
   jdbc,
+  "software.amazon.awssdk" % "dynamodb" % awsSdkVersion,
+  "software.amazon.awssdk" % "apache-client" % awsSdkVersion,
   "software.amazon.awssdk" % "rds" % awsSdkVersion,
   "software.amazon.awssdk" % "cloudwatch" % awsSdkVersion,
   "software.amazon.awssdk" % "sns" % awsSdkVersion,
@@ -81,7 +83,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "editorial-permissions-client" % "5.0.0",
   "com.gu" %% "fapi-client-play30" % "45.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
-  "com.gu" %% "pan-domain-auth-play_3-0" % "21.0.0",
+  "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
