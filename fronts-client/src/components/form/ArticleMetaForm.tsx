@@ -773,13 +773,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 						>
 							<Field
-								name="isBoosted"
-								component={InputCheckboxToggleInline}
-								label="Boost"
-								id={getInputId(cardId, 'boost')}
-								type="checkbox"
-							/>
-							<Field
 								name="showLargeHeadline"
 								component={InputCheckboxToggleInline}
 								label="Large headline"
@@ -1246,8 +1239,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	// A card cannot be both immersive and boosted, so we need to toggle the other field when one is set.
 	// This function is called when one of the fields is toggled, and sets the other field to false.
 	// If the field to set is `isImmersive` to true, we need to set the boost level to lowest boost level (default).
-	// If the fiels to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
-	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
+	// If the field to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
 	// */
 	private toggleCardStyleField = (
 		fieldToSet: string,

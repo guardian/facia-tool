@@ -60,14 +60,6 @@ The graphs look like this – you'll only see them in production, as they requir
 
 <img width="715" alt="Screenshot 2023-03-30 at 09 49 23" src="https://user-images.githubusercontent.com/7767575/228785040-d7c8592c-c07c-477f-8160-3405f472e9dd.png">
 
-## Dynamo
-
-A container with a dynamic layout. However when editorial refer to it they typically mean this layout:
-
-![image11](https://user-images.githubusercontent.com/7767575/228781969-e0d2ccad-aa30-40d5-937d-028130c39452.jpg)
-
-It’s typically used for a breaking news story. Dynamos are rendered differently from other containers. The Cambridge Analytica Files is a dynamo.
-
 ## Edition
 
 A collection of Fronts, associated with a specific platform on a specific day (for example, "Daily Edition on 1st Jan 2024").

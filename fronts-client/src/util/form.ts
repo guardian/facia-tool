@@ -19,7 +19,6 @@ export interface CardFormData {
 	abTestEnabled: boolean;
 	headlineA: string;
 	headlineB: string;
-	isBoosted: boolean;
 	boostLevel: string;
 	showMiniNav: boolean;
 	miniNavUrl: string;
@@ -119,7 +118,6 @@ export const getInitialValuesForCardForm = (
 				abTestEnabled: article.abTestEnabled || false,
 				headlineA: article.headlineA || '',
 				headlineB: article.headlineB || '',
-				isBoosted: article.isBoosted || false,
 				boostLevel: article.boostLevel || 'default',
 				showMiniNav: article.showMiniNav || false,
 				miniNavUrl: article.miniNavUrl || '',

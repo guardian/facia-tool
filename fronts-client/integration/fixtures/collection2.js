@@ -9,7 +9,6 @@ module.exports = {
         headline:
           '<strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong>',
         isBreaking: false,
-        isBoosted: false,
         imageHide: false,
         showKickerCustom: false,
         showByline: false,

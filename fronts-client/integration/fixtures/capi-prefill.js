@@ -2189,7 +2189,6 @@ module.exports = {
         frontsMeta: {
           defaults: {
             isBreaking: false,
-            isBoosted: false,
             showMainVideo: false,
             imageHide: false,
             showKickerCustom: false,
@@ -2526,7 +2525,6 @@ module.exports = {
         frontsMeta: {
           defaults: {
             isBreaking: false,
-            isBoosted: false,
             showMainVideo: false,
             imageHide: false,
             showKickerCustom: false,
@@ -2814,7 +2812,6 @@ module.exports = {
         frontsMeta: {
           defaults: {
             isBreaking: false,
-            isBoosted: false,
             showMainVideo: false,
             imageHide: false,
             showKickerCustom: false,
@@ -3046,7 +3043,6 @@ module.exports = {
         frontsMeta: {
           defaults: {
             isBreaking: false,
-            isBoosted: false,
             showMainVideo: false,
             imageHide: false,
             showKickerCustom: false,
@@ -3353,7 +3349,6 @@ module.exports = {
         frontsMeta: {
           defaults: {
             isBreaking: false,
-            isBoosted: false,
             showMainVideo: false,
             imageHide: false,
             showKickerCustom: false,
