@@ -17,7 +17,7 @@ object FlexibleGeneral extends FlexibleContainer {
       .getOrElse(Nil)
       .flatMap(_.maxItems)
       .sum
-    totalMaxItems
+    totalMaxItems min stories.size
   }
 }
 

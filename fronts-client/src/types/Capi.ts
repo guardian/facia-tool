@@ -186,7 +186,6 @@ interface CapiArticle {
 			imageHide: boolean;
 			imageReplace: boolean;
 			imageSlideshowReplace: boolean;
-			isBoosted: boolean;
 			isBreaking: boolean;
 			showLargeHeadline: boolean;
 			showByline: boolean;
