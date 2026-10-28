@@ -14,7 +14,7 @@ object SwitchManager extends Logging {
   def getStatus(switchName: String): Boolean = {
     switches.get(switchName) match {
       case Some(value) => value
-      case None => {
+      case None        => {
         logger.info(s"No status found matching switch $switchName")
         false
       }

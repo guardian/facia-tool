@@ -161,7 +161,7 @@ object Package extends MetadataHelpers with Logging {
             ) match {
               case None                      => None // No input
               case Some(JsSuccess(value, _)) => Some(value)
-              case Some(JsError(errors)) =>
+              case Some(JsError(errors))     =>
                 logger.error(
                   s"Unable to deserialise Feast package metadata for $packageId: ${errors.mkString(";")}"
                 )
@@ -188,7 +188,7 @@ object Package extends MetadataHelpers with Logging {
             ) match {
               case None                      => None // No input
               case Some(JsSuccess(value, _)) => Some(value)
-              case Some(JsError(errors)) =>
+              case Some(JsError(errors))     =>
                 logger.error(
                   s"Unable to deserialise Feast package metadata for $packageId: ${errors.mkString(";")}"
                 )

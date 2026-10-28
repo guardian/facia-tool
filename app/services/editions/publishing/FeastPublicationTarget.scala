@@ -62,7 +62,7 @@ class FeastPublicationTarget(
     source match {
       case _: EditionsArticle =>
         throw new Error("Article not permitted in a Feast Front")
-      case EditionsRecipe(id, _) => Recipe(RecipeContent(id))
+      case EditionsRecipe(id, _)         => Recipe(RecipeContent(id))
       case EditionsChef(id, _, metadata) =>
         Chef(
           ChefContent(
@@ -100,7 +100,7 @@ class FeastPublicationTarget(
 
   private def transformPackageCard(source: PackageCard): ContainerItem =
     source match {
-      case PackageRecipeCard(id, _) => Recipe(RecipeContent(id))
+      case PackageRecipeCard(id, _)         => Recipe(RecipeContent(id))
       case PackageChefCard(id, metadata, _) =>
         Chef(
           ChefContent(
