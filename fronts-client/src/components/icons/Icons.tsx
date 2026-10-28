@@ -347,11 +347,11 @@ const SelectVideoIcon = () => (
 	</svg>
 );
 
-const DragHandleIcon = ({ fill = theme.colors.greyDark }) => (
+const DragHandleIcon = ({ fill = theme.colors.greyDark, size }: IconProps) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		width="13"
-		height="10"
+		width={size ? mapSize(size) : 13}
+		height={size ? mapSize(size) : 10}
 		viewBox="0 0 20 20"
 	>
 		<path

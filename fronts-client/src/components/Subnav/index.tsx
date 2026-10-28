@@ -152,10 +152,7 @@ const SubnavSection = () => {
 					<SubnavListView
 						entries={entries}
 						isLoading={isLoading}
-						pendingActionId={pendingActionId}
-						onCreate={() => history.push(subnavRoutes.create)}
 						onEdit={(id) => history.push(subnavRoutes.edit(id))}
-						runAction={runAction}
 					/>
 				</Route>
 			</Switch>
