@@ -160,7 +160,12 @@ const MultimediaSlideshowPreview = styled.div`
 const MultimediaSlideshowPreviewImage = styled.img`
 	display: block;
 	max-width: 100%;
+	max-height: 160px;
 	height: auto;
+`;
+
+const MultimediaSlideshowSlideCount = styled.div`
+	margin: 4px 0;
 `;
 
 const MultimediaSlideshowLink = styled.a`
@@ -743,6 +748,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const slideshowHasAtLeastTwoImages =
 			(slideshow ?? []).filter((field) => !!field).length >= 2;
 
+		const multimediaSlideCount = isAtom(multimediaSlideshowAtom)
+			? (multimediaSlideshowAtom.data.multimediaSlideshow?.slides?.length ?? 0)
+			: 0;
+
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
 				!imageDefined(coverCardTabletImage)
@@ -1275,6 +1284,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													Slideshow found, but it has no preview image.
 												</span>
 											)}
+											<MultimediaSlideshowSlideCount>
+												{multimediaSlideCount}{' '}
+												{multimediaSlideCount === 1 ? 'slide' : 'slides'}
+											</MultimediaSlideshowSlideCount>
 											<MultimediaSlideshowLink
 												href={this.getAtomWorkshopUrl(multimediaSlideshowAtom)}
 												target="_blank"

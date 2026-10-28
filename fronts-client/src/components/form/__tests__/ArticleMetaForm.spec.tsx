@@ -289,6 +289,7 @@ describe('ArticleMetaForm - multimedia slideshow', () => {
 			multimediaSlideshow: {
 				slides: [
 					{ content: { image: { assets: [], master: { file: 'first.jpg' } } } },
+					{ content: { mediaAtom: { mediaAtomId: 'media-1' } } },
 				],
 			},
 		},
@@ -358,5 +359,15 @@ describe('ArticleMetaForm - multimedia slideshow', () => {
 		expect(formValues(store).multimediaSlideshowAtomId).toBe(
 			'atom/multimediaslideshow/slideshow-1',
 		);
+	});
+
+	it('shows the number of slides in the slideshow', async () => {
+		const { getByText } = renderForm(
+			getStateWithSlideshowCard({
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+			}),
+		);
+
+		await wait(() => expect(getByText('2 slides')).toBeTruthy());
 	});
 });
