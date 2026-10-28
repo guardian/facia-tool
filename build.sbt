@@ -55,6 +55,8 @@ val capiClientVersion = "50.0.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.14.10"
 val awsSdkVersion = "2.49.6"
+val nettyVersion = "4.1.139.Final"
+val bouncyCastleVersion = "1.86"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
@@ -117,8 +119,21 @@ excludeDependencies ++= Seq(
 
 dependencyOverrides ++= Seq(
   // Pinned to resolve transitive dependencies between Play and Scalikejdbc
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
-)
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
+  "org.bouncycastle" % "bcprov-jdk18on" % bouncyCastleVersion
+) ++ Seq(
+  // Keep transitive Netty modules aligned on a patched 4.1 release.
+  "netty-buffer",
+  "netty-codec",
+  "netty-codec-http",
+  "netty-codec-http2",
+  "netty-common",
+  "netty-handler",
+  "netty-resolver",
+  "netty-transport",
+  "netty-transport-classes-epoll",
+  "netty-transport-native-unix-common"
+).map("io.netty" % _ % nettyVersion)
 
 val UsesDatabaseTest = config("database-int") extend Test
 
