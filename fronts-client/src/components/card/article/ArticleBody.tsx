@@ -214,7 +214,6 @@ interface ArticleBodyProps {
 	showMeta?: boolean;
 	canDragImage?: boolean;
 	isDraggingImageOver: boolean;
-	isBoosted?: boolean;
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	hasMainVideo?: boolean;
@@ -317,7 +316,6 @@ const articleBodyDefault = React.memo(
 		showMeta = true,
 		canDragImage = true,
 		isDraggingImageOver,
-		isBoosted,
 		boostLevel,
 		isImmersive,
 		tone,
@@ -515,7 +513,6 @@ const articleBodyDefault = React.memo(
 						showByline={showByline}
 						showQuotedHeadline={showQuotedHeadline}
 						showLargeHeadline={showLargeHeadline}
-						isBoosted={isBoosted}
 						boostLevel={boostLevel}
 						isImmersive={isImmersive}
 						groupIndex={groupIndex}

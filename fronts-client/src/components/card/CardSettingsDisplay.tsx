@@ -19,10 +19,6 @@ const ArticleMetadataProperty = styled.div`
 	margin: 0 2px 1px 0;
 `;
 
-const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
-	/* don't show old Boost option in flexible containers */
-	isBoosted && !FLEXIBLE_CONTAINER_SET.includes(collectionType);
-
 const shouldShowBoostLevel = (
 	collectionType?: string,
 	boostLevel?: BoostLevels,
@@ -56,7 +52,6 @@ export default ({
 	showByline,
 	showQuotedHeadline,
 	showLargeHeadline,
-	isBoosted,
 	boostLevel,
 	isImmersive,
 	groupIndex,
@@ -66,18 +61,15 @@ export default ({
 	showByline?: boolean;
 	showQuotedHeadline?: boolean;
 	showLargeHeadline?: boolean;
-	isBoosted?: boolean;
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	groupIndex?: number;
 }) =>
 	shouldShowBoostLevel(collectionType, boostLevel) ||
-	shouldShowLegacyBoost(collectionType, isBoosted) ||
 	isBreaking ||
 	showByline ||
 	showQuotedHeadline ||
 	showLargeHeadline ||
-	isBoosted ||
 	isImmersive ? (
 		<ArticleMetadataProperties>
 			{isBreaking && (
@@ -101,9 +93,6 @@ export default ({
 				<ArticleMetadataProperty>
 					{getBoostLevelLabel(boostLevel, groupIndex, collectionType)}
 				</ArticleMetadataProperty>
-			)}
-			{shouldShowLegacyBoost(collectionType, isBoosted) && (
-				<ArticleMetadataProperty>Boost</ArticleMetadataProperty>
 			)}
 		</ArticleMetadataProperties>
 	) : null;

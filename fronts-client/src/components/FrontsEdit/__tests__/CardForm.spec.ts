@@ -29,7 +29,6 @@ const formValues = {
 	imageHide: false,
 	imageReplace: false,
 	imageSlideshowReplace: false,
-	isBoosted: false,
 	boostLevel: 'default',
 	showMiniNav: false,
 	miniNavUrl: '',

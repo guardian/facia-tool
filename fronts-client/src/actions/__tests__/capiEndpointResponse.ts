@@ -259,7 +259,6 @@ export const articlesForScJohnsonPartnerZone = {
 				frontsMeta: {
 					defaults: {
 						isBreaking: false,
-						isBoosted: false,
 						showMainVideo: false,
 						imageHide: false,
 						showKickerCustom: false,
@@ -488,7 +487,6 @@ export const articlesForScJohnsonPartnerZone = {
 				frontsMeta: {
 					defaults: {
 						isBreaking: false,
-						isBoosted: false,
 						showMainVideo: false,
 						imageHide: false,
 						showKickerCustom: false,
