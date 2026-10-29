@@ -386,6 +386,27 @@ describe('ArticleMetaForm - multimedia slideshow', () => {
 		expect(saveButton.disabled).toBe(false);
 	});
 
+	it('disables Save as soon as the URL no longer points at a slideshow', async () => {
+		const { getByTestId, getByText, queryByText } =
+			await renderFormAndFinishFirstLoad(
+				getStateWithSlideshowCard({
+					multimediaSlideshowUrl: slideshowUrl,
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+				}),
+			);
+		await wait(() => expect(getByText('2 slides')).toBeTruthy());
+
+		fireEvent.change(getByTestId('multimedia-slideshow-url'), {
+			target: { value: 'https://www.theguardian.com/uk' },
+		});
+
+		expect(queryByText('2 slides')).toBeNull();
+		expect(getByText(invalidSlideshowWarning)).toBeTruthy();
+		expect(
+			(getByTestId('edit-form-save-button') as HTMLButtonElement).disabled,
+		).toBe(true);
+	});
+
 	it('ignores a slower response for a previously pasted URL', async () => {
 		const otherSlideshowAtom = { ...slideshowAtom, id: 'slideshow-2' };
 		let resolveFirstFetch: (response: unknown) => void = () => {};

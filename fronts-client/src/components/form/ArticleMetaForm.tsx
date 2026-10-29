@@ -470,7 +470,7 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
 	lastKnownCollectionId: string | null;
-	// The slideshow is loading until this matches the form's slideshow id
+	// Id of the slideshow last fetched into the form
 	fetchedMultimediaSlideshowAtomId?: string;
 }
 
@@ -759,6 +759,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const multimediaSlideshowLoading =
 			!!multimediaSlideshowAtomId &&
 			multimediaSlideshowAtomId !== this.state.fetchedMultimediaSlideshowAtomId;
+		// The previous atom stays in the form until the debounced fetch replaces it
+		const multimediaSlideshowLoaded =
+			multimediaSlideshowAtomId ===
+				this.state.fetchedMultimediaSlideshowAtomId &&
+			isAtom(multimediaSlideshowAtom);
 
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
@@ -1284,7 +1289,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										<MultimediaSlideshowPreview role="status">
 											Loading slideshow…
 										</MultimediaSlideshowPreview>
-									) : isAtom(multimediaSlideshowAtom) ? (
+									) : multimediaSlideshowLoaded ? (
 										<MultimediaSlideshowPreview>
 											{multimediaSlideshowThumbnail ? (
 												<MultimediaSlideshowPreviewImage
@@ -1374,7 +1379,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					) : null}
 					{multimediaSlideshowReplace &&
 					!multimediaSlideshowLoading &&
-					!isAtom(multimediaSlideshowAtom) ? (
+					!multimediaSlideshowLoaded ? (
 						<InvalidWarning warning="You need to provide a valid slideshow atom embed URL" />
 					) : null}
 				</div>
@@ -1393,9 +1398,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
 							(videoReplace && !isAtom(replacementVideoAtom)) ||
-							(multimediaSlideshowReplace &&
-								(multimediaSlideshowLoading ||
-									!isAtom(multimediaSlideshowAtom)))
+							(multimediaSlideshowReplace && !multimediaSlideshowLoaded)
 						}
 						size="l"
 						data-testid="edit-form-save-button"
