@@ -96,6 +96,8 @@ function getThumbnail(
 		) {
 			return activeAtomProperties.videoImage;
 		}
+	} else if (meta.multimediaSlideshowReplace) {
+		return meta.multimediaSlideshowThumbnail || undefined;
 	}
 
 	return (

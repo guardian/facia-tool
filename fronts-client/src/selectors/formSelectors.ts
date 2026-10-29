@@ -29,6 +29,7 @@ export const defaultFields = [
 	'imageHide',
 	'imageReplace',
 	'imageSlideshowReplace',
+	'multimediaSlideshowReplace',
 	'primaryImage',
 	'cutoutImage',
 	'slideshow',
@@ -56,6 +57,7 @@ export const emailFieldsToExclude = [
 	'showLargeHeadline',
 	'slideshow',
 	'imageSlideshowReplace',
+	'multimediaSlideshowReplace',
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
@@ -138,6 +140,7 @@ export const createSelectFormFieldsForCard = () => {
 				return without(
 					fields,
 					'imageSlideshowReplace',
+					'multimediaSlideshowReplace',
 					'isBreaking',
 					'showLargeHeadline',
 				);

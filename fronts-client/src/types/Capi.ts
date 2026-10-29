@@ -54,6 +54,7 @@ interface Atoms {
 
 interface AtomResponse {
 	media: Atom;
+	multimediaslideshow?: Atom;
 	status: string;
 	total: number;
 	userTier: string;
@@ -66,7 +67,30 @@ interface Atom {
 }
 
 interface AtomData {
-	media: MediaAtom;
+	media?: MediaAtom;
+	multimediaSlideshow?: MultimediaSlideshowAtom;
+}
+
+interface MultimediaSlideshowAtom {
+	slides: Slide[];
+	title?: string;
+	aspectRatio?: string;
+}
+
+interface Slide {
+	content: SlideContent;
+	caption?: string;
+	label?: string;
+	credit?: string;
+}
+
+interface SlideContent {
+	image?: ImageAssets;
+	mediaAtom?: MediaReference;
+}
+
+interface MediaReference {
+	mediaAtomId: string;
 }
 
 interface ImageAssets {
@@ -217,4 +241,7 @@ export {
 	ImageAsset,
 	Platform,
 	AssetType,
+	MultimediaSlideshowAtom,
+	Slide,
+	SlideContent,
 };

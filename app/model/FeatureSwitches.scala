@@ -26,6 +26,13 @@ object PageViewDataVisualisation
       enabled = true
     )
 
+object MultimediaSlideshow
+    extends FeatureSwitch(
+      key = "multimedia-slideshow",
+      title = "Enable multimedia slideshow atoms on cards",
+      enabled = false
+    )
+
 object EventGraphics
     extends FeatureSwitch(
       key = "event-graphics",
@@ -53,6 +60,7 @@ object FeatureSwitches {
     PageViewDataVisualisation,
     EventGraphics,
     HeadlineUpdateIndicator,
+    MultimediaSlideshow,
     MiniNav
   )
 

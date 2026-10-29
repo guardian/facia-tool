@@ -2,7 +2,8 @@ import React from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import 'jest-styled-components';
 import { Provider } from 'react-redux';
-import { fireEvent, render, cleanup } from 'react-testing-library';
+import { fireEvent, render, cleanup, wait } from 'react-testing-library';
+import { isPristine } from 'redux-form';
 import { ThemeProvider } from 'styled-components';
 import { theme } from 'constants/theme';
 import configureStore from 'util/configureStore';
@@ -276,5 +277,217 @@ describe('ArticleMetaForm - headline AB testing', () => {
 
 		expect(headlineAField.disabled).toBe(false);
 		expect(headlineBField.disabled).toBe(false);
+	});
+});
+
+describe('ArticleMetaForm - multimedia slideshow', () => {
+	const slideshowUrl =
+		'https://content.code.dev-guardianapis.com/atom/multimediaslideshow/slideshow-1';
+	const slideshowAtom = {
+		id: 'slideshow-1',
+		atomType: 'multimediaslideshow',
+		data: {
+			multimediaSlideshow: {
+				slides: [
+					{ content: { image: { assets: [], master: { file: 'first.jpg' } } } },
+					{ content: { mediaAtom: { mediaAtomId: 'media-1' } } },
+				],
+			},
+		},
+	};
+
+	const getStateWithSlideshowCard = (meta: Record<string, unknown>): State =>
+		({
+			...initialState,
+			featureSwitches: {
+				'multimedia-slideshow': {
+					key: 'multimedia-slideshow',
+					title: 'Multimedia slideshow',
+					enabled: true,
+				},
+			},
+			cards: {
+				...initialState.cards,
+				[cardId]: {
+					...initialState.cards[cardId],
+					meta: {
+						...initialState.cards[cardId].meta,
+						multimediaSlideshowReplace: true,
+						...meta,
+					},
+				},
+			},
+		}) as State;
+
+	const formValues = (store: ReturnType<typeof configureStore>) =>
+		(store.getState() as any).form[cardId].values;
+
+	const atomResponse = (atom: unknown) => ({
+		json: () =>
+			Promise.resolve({
+				response: { status: 'ok', multimediaslideshow: atom },
+			}),
+	});
+
+	const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+	const invalidSlideshowWarning =
+		'You need to provide a valid slideshow atom embed URL';
+
+	// The form's first load runs a tick after mounting, before any editor could interact
+	const renderFormAndFinishFirstLoad = async (state: State) => {
+		const rendered = renderForm(state);
+		await flushPromises();
+		return rendered;
+	};
+
+	beforeEach(() => {
+		(global as any).fetch = jest
+			.fn()
+			.mockResolvedValue(atomResponse(slideshowAtom));
+	});
+
+	it('fetches the slideshow using the atom id from a pasted URL', async () => {
+		const { store, getByTestId } = await renderFormAndFinishFirstLoad(
+			getStateWithSlideshowCard({}),
+		);
+
+		fireEvent.change(getByTestId('multimedia-slideshow-url'), {
+			target: { value: slideshowUrl },
+		});
+
+		expect(formValues(store).multimediaSlideshowAtomId).toBe(
+			'atom/multimediaslideshow/slideshow-1',
+		);
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(slideshowAtom),
+		);
+		expect((global as any).fetch).toHaveBeenCalledWith(
+			'/api/live/atom/multimediaslideshow/slideshow-1',
+		);
+	});
+
+	it('shows a loading state instead of the invalid warning while the slideshow loads', async () => {
+		const { getByTestId, getByText, queryByText } =
+			await renderFormAndFinishFirstLoad(getStateWithSlideshowCard({}));
+		const saveButton = getByTestId(
+			'edit-form-save-button',
+		) as HTMLButtonElement;
+
+		fireEvent.change(getByTestId('multimedia-slideshow-url'), {
+			target: { value: slideshowUrl },
+		});
+
+		expect(getByText('Loading slideshow…')).toBeTruthy();
+		expect(queryByText(invalidSlideshowWarning)).toBeNull();
+		expect(saveButton.disabled).toBe(true);
+		await wait(() => expect(getByText('2 slides')).toBeTruthy());
+		expect(queryByText('Loading slideshow…')).toBeNull();
+		expect(saveButton.disabled).toBe(false);
+	});
+
+	it('disables Save as soon as the URL no longer points at a slideshow', async () => {
+		const { getByTestId, getByText, queryByText } =
+			await renderFormAndFinishFirstLoad(
+				getStateWithSlideshowCard({
+					multimediaSlideshowUrl: slideshowUrl,
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+				}),
+			);
+		await wait(() => expect(getByText('2 slides')).toBeTruthy());
+
+		fireEvent.change(getByTestId('multimedia-slideshow-url'), {
+			target: { value: 'https://www.theguardian.com/uk' },
+		});
+
+		expect(queryByText('2 slides')).toBeNull();
+		expect(getByText(invalidSlideshowWarning)).toBeTruthy();
+		expect(
+			(getByTestId('edit-form-save-button') as HTMLButtonElement).disabled,
+		).toBe(true);
+	});
+
+	it('ignores a slower response for a previously pasted URL', async () => {
+		const otherSlideshowAtom = { ...slideshowAtom, id: 'slideshow-2' };
+		let resolveFirstFetch: (response: unknown) => void = () => {};
+		(global as any).fetch = jest.fn((url: string) =>
+			url.endsWith('slideshow-1')
+				? new Promise((resolve) => (resolveFirstFetch = resolve))
+				: Promise.resolve(atomResponse(otherSlideshowAtom)),
+		);
+		const { store, getByTestId } = await renderFormAndFinishFirstLoad(
+			getStateWithSlideshowCard({}),
+		);
+		const urlInput = getByTestId('multimedia-slideshow-url');
+
+		fireEvent.change(urlInput, { target: { value: slideshowUrl } });
+		await wait(() =>
+			expect((global as any).fetch).toHaveBeenCalledWith(
+				'/api/live/atom/multimediaslideshow/slideshow-1',
+			),
+		);
+		fireEvent.change(urlInput, {
+			target: {
+				value:
+					'https://content.code.dev-guardianapis.com/atom/multimediaslideshow/slideshow-2',
+			},
+		});
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(
+				otherSlideshowAtom,
+			),
+		);
+
+		resolveFirstFetch(atomResponse(slideshowAtom));
+		await flushPromises();
+
+		expect(formValues(store).multimediaSlideshowAtom).toEqual(
+			otherSlideshowAtom,
+		);
+	});
+
+	it('shows the number of slides in the slideshow', async () => {
+		const { getByText } = renderForm(
+			getStateWithSlideshowCard({
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+			}),
+		);
+
+		await wait(() => expect(getByText('2 slides')).toBeTruthy());
+	});
+
+	it('loads the slideshow once on open without dirtying the form', async () => {
+		const { store } = renderForm(
+			getStateWithSlideshowCard({
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+			}),
+		);
+
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(slideshowAtom),
+		);
+		// Outlast the fetch debounce
+		await new Promise((resolve) => setTimeout(resolve, 600));
+
+		expect((global as any).fetch).toHaveBeenCalledTimes(1);
+		expect(isPristine(cardId)(store.getState())).toBe(true);
+	});
+
+	it('loads a saved slideshow when the editor switches back to it', async () => {
+		const { store, getByLabelText, queryByText } =
+			await renderFormAndFinishFirstLoad(
+				getStateWithSlideshowCard({
+					multimediaSlideshowReplace: false,
+					multimediaSlideshowUrl: slideshowUrl,
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/slideshow-1',
+				}),
+			);
+
+		fireEvent.click(getByLabelText('Multimedia slideshow'));
+
+		await wait(() =>
+			expect(formValues(store).multimediaSlideshowAtom).toEqual(slideshowAtom),
+		);
+		expect(queryByText(invalidSlideshowWarning)).toBeNull();
 	});
 });

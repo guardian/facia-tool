@@ -60,6 +60,12 @@ const formValues = {
 	replaceVideoUri: '',
 	atomId: '',
 	replacementVideoAtom: '',
+	multimediaSlideshowReplace: false,
+	multimediaSlideshowUrl: '',
+	multimediaSlideshowAtomId: '',
+	multimediaSlideshowAtom: '',
+	multimediaSlideshowThumbnail: '',
+	multimediaSlideshowAspectRatio: '',
 };
 
 const createStateWithChangedFormFields = (
@@ -85,6 +91,25 @@ describe('CardForm transform functions', () => {
 	describe('Derive form values from a derived article', () => {
 		it('should derive values', () => {
 			expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
+		});
+		it('should derive multimedia slideshow values from a derived article', () => {
+			expect(
+				getInitialValuesForCardForm({
+					...derivedArticle,
+					multimediaSlideshowReplace: true,
+					multimediaSlideshowUrl: 'https://example.com/atom-id',
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+					multimediaSlideshowThumbnail: 'thumbnail.jpg',
+					multimediaSlideshowAspectRatio: '5:4',
+				}),
+			).toEqual({
+				...formValues,
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
+			});
 		});
 		it('should restore existing mini nav settings', () => {
 			expect(
@@ -301,6 +326,34 @@ describe('CardForm transform functions', () => {
 				imageSrcThumb: 'exampleThumb',
 				imageSrcWidth: '100',
 				headline: 'Bill Shorten',
+			});
+		});
+		it('should persist multimedia slideshow fields when dirtied, but not the fetched atom', () => {
+			const values = {
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowAtom: 'atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
+			};
+			const state = createStateWithChangedFormFields(
+				initialState,
+				'exampleId',
+				values,
+			);
+			expect(
+				getCardMetaFromFormValues(state, 'exampleId', {
+					...formValues,
+					...values,
+				}),
+			).toEqual({
+				headline: 'Bill Shorten',
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
 			});
 		});
 		it('should remove customKicker and showKickerCustom if the kicker is empty', () => {
