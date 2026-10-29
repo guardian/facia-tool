@@ -470,6 +470,8 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
 	lastKnownCollectionId: string | null;
+	// The slideshow is loading until this matches the form's slideshow id
+	fetchedMultimediaSlideshowAtomId?: string;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
@@ -502,8 +504,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 		if (
 			this.props.multimediaSlideshowReplace &&
-			prevProps.multimediaSlideshowAtomId !==
-				this.props.multimediaSlideshowAtomId
+			(!prevProps.multimediaSlideshowReplace ||
+				prevProps.multimediaSlideshowAtomId !==
+					this.props.multimediaSlideshowAtomId)
 		) {
 			this.debouncedFetchAndSetMultimediaSlideshowAtom();
 		}
@@ -573,22 +576,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	};
 
 	private handleMultimediaSlideshowFirstLoad = async () => {
-		if (!this.props.multimediaSlideshowReplace) {
+		const atomId = this.props.multimediaSlideshowAtomId;
+		if (!this.props.multimediaSlideshowReplace || !atomId) {
 			return;
 		}
-		if (!this.props.multimediaSlideshowAtomId) {
-			// Cards saved before the id was stored only have the URL; setting the id triggers the fetch
-			const atomIdFromUrl = extractMultimediaSlideshowAtomId(
-				this.props.multimediaSlideshowUrl,
-			);
-			if (atomIdFromUrl) {
-				this.props.change('multimediaSlideshowAtomId', atomIdFromUrl);
-			}
+		const atomResponse = await this.getMultimediaSlideshowAtom(atomId);
+		// The editor may have pasted another URL while this loaded
+		if (atomId !== this.props.multimediaSlideshowAtomId) {
 			return;
 		}
-		const atomResponse = await this.getMultimediaSlideshowAtom(
-			this.props.multimediaSlideshowAtomId,
-		);
 
 		// Redux form prefers empty strings to undefined values
 		const atom = isAtom(atomResponse) ? atomResponse : '';
@@ -602,6 +598,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		} else {
 			this.props.change('multimediaSlideshowAtom', atom);
 		}
+		this.setState({ fetchedMultimediaSlideshowAtomId: atomId });
 	};
 
 	private fetchAndSetMultimediaSlideshowAtom = async (
@@ -615,6 +612,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			? await this.getMultimediaSlideshowThumbnail(atom)
 			: undefined;
 
+		// A slower response for an earlier URL mustn't overwrite the current one
+		if (atomId !== this.props.multimediaSlideshowAtomId) {
+			return;
+		}
+
 		// Redux form prefers empty strings to undefined values
 		this.props.change('multimediaSlideshowAtom', atom ?? '');
 		this.props.change('multimediaSlideshowThumbnail', thumbnail ?? '');
@@ -622,6 +624,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			'multimediaSlideshowAspectRatio',
 			atom?.data.multimediaSlideshow?.aspectRatio ?? '',
 		);
+		this.setState({ fetchedMultimediaSlideshowAtomId: atomId });
 	};
 
 	private getMultimediaSlideshowThumbnail = async (
@@ -738,6 +741,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			snapType,
 			multimediaSlideshowEnabled,
 			multimediaSlideshowReplace,
+			multimediaSlideshowAtomId,
 			multimediaSlideshowAtom,
 			multimediaSlideshowThumbnail,
 		} = this.props;
@@ -751,6 +755,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const multimediaSlideCount = isAtom(multimediaSlideshowAtom)
 			? (multimediaSlideshowAtom.data.multimediaSlideshow?.slides?.length ?? 0)
 			: 0;
+
+		const multimediaSlideshowLoading =
+			!!multimediaSlideshowAtomId &&
+			multimediaSlideshowAtomId !== this.state.fetchedMultimediaSlideshowAtomId;
 
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
@@ -1272,7 +1280,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											)
 										}
 									/>
-									{isAtom(multimediaSlideshowAtom) ? (
+									{multimediaSlideshowLoading ? (
+										<MultimediaSlideshowPreview role="status">
+											Loading slideshow…
+										</MultimediaSlideshowPreview>
+									) : isAtom(multimediaSlideshowAtom) ? (
 										<MultimediaSlideshowPreview>
 											{multimediaSlideshowThumbnail ? (
 												<MultimediaSlideshowPreviewImage
@@ -1360,7 +1372,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					(videoReplace && !isAtom(replacementVideoAtom)) ? (
 						<InvalidWarning warning="You need to provide a valid video" />
 					) : null}
-					{multimediaSlideshowReplace && !isAtom(multimediaSlideshowAtom) ? (
+					{multimediaSlideshowReplace &&
+					!multimediaSlideshowLoading &&
+					!isAtom(multimediaSlideshowAtom) ? (
 						<InvalidWarning warning="You need to provide a valid slideshow atom embed URL" />
 					) : null}
 				</div>
@@ -1379,7 +1393,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
 							(videoReplace && !isAtom(replacementVideoAtom)) ||
-							(multimediaSlideshowReplace && !isAtom(multimediaSlideshowAtom))
+							(multimediaSlideshowReplace &&
+								(multimediaSlideshowLoading ||
+									!isAtom(multimediaSlideshowAtom)))
 						}
 						size="l"
 						data-testid="edit-form-save-button"
