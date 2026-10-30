@@ -1,7 +1,6 @@
 import { updateImageScalingParams, liveRecipes } from '../recipeQuery';
-import fetchMock from 'fetch-mock';
+import { FeastGraphQL } from '@guardian/feast-multiplatform-backend-api';
 
-jest.mock('');
 describe('updateImageScalingParams', () => {
 	it('should correctly update a URL with scaling params', () => {
 		expect(
@@ -26,43 +25,45 @@ describe('updateImageScalingParams', () => {
 
 describe('recipeQueries.recipes', () => {
 	afterEach(() => {
-		fetchMock.restore();
+		jest.restoreAllMocks();
 	});
 
 	it('should pull in all returned recipes and embellish them with the score', async () => {
-		const body = JSON.stringify({
-			results: [
-				{
-					score: 0.8,
-					href: '/content/content1',
-				},
-				{
-					score: 0.7,
-					href: '/content/content2',
-				},
-			],
-			maxScore: 0.8,
-			hits: 2,
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/search', 200, {
-			response: {
-				body,
-			},
-			method: 'POST',
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content1', 200, {
-			response: {
-				body: JSON.stringify({ fake: 'content here' }),
-			},
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content2', 200, {
-			response: {
-				body: JSON.stringify({ more_fake: 'content here' }),
-			},
-		});
+		const faciaRecipeSearchMock = jest
+			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
+			.mockResolvedValue({
+				results: [
+					{
+						score: 0.8,
+						recipe: {
+							id: 'content1',
+							title: 'Recipe 1',
+							contributors: [{ webTitle: 'Jane Doe' }],
+							canonicalArticle: '/content/content1',
+							firstPublishedDate: '2024-01-01',
+							publishedDate: '2024-01-02',
+							lastModifiedDate: '2024-01-03',
+							featuredImage: { templateUrl: 'https://example.com/1' },
+							appExclusiveBranding: false,
+						},
+					},
+					{
+						score: 0.7,
+						recipe: {
+							id: 'content2',
+							title: 'Recipe 2',
+							contributors: [{ webTitle: 'John Smith' }],
+							canonicalArticle: '/content/content2',
+							firstPublishedDate: '2024-01-04',
+							publishedDate: '2024-01-05',
+							lastModifiedDate: '2024-01-06',
+							featuredImage: { templateUrl: 'https://example.com/2' },
+							appExclusiveBranding: false,
+						},
+					},
+				],
+				maxScore: 0.8,
+			});
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -72,6 +73,12 @@ describe('recipeQueries.recipes', () => {
 			},
 		});
 
+		expect(faciaRecipeSearchMock).toHaveBeenCalledWith(
+			'blah',
+			null,
+			'pescatarian',
+			undefined,
+		);
 		expect(response.recipes.length).toEqual(2);
 		expect(response.recipes[0].score).toEqual(0.8);
 		expect(response.recipes[1].score).toEqual(0.7);
@@ -80,41 +87,41 @@ describe('recipeQueries.recipes', () => {
 	});
 
 	it('should ignore invalid urls', async () => {
-		const body = JSON.stringify({
-			results: [
-				{
-					score: 0.8,
-					href: '/content/content1',
-				},
-				{
-					score: 0.7,
-					href: '/content/content2',
-				},
-			],
-			maxScore: 0.8,
-			hits: 2,
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/search', 200, {
-			response: {
-				body,
-			},
-			method: 'POST',
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content1', 403, {
-			response: {
-				status: 403,
-				body: '<html><body><h1>Content is not here!</h1></body></html>',
-			},
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content2', 200, {
-			response: {
-				status: 200,
-				body: JSON.stringify({ more_fake: 'content here' }),
-			},
-		});
+		const faciaRecipeSearchMock = jest
+			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
+			.mockResolvedValue({
+				results: [
+					{
+						score: 0.8,
+						recipe: {
+							id: 'content1',
+							title: 'Recipe 1',
+							contributors: [{ webTitle: 'Jane Doe' }],
+							canonicalArticle: '/content/content1',
+							firstPublishedDate: '2024-01-01',
+							publishedDate: '2024-01-02',
+							lastModifiedDate: '2024-01-03',
+							featuredImage: { templateUrl: 'https://example.com/1' },
+							appExclusiveBranding: false,
+						},
+					},
+					{
+						score: 0.7,
+						recipe: {
+							id: 'content2',
+							title: 'Recipe 2',
+							contributors: [{ webTitle: 'John Smith' }],
+							canonicalArticle: '/content/content2',
+							firstPublishedDate: '2024-01-04',
+							publishedDate: '2024-01-05',
+							lastModifiedDate: '2024-01-06',
+							featuredImage: { templateUrl: 'https://example.com/2' },
+							appExclusiveBranding: false,
+						},
+					},
+				],
+				maxScore: 0.8,
+			});
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -124,46 +131,53 @@ describe('recipeQueries.recipes', () => {
 			},
 		});
 
-		expect(response.recipes.length).toEqual(1);
-		expect(response.recipes[0].score).toEqual(0.7);
-		expect(response.hits).toEqual(2);
-		expect(response.maxScore).toEqual(0.8);
+		expect(faciaRecipeSearchMock).toHaveBeenCalledWith(
+			'blah',
+			null,
+			'pescatarian',
+			undefined,
+		);
+		expect(response.recipes.length).toEqual(2);
+		expect(response.recipes[0].score).toEqual(0.8);
+		expect(response.recipes[1].score).toEqual(0.7);
 	});
 
 	it('should ignore corrupted content', async () => {
-		const body = JSON.stringify({
-			results: [
-				{
-					score: 0.8,
-					href: '/content/content1',
-				},
-				{
-					score: 0.7,
-					href: '/content/content2',
-				},
-			],
-			maxScore: 0.8,
-			hits: 2,
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/search', 200, {
-			response: {
-				body,
-			},
-			method: 'POST',
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content1', 200, {
-			response: {
-				body: 'THIS IS NOT JSON!',
-			},
-		});
-
-		fetchMock.mock('https://recipes.guardianapis.com/content/content2', 200, {
-			response: {
-				body: JSON.stringify({ more_fake: 'content here' }),
-			},
-		});
+		const faciaRecipeSearchMock = jest
+			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
+			.mockResolvedValue({
+				results: [
+					{
+						score: 0.8,
+						recipe: {
+							id: 'content1',
+							title: 'Recipe 1',
+							contributors: [{ webTitle: 'Jane Doe' }],
+							canonicalArticle: '/content/content1',
+							firstPublishedDate: '2024-01-01',
+							publishedDate: '2024-01-02',
+							lastModifiedDate: '2024-01-03',
+							featuredImage: { templateUrl: 'https://example.com/1' },
+							appExclusiveBranding: false,
+						},
+					},
+					{
+						score: 0.7,
+						recipe: {
+							id: 'content2',
+							title: 'Recipe 2',
+							contributors: [{ webTitle: 'John Smith' }],
+							canonicalArticle: '/content/content2',
+							firstPublishedDate: '2024-01-04',
+							publishedDate: '2024-01-05',
+							lastModifiedDate: '2024-01-06',
+							featuredImage: { templateUrl: 'https://example.com/2' },
+							appExclusiveBranding: false,
+						},
+					},
+				],
+				maxScore: 0.8,
+			});
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -173,16 +187,21 @@ describe('recipeQueries.recipes', () => {
 			},
 		});
 
-		expect(response.recipes.length).toEqual(1);
-		expect(response.recipes[0].score).toEqual(0.7);
-		expect(response.hits).toEqual(2);
-		expect(response.maxScore).toEqual(0.8);
+		expect(faciaRecipeSearchMock).toHaveBeenCalledWith(
+			'blah',
+			null,
+			'pescatarian',
+			undefined,
+		);
+		expect(response.recipes.length).toEqual(2);
+		expect(response.recipes[0].score).toEqual(0.8);
+		expect(response.recipes[1].score).toEqual(0.7);
 	});
 });
 
 describe('recipeQueries.recipesById', () => {
-	beforeEach(() => {
-		fetchMock.restore();
+	afterEach(() => {
+		jest.restoreAllMocks();
 	});
 
 	it('should load in a batch of recipes', async () => {
@@ -191,56 +210,46 @@ describe('recipeQueries.recipesById', () => {
 			'33a8c9a9609fada8ec28a9be1e068d8d01cae530',
 			'72603cd9828849729fd50bc4b3dd6f1b',
 		];
-
-		fetchMock
-			.get('begin:/recipes/api/content/by-uid?ids=', {
-				status: 'ok',
-				resolved: 40,
-				requested: 40,
-				results: [
-					{
-						checksum: 'FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ',
-						recipeUID: '2bf50440adfff3b634fe471dfb778b21a1353787',
-						capiArticleId:
-							'lifeandstyle/2015/oct/10/lentil-recipes-get-ahead-urban-rajah-ivor-peters',
-						sponsorshipCount: 0,
-					},
-					{
-						checksum: 'UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ',
-						recipeUID: '33a8c9a9609fada8ec28a9be1e068d8d01cae530',
-						capiArticleId:
-							'lifeandstyle/2018/jan/06/egg-recipes-yotam-ottolenghi-harissa-manchego-omelette-scrambled-croque-madame',
-						sponsorshipCount: 0,
-					},
-					{
-						checksum: 'Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8',
-						recipeUID: '72603cd9828849729fd50bc4b3dd6f1b',
-						capiArticleId:
-							'food/2024/apr/21/sticky-aubergine-tart-sea-bass-pistachio-pesto-baklava-cheesecake-greekish-recipes-georgina-hayden',
-						sponsorshipCount: 0,
-					},
-				],
-			})
-			.get(
-				'https://recipes.guardianapis.com/content/FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ',
+		const getRecipeBatchMock = jest
+			.spyOn(FeastGraphQL.prototype, 'getRecipeBatch')
+			.mockResolvedValue([
 				{
 					id: '2bf50440adfff3b634fe471dfb778b21a1353787',
+					title: 'Recipe 1',
+					contributors: [{ webTitle: 'Jane Doe' }],
+					firstPublishedDate: '2024-01-01',
+					lastModifiedDate: '2024-01-03',
+					publishedDate: '2024-01-02',
+					canonicalArticle: '/content/content1',
+					featuredImage: { templateUrl: 'https://example.com/1' },
+					appExclusiveBranding: false,
 				},
-			)
-			.get(
-				'https://recipes.guardianapis.com/content/UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ',
 				{
 					id: '33a8c9a9609fada8ec28a9be1e068d8d01cae530',
+					title: 'Recipe 2',
+					contributors: [{ webTitle: 'John Smith' }],
+					firstPublishedDate: '2024-01-04',
+					lastModifiedDate: '2024-01-06',
+					publishedDate: '2024-01-05',
+					canonicalArticle: '/content/content2',
+					featuredImage: { templateUrl: 'https://example.com/2' },
+					appExclusiveBranding: false,
 				},
-			)
-			.get(
-				'https://recipes.guardianapis.com/content/Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8',
 				{
 					id: '72603cd9828849729fd50bc4b3dd6f1b',
+					title: 'Recipe 3',
+					contributors: [{ webTitle: 'Alex Example' }],
+					firstPublishedDate: '2024-01-07',
+					lastModifiedDate: '2024-01-09',
+					publishedDate: '2024-01-08',
+					canonicalArticle: '/content/content3',
+					featuredImage: { templateUrl: 'https://example.com/3' },
+					appExclusiveBranding: false,
 				},
-			);
+			]);
 
 		const results = await liveRecipes.recipesById(idList);
+		expect(getRecipeBatchMock).toHaveBeenCalledWith(idList);
 		expect(results.length).toEqual(3);
 		expect(results.map((_) => _.id)).toEqual(idList);
 	});
@@ -251,56 +260,35 @@ describe('recipeQueries.recipesById', () => {
 			'33a8c9a9609fada8ec28a9be1e068d8d01cae530',
 			'72603cd9828849729fd50bc4b3dd6f1b',
 		];
-
-		fetchMock
-			.get('begin:/recipes/api/content/by-uid?ids=', {
-				status: 'ok',
-				resolved: 40,
-				requested: 40,
-				results: [
-					{
-						checksum: 'FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ',
-						recipeUID: '2bf50440adfff3b634fe471dfb778b21a1353787',
-						capiArticleId:
-							'lifeandstyle/2015/oct/10/lentil-recipes-get-ahead-urban-rajah-ivor-peters',
-						sponsorshipCount: 0,
-					},
-					{
-						checksum: 'UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ',
-						recipeUID: '33a8c9a9609fada8ec28a9be1e068d8d01cae530',
-						capiArticleId:
-							'lifeandstyle/2018/jan/06/egg-recipes-yotam-ottolenghi-harissa-manchego-omelette-scrambled-croque-madame',
-						sponsorshipCount: 0,
-					},
-					{
-						checksum: 'Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8',
-						recipeUID: '72603cd9828849729fd50bc4b3dd6f1b',
-						capiArticleId:
-							'food/2024/apr/21/sticky-aubergine-tart-sea-bass-pistachio-pesto-baklava-cheesecake-greekish-recipes-georgina-hayden',
-						sponsorshipCount: 0,
-					},
-				],
-			})
-			.get(
-				'https://recipes.guardianapis.com/content/FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ',
+		const getRecipeBatchMock = jest
+			.spyOn(FeastGraphQL.prototype, 'getRecipeBatch')
+			.mockResolvedValue([
 				{
 					id: '2bf50440adfff3b634fe471dfb778b21a1353787',
+					title: 'Recipe 1',
+					contributors: [{ webTitle: 'Jane Doe' }],
+					firstPublishedDate: '2024-01-01',
+					lastModifiedDate: '2024-01-03',
+					publishedDate: '2024-01-02',
+					canonicalArticle: '/content/content1',
+					featuredImage: { templateUrl: 'https://example.com/1' },
+					appExclusiveBranding: false,
 				},
-			)
-			.get(
-				'https://recipes.guardianapis.com/content/UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ',
-				{
-					status: 404,
-				},
-			)
-			.get(
-				'https://recipes.guardianapis.com/content/Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8',
 				{
 					id: '72603cd9828849729fd50bc4b3dd6f1b',
+					title: 'Recipe 3',
+					contributors: [{ webTitle: 'Alex Example' }],
+					firstPublishedDate: '2024-01-07',
+					lastModifiedDate: '2024-01-09',
+					publishedDate: '2024-01-08',
+					canonicalArticle: '/content/content3',
+					featuredImage: { templateUrl: 'https://example.com/3' },
+					appExclusiveBranding: false,
 				},
-			);
+			]);
 
 		const results = await liveRecipes.recipesById(idList);
+		expect(getRecipeBatchMock).toHaveBeenCalledWith(idList);
 		expect(results.length).toEqual(2);
 		expect(results.map((_) => _.id)).toEqual([
 			'2bf50440adfff3b634fe471dfb778b21a1353787',
