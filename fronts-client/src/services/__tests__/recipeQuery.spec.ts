@@ -28,42 +28,41 @@ describe('recipeQueries.recipes', () => {
 		jest.restoreAllMocks();
 	});
 
+	const buildRecipe = (overrides: Record<string, unknown> = {}) => ({
+		id: 'content1',
+		title: 'Recipe 1',
+		contributors: [{ webTitle: 'Jane Doe' }],
+		canonicalArticle: '/content/content1',
+		firstPublishedDate: '2024-01-01',
+		publishedDate: '2024-01-02',
+		lastModifiedDate: '2024-01-03',
+		featuredImage: { templateUrl: 'https://example.com/1' },
+		appExclusiveBranding: false,
+		...overrides,
+	});
+
+	const setupMock = (results: Array<{ score?: number; recipe?: any }>) =>
+		jest.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch').mockResolvedValue({
+			results,
+			maxScore: Math.max(
+				...results.map(
+					(result: { score?: number; recipe?: any }) => result.score ?? 0,
+				),
+				0,
+			),
+		} as any);
+
 	it('should pull in all returned recipes and embellish them with the score', async () => {
-		const faciaRecipeSearchMock = jest
-			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
-			.mockResolvedValue({
-				results: [
-					{
-						score: 0.8,
-						recipe: {
-							id: 'content1',
-							title: 'Recipe 1',
-							contributors: [{ webTitle: 'Jane Doe' }],
-							canonicalArticle: '/content/content1',
-							firstPublishedDate: '2024-01-01',
-							publishedDate: '2024-01-02',
-							lastModifiedDate: '2024-01-03',
-							featuredImage: { templateUrl: 'https://example.com/1' },
-							appExclusiveBranding: false,
-						},
-					},
-					{
-						score: 0.7,
-						recipe: {
-							id: 'content2',
-							title: 'Recipe 2',
-							contributors: [{ webTitle: 'John Smith' }],
-							canonicalArticle: '/content/content2',
-							firstPublishedDate: '2024-01-04',
-							publishedDate: '2024-01-05',
-							lastModifiedDate: '2024-01-06',
-							featuredImage: { templateUrl: 'https://example.com/2' },
-							appExclusiveBranding: false,
-						},
-					},
-				],
-				maxScore: 0.8,
-			});
+		const faciaRecipeSearchMock = setupMock([
+			{
+				score: 0.8,
+				recipe: buildRecipe({ id: 'content1', title: 'Recipe 1' }),
+			},
+			{
+				score: 0.7,
+				recipe: buildRecipe({ id: 'content2', title: 'Recipe 2' }),
+			},
+		]);
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -86,42 +85,18 @@ describe('recipeQueries.recipes', () => {
 		expect(response.maxScore).toEqual(0.8);
 	});
 
-	it('should ignore invalid urls', async () => {
-		const faciaRecipeSearchMock = jest
-			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
-			.mockResolvedValue({
-				results: [
-					{
-						score: 0.8,
-						recipe: {
-							id: 'content1',
-							title: 'Recipe 1',
-							contributors: [{ webTitle: 'Jane Doe' }],
-							canonicalArticle: '/content/content1',
-							firstPublishedDate: '2024-01-01',
-							publishedDate: '2024-01-02',
-							lastModifiedDate: '2024-01-03',
-							featuredImage: { templateUrl: 'https://example.com/1' },
-							appExclusiveBranding: false,
-						},
-					},
-					{
-						score: 0.7,
-						recipe: {
-							id: 'content2',
-							title: 'Recipe 2',
-							contributors: [{ webTitle: 'John Smith' }],
-							canonicalArticle: '/content/content2',
-							firstPublishedDate: '2024-01-04',
-							publishedDate: '2024-01-05',
-							lastModifiedDate: '2024-01-06',
-							featuredImage: { templateUrl: 'https://example.com/2' },
-							appExclusiveBranding: false,
-						},
-					},
-				],
-				maxScore: 0.8,
-			});
+	it('should ignore recipe entries without a recipe payload', async () => {
+		const faciaRecipeSearchMock = setupMock([
+			{ score: 0.9, recipe: null },
+			{
+				score: 0.8,
+				recipe: buildRecipe({ id: 'content1', title: 'Recipe 1' }),
+			},
+			{
+				score: 0.7,
+				recipe: buildRecipe({ id: 'content2', title: 'Recipe 2' }),
+			},
+		]);
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -138,46 +113,29 @@ describe('recipeQueries.recipes', () => {
 			undefined,
 		);
 		expect(response.recipes.length).toEqual(2);
-		expect(response.recipes[0].score).toEqual(0.8);
-		expect(response.recipes[1].score).toEqual(0.7);
+		expect(response.recipes.map((recipe) => recipe.id)).toEqual([
+			'content1',
+			'content2',
+		]);
+		expect(response.maxScore).toEqual(0.9);
 	});
 
-	it('should ignore corrupted content', async () => {
-		const faciaRecipeSearchMock = jest
-			.spyOn(FeastGraphQL.prototype, 'faciaRecipeSearch')
-			.mockResolvedValue({
-				results: [
-					{
-						score: 0.8,
-						recipe: {
-							id: 'content1',
-							title: 'Recipe 1',
-							contributors: [{ webTitle: 'Jane Doe' }],
-							canonicalArticle: '/content/content1',
-							firstPublishedDate: '2024-01-01',
-							publishedDate: '2024-01-02',
-							lastModifiedDate: '2024-01-03',
-							featuredImage: { templateUrl: 'https://example.com/1' },
-							appExclusiveBranding: false,
-						},
-					},
-					{
-						score: 0.7,
-						recipe: {
-							id: 'content2',
-							title: 'Recipe 2',
-							contributors: [{ webTitle: 'John Smith' }],
-							canonicalArticle: '/content/content2',
-							firstPublishedDate: '2024-01-04',
-							publishedDate: '2024-01-05',
-							lastModifiedDate: '2024-01-06',
-							featuredImage: { templateUrl: 'https://example.com/2' },
-							appExclusiveBranding: false,
-						},
-					},
-				],
-				maxScore: 0.8,
-			});
+	it('should allow missing optional metadata without crashing', async () => {
+		const faciaRecipeSearchMock = setupMock([
+			{
+				score: 0.6,
+				recipe: buildRecipe({
+					id: 'content3',
+					title: 'Recipe 3',
+					contributors: [],
+					canonicalArticle: undefined,
+					firstPublishedDate: undefined,
+					publishedDate: undefined,
+					lastModifiedDate: undefined,
+					featuredImage: undefined,
+				}),
+			},
+		]);
 
 		const response = await liveRecipes.recipes({
 			queryText: 'blah',
@@ -193,9 +151,18 @@ describe('recipeQueries.recipes', () => {
 			'pescatarian',
 			undefined,
 		);
-		expect(response.recipes.length).toEqual(2);
-		expect(response.recipes[0].score).toEqual(0.8);
-		expect(response.recipes[1].score).toEqual(0.7);
+		expect(response.recipes).toHaveLength(1);
+		expect(response.recipes[0]).toMatchObject({
+			id: 'content3',
+			title: 'Recipe 3',
+			byline: [],
+			canonicalArticle: '',
+			firstPublishedDate: '',
+			publishedDate: '',
+			lastModifiedDate: '',
+			imageTemplateUrl: undefined,
+		});
+		expect(response.maxScore).toEqual(0.6);
 	});
 });
 
