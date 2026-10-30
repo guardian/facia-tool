@@ -1,6 +1,6 @@
 import configureStore from 'util/configureStore';
 import fetchMock from 'fetch-mock';
-import { fetchChefs, fetchChefsById } from '../chefsBundle';
+import { fetchChefs } from '../chefsBundle';
 import { selectors as chefSelectors } from 'bundles/chefsBundle';
 
 interface MockedResponse {
