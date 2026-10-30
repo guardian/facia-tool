@@ -56,7 +56,7 @@
 	"dependencies": {
 		"@babel/runtime": "^7.0.0",
 		"@emotion/react": "^11.14.0",
-		"@guardian/feast-multiplatform-backend-api": "../feast-multiplatform-backend-api-2.0.1.tgz",
+		"@guardian/feast-multiplatform-backend-api": "^3.0.0",
 		"@guardian/stand": "0.0.73",
 		"@types/lodash": "^4.14.117",
 		"@types/lodash.throttle": "^4.1.4",
@@ -72,7 +72,6 @@
 		"cross-fetch": "4.0.0",
 		"date-fns": "^1.29.0",
 		"downshift": "^3.1.7",
-		"feast-multiplatform-backend-api": "file:../feast-multiplatform-backend-api-2.0.1.tgz",
 		"fetch": "^1.1.0",
 		"grid-util-js": "^1.1.0",
 		"history": "^5.3.0",

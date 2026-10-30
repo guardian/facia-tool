@@ -1,4 +1,3 @@
-import url from '../constants/url';
 import { RecipeNew, RecipeSearchHitNew } from '../types/Recipe';
 import Raven from 'raven-js';
 import {
@@ -7,6 +6,7 @@ import {
 	FeastKeywordType,
 } from '../types/FeastKeyword';
 import { FeastGraphQL } from '@guardian/feast-multiplatform-backend-api';
+import url from '../constants/url';
 
 interface KeyAndCount {
 	key: string;
@@ -129,7 +129,10 @@ const recipeQuery = (baseUrl: string) => {
 								profileId: chefOrByline.contributorId,
 								displayName: chefOrByline.webTitle,
 								bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
-								webUrl: chefOrByline.webUrl,
+								webUrl: new URL(
+									chefOrByline.contributorId,
+									url.liveUrlPROD,
+								).toString(),
 							};
 						} else {
 							return {
