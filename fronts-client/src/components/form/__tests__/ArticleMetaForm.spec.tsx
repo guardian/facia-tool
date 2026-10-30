@@ -13,6 +13,7 @@ import { State } from 'types/State';
 import ArticleMetaForm from '../ArticleMetaForm';
 import { FUTURE, makeTest } from '../../../fixtures/abTests';
 import { error } from '../../../styleConstants';
+import fetchMock from 'fetch-mock';
 
 const variantMeta: VariantMeta[] = [
 	{ id: 'A', meta: { headline: 'Headline A variant' } },
@@ -55,6 +56,10 @@ const renderForm = (state: State, onSave = jest.fn()) => {
 };
 
 describe('ArticleMetaForm - mini nav', () => {
+	const subnavId = '6d4a8d7a-1048-4a55-87f3-ee6399e36d34';
+	const miniNavUrl = `${window.location.origin}/v2/subnavs/${subnavId}`;
+	const resolveEndpoint = `/custom-subnav/${subnavId}/resolve`;
+	afterEach(() => fetchMock.restore());
 	const miniNavWarning =
 		'Not implemented: you can save this url but the mini nav will not yet show';
 	const getMiniNavState = (
@@ -106,7 +111,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(input.type).toBe('text');
 	});
 
-	it('shows an associated red warning for entered text and removes it when cleared', () => {
+	it('shows an associated red warning for entered text and removes it when cleared', async () => {
 		const { getByLabelText, getByText, getByRole, queryByText } = renderForm(
 			getMiniNavState({ showMiniNav: true }),
 		);
@@ -114,17 +119,24 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(queryByText(miniNavWarning)).toBeNull();
 
 		fireEvent.change(input, { target: { value: 'not a valid URL' } });
+		await wait(() =>
+			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+		);
 
 		const warning = getByText(miniNavWarning);
 		expect(warning).toHaveStyleRule('color', error.primary);
 		const warningContainer = getByRole('status');
-		expect(input.getAttribute('aria-describedby')).toBe(warningContainer.id);
+		expect(input.getAttribute('aria-describedby')).toContain(
+			warningContainer.id,
+		);
 		expect(warningContainer.querySelector('svg')).not.toBeNull();
 
 		fireEvent.change(input, { target: { value: '' } });
 
 		expect(queryByText(miniNavWarning)).toBeNull();
-		expect(input.hasAttribute('aria-describedby')).toBe(false);
+		expect(input.getAttribute('aria-describedby')).not.toContain(
+			warningContainer.id,
+		);
 	});
 
 	it('retains the URL when disabled and restores it when re-enabled', () => {
@@ -146,7 +158,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		);
 	});
 
-	it('allows saving entered text despite the not implemented warning', () => {
+	it('blocks saving entered text that does not resolve', async () => {
 		const onSave = jest.fn();
 		const { getByLabelText, getByTestId, getByText } = renderForm(
 			getMiniNavState(),
@@ -160,13 +172,155 @@ describe('ArticleMetaForm - mini nav', () => {
 
 		fireEvent.click(getByTestId('edit-form-save-button'));
 
+		await wait(() =>
+			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+		);
+		expect(onSave).not.toHaveBeenCalled();
+	});
+
+	it('requires a URL when mini nav is enabled', () => {
+		const onSave = jest.fn();
+		const { getByLabelText, getByText, getByTestId } = renderForm(
+			getMiniNavState(),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		expect(getByText('Enter a custom subnav URL.')).toBeTruthy();
+		expect(getByTestId('edit-form-save-button').hasAttribute('disabled')).toBe(
+			true,
+		);
+		expect(onSave).not.toHaveBeenCalled();
+	});
+
+	it('blocks saving until resolution finishes, then rechecks before saving', async () => {
+		fetchMock.get(resolveEndpoint, { id: subnavId, title: 'Published title' });
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId } = renderForm(
+			getMiniNavState(),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		fireEvent.change(getByLabelText('Custom nav URL'), {
+			target: { value: miniNavUrl },
+		});
+		const save = getByTestId('edit-form-save-button');
+		expect(save.hasAttribute('disabled')).toBe(true);
+		fireEvent.click(save);
+		expect(onSave).not.toHaveBeenCalled();
+		await wait(() => expect(save.hasAttribute('disabled')).toBe(false));
+		expect(fetchMock.calls(resolveEndpoint)).toHaveLength(1);
+		fireEvent.click(save);
+		await wait(() =>
+			expect(onSave).toHaveBeenCalledWith(
+				expect.objectContaining({ showMiniNav: true, miniNavUrl }),
+				undefined,
+			),
+		);
+		expect(fetchMock.calls(resolveEndpoint)).toHaveLength(2);
+	});
+
+	it('does not save a subnav unpublished after the initial resolution', async () => {
+		fetchMock.getOnce(resolveEndpoint, { id: subnavId, title: 'Published' });
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId, getByText } = renderForm(
+			getMiniNavState(),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		fireEvent.change(getByLabelText('Custom nav URL'), {
+			target: { value: miniNavUrl },
+		});
+		const save = getByTestId('edit-form-save-button');
+		await wait(() => expect(save.hasAttribute('disabled')).toBe(false));
+		fetchMock.getOnce(
+			resolveEndpoint,
+			{ status: 404 },
+			{ overwriteRoutes: true },
+		);
+		fireEvent.click(save);
+		await wait(() =>
+			expect(
+				getByText('This subnav does not exist or is not published.'),
+			).toBeTruthy(),
+		);
+		expect(onSave).not.toHaveBeenCalled();
+	});
+
+	it('ignores a slower resolution after the URL changes', async () => {
+		let finishFirst: (body: { id: string; title: string }) => void = () => {};
+		const firstResponse = new Promise<{ id: string; title: string }>(
+			(resolve) => {
+				finishFirst = resolve;
+			},
+		);
+		fetchMock.get(resolveEndpoint, () => firstResponse);
+		const { getByLabelText, getByText, getByTestId } =
+			renderForm(getMiniNavState());
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		const input = getByLabelText('Custom nav URL');
+		fireEvent.change(input, { target: { value: miniNavUrl } });
+		await wait(() => expect(fetchMock.calls(resolveEndpoint)).toHaveLength(1));
+		fireEvent.change(input, { target: { value: 'invalid' } });
+		finishFirst({ id: subnavId, title: 'Old subnav' });
+		await wait(() =>
+			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+		);
+		expect(getByTestId('edit-form-save-button').hasAttribute('disabled')).toBe(
+			true,
+		);
+	});
+
+	it('does not save stale values if mini nav settings change during submit', async () => {
+		let finishSubmit: (body: { id: string; title: string }) => void = () => {};
+		const submitResponse = new Promise<{ id: string; title: string }>(
+			(resolve) => {
+				finishSubmit = resolve;
+			},
+		);
+		let requests = 0;
+		fetchMock.get(resolveEndpoint, () => {
+			requests += 1;
+			return requests === 1
+				? { id: subnavId, title: 'Published' }
+				: submitResponse;
+		});
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId, store } = renderForm(
+			getMiniNavState(),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		fireEvent.change(getByLabelText('Custom nav URL'), {
+			target: { value: miniNavUrl },
+		});
+		const save = getByTestId('edit-form-save-button');
+		await wait(() => expect(save.hasAttribute('disabled')).toBe(false));
+		fireEvent.click(save);
+		await wait(() => expect(requests).toBe(2));
+		expect(save.hasAttribute('disabled')).toBe(true);
+		fireEvent.change(getByLabelText('Custom nav URL'), {
+			target: { value: 'invalid' },
+		});
+		finishSubmit({ id: subnavId, title: 'Published' });
+		await wait(() =>
+			expect(store.getState().form[cardId]?.submitting).toBeFalsy(),
+		);
+		expect(onSave).not.toHaveBeenCalled();
+	});
+
+	it('allows saving with an invalid retained URL when disabled', () => {
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId } = renderForm(
+			getMiniNavState({ showMiniNav: true, miniNavUrl: 'invalid' }),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		fireEvent.click(getByTestId('edit-form-save-button'));
 		expect(onSave).toHaveBeenCalledWith(
-			expect.objectContaining({
-				showMiniNav: true,
-				miniNavUrl: 'not a valid URL',
-			}),
+			expect.objectContaining({ showMiniNav: false, miniNavUrl: 'invalid' }),
 			undefined,
 		);
+		expect(fetchMock.calls()).toHaveLength(0);
 	});
 
 	it('restores enabled settings when the form is opened', () => {
