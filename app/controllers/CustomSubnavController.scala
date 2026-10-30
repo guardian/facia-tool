@@ -42,10 +42,12 @@ class CustomSubnavController(
   def resolvePublishedSubnav(id: String) = AccessAPIAuthAction { _ =>
     NoCache {
       customSubnavApi.getPublishedSubnav(id) match {
-        case Left(_) =>
+        case Left(CustomSubnavApi.DraftSubnav) =>
+          Conflict("Custom subnav is not published, and so cannot be linked")
+        case Left(CustomSubnavApi.ConfigLoadFailed) =>
           InternalServerError("Failed to load published custom subnavs")
         case Right(None) =>
-          NotFound(s"No published custom subnav found with id '$id'")
+          NotFound(s"Custom subnav found with id '$id'")
         case Right(Some(subnav)) =>
           Ok(Json.obj("id" -> subnav.id, "title" -> subnav.header.headerText))
       }

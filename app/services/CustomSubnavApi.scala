@@ -100,11 +100,25 @@ object CustomSubnavConfigFunctions extends Logging {
     else None
 }
 
-class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
+object CustomSubnavApi {
+  sealed trait ResolutionError
+  case object DraftSubnav extends ResolutionError
+  case object ConfigLoadFailed extends ResolutionError
+}
 
-  //todo - think about custom error when draft
-  def getPublishedSubnav(id: String): Either[String, Option[CustomSubnav]] =
-    getConfig().map(_.live.find(_.id == id))
+class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
+  import CustomSubnavApi._
+
+  def getPublishedSubnav(
+      id: String
+  ): Either[ResolutionError, Option[CustomSubnav]] =
+    getConfig().left.map(_ => ConfigLoadFailed).flatMap { config =>
+      config.live.find(_.id == id) match {
+        case Some(subnav)                            => Right(Some(subnav))
+        case None if config.draft.exists(_.id == id) => Left(DraftSubnav)
+        case None                                    => Right(None)
+      }
+    }
 
   def getConfig(): Either[String, CustomSubnavConfig] =
     s3FrontsApi.getCustomSubnav match {

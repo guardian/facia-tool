@@ -270,7 +270,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(getByText('Enter a custom subnav URL.')).toBeTruthy();
 	});
 
-	it.each([404, 500])(
+	it.each([404, 409, 500])(
 		'shows an associated lookup failure (%s)',
 		async (status) => {
 			fetchMock.get(resolveEndpoint, { status });
@@ -282,7 +282,9 @@ describe('ArticleMetaForm - mini nav', () => {
 			expect(alert.textContent).toContain(
 				status === 404
 					? 'This subnav does not exist or is not published.'
-					: 'Could not resolve the custom subnav:',
+					: status === 409
+						? 'Custom subnav is not published, and so cannot be linked'
+						: 'Could not resolve the custom subnav:',
 			);
 			expect(alert).toHaveStyleRule('color', error.primary);
 			expect(
