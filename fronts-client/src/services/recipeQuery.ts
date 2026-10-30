@@ -57,6 +57,7 @@ export interface ChefSearchHit {
 	contributorType: 'Profile' | 'Byline';
 	displayName: string;
 	profileId: string;
+	bio?: string;
 	webUrl?: string;
 	bylineImageUrl?: string;
 }
@@ -129,6 +130,7 @@ const recipeQuery = (baseUrl: string) => {
 								profileId: chefOrByline.contributorId,
 								displayName: chefOrByline.webTitle,
 								bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
+								bio: chefOrByline.bio ?? undefined,
 								webUrl: new URL(
 									chefOrByline.contributorId,
 									url.liveUrlPROD,

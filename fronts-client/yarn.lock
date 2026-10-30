@@ -1403,10 +1403,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@guardian/feast-multiplatform-backend-api@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@guardian/feast-multiplatform-backend-api/-/feast-multiplatform-backend-api-3.0.0.tgz#618b7320688ab1e7a7187b2a7b699030af6edadb"
-  integrity sha512-27oE4mjiKdfhtNMN0Y9tUe9aAUd59754TFFX9Qx4tw5vkXYOfM711sh4l/mPF23knDQUCZUgyF72BIT8V1lvnw==
+"@guardian/feast-multiplatform-backend-api@v4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b":
+  version "4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b"
+  resolved "https://registry.yarnpkg.com/@guardian/feast-multiplatform-backend-api/-/feast-multiplatform-backend-api-4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b.tgz#5ee51f17be3c4d59731bc877afc3ee172295b43a"
+  integrity sha512-6ey5l4mw3GpCfuOY1PfLFOWrxRmJf2JhEBwRecfw1cyFxg22ZtEsLZHGNpQSX53n+zAaRxG36n3uYLd1RHL7UQ==
   dependencies:
     ws "8.18.0"
 

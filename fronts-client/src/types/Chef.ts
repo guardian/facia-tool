@@ -4,4 +4,5 @@ export interface Chef {
 	webTitle: string;
 	webUrl?: string;
 	bylineImageUrl?: string;
+	bio?: string;
 }

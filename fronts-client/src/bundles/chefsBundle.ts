@@ -37,6 +37,7 @@ export const fetchChefs =
 					type: r.contributorType,
 					webTitle: r.displayName,
 					webUrl: r.webUrl,
+					bio: r.bio,
 					bylineImageUrl: r.bylineImageUrl,
 				}));
 			dispatch(actions.fetchSuccess(chefs));
