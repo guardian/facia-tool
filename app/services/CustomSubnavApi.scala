@@ -102,6 +102,10 @@ object CustomSubnavConfigFunctions extends Logging {
 
 class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
 
+  //todo - think about custom error when draft
+  def getPublishedSubnav(id: String): Either[String, Option[CustomSubnav]] =
+    getConfig().map(_.live.find(_.id == id))
+
   def getConfig(): Either[String, CustomSubnavConfig] =
     s3FrontsApi.getCustomSubnav match {
       case None => Right(CustomSubnavConfigFunctions.empty)
