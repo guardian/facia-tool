@@ -120,10 +120,10 @@ describe('ArticleMetaForm - mini nav', () => {
 
 		fireEvent.change(input, { target: { value: 'not a valid URL' } });
 		await wait(() =>
-			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+			expect(getByText('Enter a valid custom subnav URL')).toBeTruthy(),
 		);
 
-		const warning = getByText('Enter a valid custom subnav URL.');
+		const warning = getByText('Enter a valid custom subnav URL');
 		expect(warning).toHaveStyleRule('color', error.primary);
 		const warningContainer = getByRole('alert');
 		expect(input.getAttribute('aria-describedby')).toContain(
@@ -135,7 +135,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		fireEvent.change(input, { target: { value: '' } });
 
 		expect(queryByText(miniNavWarning)).toBeNull();
-		expect(queryByText('Enter a valid custom subnav URL.')).toBeNull();
+		expect(queryByText('Enter a valid custom subnav URL')).toBeNull();
 		expect(getByText('Enter a custom subnav URL.')).toBeTruthy();
 	});
 
@@ -172,7 +172,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		fireEvent.click(getByTestId('edit-form-save-button'));
 
 		await wait(() =>
-			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+			expect(getByText('Enter a valid custom subnav URL')).toBeTruthy(),
 		);
 		expect(onSave).not.toHaveBeenCalled();
 	});
@@ -239,9 +239,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		);
 		fireEvent.click(save);
 		await wait(() =>
-			expect(
-				getByText('This subnav does not exist or is not published.'),
-			).toBeTruthy(),
+			expect(getByText('This subnav does not exist')).toBeTruthy(),
 		);
 		expect(onSave).not.toHaveBeenCalled();
 		expect(queryByText('Published')).toBeNull();
@@ -260,8 +258,12 @@ describe('ArticleMetaForm - mini nav', () => {
 			'color',
 			theme.colors.greyMedium,
 		);
+		expect(getByText('Resolving custom subnav...')).toHaveStyleRule(
+			'text-align',
+			'left',
+		);
 		await wait(() =>
-			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+			expect(getByText('Enter a valid custom subnav URL')).toBeTruthy(),
 		);
 		fireEvent.change(input, { target: { value: miniNavUrl } });
 		await wait(() => expect(getByText('Published title')).toBeTruthy());
@@ -279,9 +281,10 @@ describe('ArticleMetaForm - mini nav', () => {
 			);
 			await wait(() => expect(getByRole('alert')).toBeTruthy());
 			const alert = getByRole('alert');
+			expect(alert).toHaveStyleRule('text-align', 'right');
 			expect(alert.textContent).toContain(
 				status === 404
-					? 'This subnav does not exist or is not published.'
+					? 'This subnav does not exist'
 					: status === 409
 						? 'Custom subnav is not published, and so cannot be linked'
 						: 'Could not resolve the custom subnav:',
@@ -311,7 +314,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		fireEvent.change(input, { target: { value: 'invalid' } });
 		finishFirst({ id: subnavId, title: 'Old subnav' });
 		await wait(() =>
-			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+			expect(getByText('Enter a valid custom subnav URL')).toBeTruthy(),
 		);
 		expect(getByTestId('edit-form-save-button').hasAttribute('disabled')).toBe(
 			true,
@@ -371,6 +374,115 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(fetchMock.calls()).toHaveLength(0);
 	});
 
+	it.each([404, 409, 500])(
+		'can disable mini nav and save after a resolution error (%s)',
+		async (status) => {
+			fetchMock.get(resolveEndpoint, { status });
+			const onSave = jest.fn();
+			const { getByLabelText, getByRole, getByTestId, queryByRole } =
+				renderForm(getMiniNavState({ showMiniNav: true, miniNavUrl }), onSave);
+			await wait(() => expect(getByRole('alert')).toBeTruthy());
+			fireEvent.click(getByLabelText('Enable mini nav'));
+			expect(queryByRole('alert')).toBeNull();
+			fireEvent.click(getByTestId('edit-form-save-button'));
+			expect(onSave).toHaveBeenCalledWith(
+				expect.objectContaining({ showMiniNav: false, miniNavUrl }),
+				undefined,
+			);
+			expect(fetchMock.calls(resolveEndpoint)).toHaveLength(1);
+		},
+	);
+
+	it('can disable mini nav after a submit-time validation error', async () => {
+		fetchMock.getOnce(resolveEndpoint, { id: subnavId, title: 'Published' });
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId, getByRole } = renderForm(
+			getMiniNavState({ showMiniNav: true, miniNavUrl }),
+			onSave,
+		);
+		fireEvent.click(getByLabelText('Quote headline'));
+		const save = getByTestId('edit-form-save-button');
+		await wait(() => expect(save.hasAttribute('disabled')).toBe(false));
+		fetchMock.getOnce(
+			resolveEndpoint,
+			{ status: 409 },
+			{ overwriteRoutes: true },
+		);
+		fireEvent.click(save);
+		await wait(() => expect(getByRole('alert')).toBeTruthy());
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		expect(save.hasAttribute('disabled')).toBe(false);
+		fireEvent.click(save);
+		expect(onSave).toHaveBeenCalledWith(
+			expect.objectContaining({ showMiniNav: false, miniNavUrl }),
+			undefined,
+		);
+	});
+
+	it('ignores a pending lookup after disabling and resolves again when re-enabled', async () => {
+		let finishLookup: (body: { id: string; title: string }) => void = () => {};
+		const pending = new Promise<{ id: string; title: string }>((resolve) => {
+			finishLookup = resolve;
+		});
+		fetchMock.getOnce(resolveEndpoint, () => pending);
+		const onSave = jest.fn();
+		const { getByLabelText, getByTestId, getByText, queryByText } = renderForm(
+			getMiniNavState({ showMiniNav: true, miniNavUrl }),
+			onSave,
+		);
+		await wait(() => expect(fetchMock.calls(resolveEndpoint)).toHaveLength(1));
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		fireEvent.click(getByTestId('edit-form-save-button'));
+		expect(onSave).toHaveBeenCalledWith(
+			expect.objectContaining({ showMiniNav: false, miniNavUrl }),
+			undefined,
+		);
+		finishLookup({ id: subnavId, title: 'Old title' });
+		await fetchMock.flush();
+		expect(queryByText('Old title')).toBeNull();
+		fetchMock.getOnce(
+			resolveEndpoint,
+			{ id: subnavId, title: 'Current title' },
+			{ overwriteRoutes: true },
+		);
+		fireEvent.click(getByLabelText('Enable mini nav'));
+		expect((getByLabelText('Custom nav URL') as HTMLInputElement).value).toBe(
+			miniNavUrl,
+		);
+		expect(getByTestId('edit-form-save-button').hasAttribute('disabled')).toBe(
+			true,
+		);
+		await wait(() => expect(getByText('Current title')).toBeTruthy());
+		expect(queryByText('Old title')).toBeNull();
+	});
+
+	it.each(['feature switch disabled', 'Flex Special'])(
+		'preserves hidden settings and allows unrelated edits with %s',
+		(hiddenBy) => {
+			const savedSettings = { showMiniNav: true, miniNavUrl: 'invalid' };
+			const state = getMiniNavState(
+				savedSettings,
+				hiddenBy === 'Flex Special' ? 'flexible/special' : 'flexible/general',
+			);
+			if (hiddenBy === 'feature switch disabled') {
+				state.featureSwitches['mini-nav'].enabled = false;
+			}
+			const onSave = jest.fn();
+			const { getByLabelText, getByTestId, queryByLabelText } = renderForm(
+				state,
+				onSave,
+			);
+			expect(queryByLabelText('Enable mini nav')).toBeNull();
+			fireEvent.click(getByLabelText('Quote headline'));
+			fireEvent.click(getByTestId('edit-form-save-button'));
+			expect(onSave).toHaveBeenCalledWith(
+				expect.objectContaining({ ...savedSettings, showQuotedHeadline: true }),
+				undefined,
+			);
+			expect(fetchMock.calls()).toHaveLength(0);
+		},
+	);
+
 	it('restores enabled settings and displays the resolved title when opened', async () => {
 		fetchMock.get(resolveEndpoint, { id: subnavId, title: 'Published title' });
 		const { getByLabelText, getByText, queryByText } = renderForm(
@@ -389,7 +501,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		const title = getByText('Published title');
 		expect(title).toHaveStyleRule('color', theme.colors.greyMedium);
 		expect(title).toHaveStyleRule('font-size', '12px');
-		expect(title).toHaveStyleRule('text-align', 'right');
+		expect(title).toHaveStyleRule('text-align', 'left');
 		expect(
 			getByLabelText('Custom nav URL').getAttribute('aria-describedby'),
 		).toBe(title.id);
