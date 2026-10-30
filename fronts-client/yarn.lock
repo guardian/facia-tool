@@ -1403,6 +1403,13 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@guardian/feast-multiplatform-backend-api@v4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b":
+  version "4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b"
+  resolved "https://registry.yarnpkg.com/@guardian/feast-multiplatform-backend-api/-/feast-multiplatform-backend-api-4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b.tgz#5ee51f17be3c4d59731bc877afc3ee172295b43a"
+  integrity sha512-6ey5l4mw3GpCfuOY1PfLFOWrxRmJf2JhEBwRecfw1cyFxg22ZtEsLZHGNpQSX53n+zAaRxG36n3uYLd1RHL7UQ==
+  dependencies:
+    ws "8.18.0"
+
 "@guardian/prettier@^8.0.1":
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/@guardian/prettier/-/prettier-8.0.1.tgz#3c7ce5f6b2d35fe19540a7c5b70807aec619bb1a"
@@ -9439,15 +9446,15 @@ write-file-atomic@^4.0.2:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
 
+ws@8.18.0, ws@^8.11.0, ws@^8.13.0:
+  version "8.18.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
+  integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
+
 ws@^7.2.0, ws@^7.4.6:
   version "7.5.10"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.10.tgz#58b5c20dc281633f6c19113f39b349bd8bd558d9"
   integrity sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==
-
-ws@^8.11.0, ws@^8.13.0:
-  version "8.18.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.0.tgz#0d7505a6eafe2b0e712d232b42279f53bc289bbc"
-  integrity sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==
 
 ws@^8.18.0:
   version "8.21.0"

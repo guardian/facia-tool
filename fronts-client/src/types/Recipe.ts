@@ -18,7 +18,6 @@ export interface Recipe {
 	id: string;
 	title: string;
 	canonicalArticle: string;
-	difficultyLevel: string;
 	featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
 	previewImage?: RecipeImage;
 	firstPublishedDate?: string;
@@ -38,4 +37,21 @@ export interface RecipePartialIndexContent {
 	resolved: number;
 	requested: number;
 	results: RecipeIndexData[];
+}
+
+// ----- New models for use with graphql interface
+
+export interface RecipeNew {
+	id: string;
+	title: string;
+	byline: string[];
+	firstPublishedDate: string;
+	publishedDate: string;
+	lastModifiedDate: string;
+	imageTemplateUrl?: string;
+	canonicalArticle: string;
+}
+
+export interface RecipeSearchHitNew extends RecipeNew {
+	score: number;
 }

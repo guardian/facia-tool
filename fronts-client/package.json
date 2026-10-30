@@ -56,6 +56,7 @@
 	"dependencies": {
 		"@babel/runtime": "^7.0.0",
 		"@emotion/react": "^11.14.0",
+		"@guardian/feast-multiplatform-backend-api": "v4.0.0-PREVIEW.agimproved-facia-requests.2026-10-30T1723.35bdc61b",
 		"@guardian/stand": "0.0.73",
 		"@types/lodash": "^4.14.117",
 		"@types/lodash.throttle": "^4.1.4",
