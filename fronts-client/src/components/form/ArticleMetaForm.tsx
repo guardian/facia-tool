@@ -987,20 +987,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								<MiniNavUrlField
 									value={miniNavUrl || ''}
 									id={getInputId(cardId, 'mini-nav-url')}
-									warningId={
-										miniNavUrl
-											? getInputId(cardId, 'mini-nav-warning')
-											: undefined
-									}
 								/>
-								{miniNavUrl && (
-									<div
-										id={getInputId(cardId, 'mini-nav-warning')}
-										role="status"
-									>
-										<InvalidWarning warning="Not implemented: you can save this url but the mini nav will not yet show" />
-									</div>
-								)}
 							</InputContainer>
 						)}
 						{showByline && (

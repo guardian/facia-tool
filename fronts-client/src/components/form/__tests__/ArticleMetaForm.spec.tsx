@@ -111,7 +111,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(input.type).toBe('text');
 	});
 
-	it('shows an associated red warning for entered text and removes it when cleared', async () => {
+	it('shows an associated validation error instead of the placeholder warning', async () => {
 		const { getByLabelText, getByText, getByRole, queryByText } = renderForm(
 			getMiniNavState({ showMiniNav: true }),
 		);
@@ -123,20 +123,20 @@ describe('ArticleMetaForm - mini nav', () => {
 			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
 		);
 
-		const warning = getByText(miniNavWarning);
+		const warning = getByText('Enter a valid custom subnav URL.');
 		expect(warning).toHaveStyleRule('color', error.primary);
-		const warningContainer = getByRole('status');
+		const warningContainer = getByRole('alert');
 		expect(input.getAttribute('aria-describedby')).toContain(
 			warningContainer.id,
 		);
-		expect(warningContainer.querySelector('svg')).not.toBeNull();
+		expect(input.getAttribute('aria-invalid')).toBe('true');
+		expect(queryByText(miniNavWarning)).toBeNull();
 
 		fireEvent.change(input, { target: { value: '' } });
 
 		expect(queryByText(miniNavWarning)).toBeNull();
-		expect(input.getAttribute('aria-describedby')).not.toContain(
-			warningContainer.id,
-		);
+		expect(queryByText('Enter a valid custom subnav URL.')).toBeNull();
+		expect(getByText('Enter a custom subnav URL.')).toBeTruthy();
 	});
 
 	it('retains the URL when disabled and restores it when re-enabled', () => {
@@ -168,7 +168,6 @@ describe('ArticleMetaForm - mini nav', () => {
 		fireEvent.change(getByLabelText('Custom nav URL'), {
 			target: { value: 'not a valid URL' },
 		});
-		expect(getByText(miniNavWarning)).toBeTruthy();
 
 		fireEvent.click(getByTestId('edit-form-save-button'));
 
@@ -222,7 +221,7 @@ describe('ArticleMetaForm - mini nav', () => {
 	it('does not save a subnav unpublished after the initial resolution', async () => {
 		fetchMock.getOnce(resolveEndpoint, { id: subnavId, title: 'Published' });
 		const onSave = jest.fn();
-		const { getByLabelText, getByTestId, getByText } = renderForm(
+		const { getByLabelText, getByTestId, getByText, queryByText } = renderForm(
 			getMiniNavState(),
 			onSave,
 		);
@@ -232,6 +231,7 @@ describe('ArticleMetaForm - mini nav', () => {
 		});
 		const save = getByTestId('edit-form-save-button');
 		await wait(() => expect(save.hasAttribute('disabled')).toBe(false));
+		expect(getByText('Published')).toBeTruthy();
 		fetchMock.getOnce(
 			resolveEndpoint,
 			{ status: 404 },
@@ -244,7 +244,53 @@ describe('ArticleMetaForm - mini nav', () => {
 			).toBeTruthy(),
 		);
 		expect(onSave).not.toHaveBeenCalled();
+		expect(queryByText('Published')).toBeNull();
 	});
+
+	it('clears the resolved title immediately when the URL is changed or cleared', async () => {
+		fetchMock.get(resolveEndpoint, { id: subnavId, title: 'Published title' });
+		const { getByLabelText, getByText, queryByText } = renderForm(
+			getMiniNavState({ showMiniNav: true, miniNavUrl }),
+		);
+		await wait(() => expect(getByText('Published title')).toBeTruthy());
+		const input = getByLabelText('Custom nav URL');
+		fireEvent.change(input, { target: { value: 'invalid' } });
+		expect(queryByText('Published title')).toBeNull();
+		expect(getByText('Resolving custom subnav...')).toHaveStyleRule(
+			'color',
+			theme.colors.greyMedium,
+		);
+		await wait(() =>
+			expect(getByText('Enter a valid custom subnav URL.')).toBeTruthy(),
+		);
+		fireEvent.change(input, { target: { value: miniNavUrl } });
+		await wait(() => expect(getByText('Published title')).toBeTruthy());
+		fireEvent.change(input, { target: { value: '' } });
+		expect(queryByText('Published title')).toBeNull();
+		expect(getByText('Enter a custom subnav URL.')).toBeTruthy();
+	});
+
+	it.each([404, 500])(
+		'shows an associated lookup failure (%s)',
+		async (status) => {
+			fetchMock.get(resolveEndpoint, { status });
+			const { getByRole, getByLabelText, queryByText } = renderForm(
+				getMiniNavState({ showMiniNav: true, miniNavUrl }),
+			);
+			await wait(() => expect(getByRole('alert')).toBeTruthy());
+			const alert = getByRole('alert');
+			expect(alert.textContent).toContain(
+				status === 404
+					? 'This subnav does not exist or is not published.'
+					: 'Could not resolve the custom subnav:',
+			);
+			expect(alert).toHaveStyleRule('color', error.primary);
+			expect(
+				getByLabelText('Custom nav URL').getAttribute('aria-describedby'),
+			).toBe(alert.id);
+			expect(queryByText(miniNavWarning)).toBeNull();
+		},
+	);
 
 	it('ignores a slower resolution after the URL changes', async () => {
 		let finishFirst: (body: { id: string; title: string }) => void = () => {};
@@ -323,20 +369,29 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(fetchMock.calls()).toHaveLength(0);
 	});
 
-	it('restores enabled settings when the form is opened', () => {
-		const { getByLabelText, getByText } = renderForm(
+	it('restores enabled settings and displays the resolved title when opened', async () => {
+		fetchMock.get(resolveEndpoint, { id: subnavId, title: 'Published title' });
+		const { getByLabelText, getByText, queryByText } = renderForm(
 			getMiniNavState({
 				showMiniNav: true,
-				miniNavUrl: 'https://www.theguardian.com/custom-nav',
+				miniNavUrl,
 			}),
 		);
 		expect(
 			(getByLabelText('Enable mini nav') as HTMLInputElement).checked,
 		).toBe(true);
 		expect((getByLabelText('Custom nav URL') as HTMLInputElement).value).toBe(
-			'https://www.theguardian.com/custom-nav',
+			miniNavUrl,
 		);
-		expect(getByText(miniNavWarning)).toBeTruthy();
+		await wait(() => expect(getByText('Published title')).toBeTruthy());
+		const title = getByText('Published title');
+		expect(title).toHaveStyleRule('color', theme.colors.greyMedium);
+		expect(title).toHaveStyleRule('font-size', '12px');
+		expect(title).toHaveStyleRule('text-align', 'right');
+		expect(
+			getByLabelText('Custom nav URL').getAttribute('aria-describedby'),
+		).toBe(title.id);
+		expect(queryByText(miniNavWarning)).toBeNull();
 	});
 
 	it('hides both controls and the warning in Flex Special even with existing settings', () => {
