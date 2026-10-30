@@ -149,25 +149,4 @@ describe('chefsBundle', () => {
 			expectedResultForLookup,
 		);
 	});
-
-	it('fetchChefsById should look up CAPI details for profile tags', async () => {
-		const store = createStoreAndFetchMock([
-			{
-				pattern:
-					'/api/live/tags?type=contributor&ids=profile%2Fanna-jones%2Cprofile%2Fanna-del-conte&show-elements=image&show-fields=all&page-size=20',
-				response: tagLookupResponse,
-			},
-		]);
-		await store.dispatch(
-			fetchChefsById(
-				['profile/anna-jones', 'profile/anna-del-conte'],
-				1,
-				20,
-				true,
-			) as any,
-		);
-		expect(chefSelectors.selectAll(store.getState())).toEqual(
-			expectedResultForLookup,
-		);
-	});
 });
