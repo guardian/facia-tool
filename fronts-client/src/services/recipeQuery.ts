@@ -204,22 +204,37 @@ const recipeQuery = (baseUrl: string) => {
 			}
 		},
 		recipesById: async (idList: string[]): Promise<Recipe[]> => {
+			const getNextPage = async (
+				head: string[],
+				tail: string[],
+				prevResults: Recipe[],
+			) => {
+				const response = await gqlClient.getRecipeBatch(head);
+				const results = [
+					...prevResults,
+					...response.map((result) => ({
+						id: result.id,
+						title: result.title ?? '',
+						byline: result.contributors.map((c) => c.webTitle),
+						firstPublishedDate: result.firstPublishedDate ?? '',
+						lastModifiedDate: result.lastModifiedDate ?? '',
+						publishedDate: result.publishedDate ?? '',
+						canonicalArticle: result.canonicalArticle ?? '',
+						imageTemplateUrl: result.featuredImage?.templateUrl ?? undefined,
+					})),
+				];
+				if (tail.length > 0) {
+					return getNextPage(tail.slice(0, 500), tail.slice(500), results);
+				} else {
+					return results;
+				}
+			};
+
 			if (idList.length > 500) {
-				throw new Error(
-					'Too many requests in one go - this should be batched (FIXME!)',
-				);
+				return getNextPage(idList.slice(0, 500), idList.slice(500), []);
+			} else {
+				return getNextPage(idList, [], []);
 			}
-			const response = await gqlClient.getRecipeBatch(idList);
-			return response.map((result) => ({
-				id: result.id,
-				title: result.title ?? '',
-				byline: result.contributors.map((c) => c.webTitle),
-				firstPublishedDate: result.firstPublishedDate ?? '',
-				lastModifiedDate: result.lastModifiedDate ?? '',
-				publishedDate: result.publishedDate ?? '',
-				canonicalArticle: result.canonicalArticle ?? '',
-				imageTemplateUrl: result.featuredImage?.templateUrl ?? undefined,
-			}));
 		},
 		keywords: async (kwType: FeastKeywordType): Promise<FeastKeyword[]> => {
 			const url = baseUrlForKwType(kwType);
