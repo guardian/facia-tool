@@ -10,6 +10,7 @@ import type {
 	PackageItemDisplay,
 	WritePackageRequest,
 } from 'types/Packages';
+import { imageUrlFromTemplate } from '../components/util/DynamicImageUrls';
 
 const jsonHeaders = {
 	'Content-Type': 'application/json',
@@ -251,11 +252,7 @@ export async function fetchPackageItemDisplays(
 	const displays: Record<string, PackageItemDisplay> = {};
 
 	for (const recipe of recipes) {
-		const thumbnail = recipe.imageTemplateUrl
-			? recipe.imageTemplateUrl
-					.replace('#{width}', '120')
-					.replace('#{quality}', '80')
-			: undefined;
+		const thumbnail = imageUrlFromTemplate(recipe.imageTemplateUrl);
 		displays[packageItemKey({ cardType: 'recipe', id: recipe.id })] = {
 			title: recipe.title,
 			imageUrl: thumbnail,

@@ -5,11 +5,12 @@ import { State } from 'types/State';
 import { createSelector } from 'reselect';
 import { ThunkResult } from 'types/Store';
 import { ChefSearchParams, liveRecipes } from '../services/recipeQuery';
+import { stripHtml } from '../util/sanitizeHTML';
 
-// const sanitizeTag = (tag: Tag) => ({
-// 	...tag,
-// 	bio: stripHtml(tag.bio ?? ''),
-// });
+const sanitizeChef = (chef: Chef) => ({
+	...chef,
+	bio: stripHtml(chef.bio ?? ''),
+});
 
 const bundle = createIndexedAsyncResourceBundle<Chef>('chefs', {
 	selectLocalState: (state) => state.chefs,
@@ -29,7 +30,9 @@ export const fetchChefs =
 		dispatch(actions.fetchStart(ids));
 		try {
 			const chefSearchResponse = await liveRecipes.chefs(params, ids);
-			dispatch(actions.fetchSuccess(chefSearchResponse.results));
+			dispatch(
+				actions.fetchSuccess(chefSearchResponse.results.map(sanitizeChef)),
+			);
 		} catch (e) {
 			dispatch(actions.fetchError(e));
 		}

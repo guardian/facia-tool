@@ -1,5 +1,5 @@
 import { FeedItem } from './FeedItem';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { State } from '../../types/State';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { ContentExtra, ContentInfo } from './ContentInfo';
@@ -11,6 +11,7 @@ import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { handleDragStartForCard } from 'util/dragAndDrop';
 import { Title as FeedItemTitle } from './FeedItem';
 import format from 'date-fns/format';
+import { imageUrlFromTemplate } from '../util/DynamicImageUrls';
 
 interface ComponentProps {
 	id: string;
@@ -45,11 +46,10 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 			return iso;
 		}
 	};
-	const thumbnail = recipe.imageTemplateUrl
-		? recipe.imageTemplateUrl
-				.replace('#{width}', '420')
-				.replace('#{quality}', '80')
-		: undefined;
+	const thumbnail = useMemo(
+		() => imageUrlFromTemplate(recipe.imageTemplateUrl),
+		[recipe],
+	);
 	return (
 		<FeedItem
 			type={CardTypesMap.RECIPE}

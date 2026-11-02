@@ -8,7 +8,7 @@ describe('chefsBundle', () => {
 		jest.restoreAllMocks();
 	});
 
-	it('fetchChefs should fetch chefs by param, look up CAPI details for profile tags, and add them to the state', async () => {
+	it('fetchChefs should fetch chef details by param, and add them to the state', async () => {
 		const faciaChefSearchMock = jest
 			.spyOn(FeastGraphQL.prototype, 'faciaChefSearch')
 			.mockResolvedValue([

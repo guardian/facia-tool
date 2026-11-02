@@ -41,7 +41,8 @@ export const ChefFeedItemComponent = ({
 			title={chef.webTitle}
 			hasVideo={false}
 			isLive={true}
-			urlPath={''}
+			urlPath={chef.webUrl ?? ''}
+			showViewButton={chef.type == 'Profile'}
 			thumbnail={chef.bylineImageUrl}
 			onAddToClipboard={onAddToClipboard}
 			handleDragStart={handleDragStartForCard(CardTypesMap.CHEF, chef)}

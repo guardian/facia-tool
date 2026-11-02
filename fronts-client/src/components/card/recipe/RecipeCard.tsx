@@ -23,6 +23,7 @@ import {
 import { getPaths } from 'util/paths';
 import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 import CardMetaContent from '../CardMetaContent';
+import { imageUrlFromTemplate } from '../../util/DynamicImageUrls';
 
 interface Props {
 	onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -65,12 +66,7 @@ export const RecipeCard = ({
 		: undefined;
 
 	const thumbnail = useMemo(
-		() =>
-			recipe?.imageTemplateUrl
-				? recipe.imageTemplateUrl
-						.replace('#{width}', '420')
-						.replace('#{quality}', '80')
-				: undefined,
+		() => imageUrlFromTemplate(recipe?.imageTemplateUrl),
 		[recipe],
 	);
 
