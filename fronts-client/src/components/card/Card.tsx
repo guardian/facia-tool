@@ -62,6 +62,7 @@ import { ChefMetaForm } from '../form/ChefMetaForm';
 import { FeastCollectionCard } from './feastCollection/FeastCollectionCard';
 import { EventGraphicCard } from './eventGraphic/EventGraphicCard';
 import { FeastCollectionMetaForm } from 'components/form/FeastCollectionMetaForm';
+import { InteractiveAtomCard } from './interactiveAtom/InteractiveAtomCard';
 import { selectCollectionType } from 'selectors/frontsSelectors';
 import { Criteria } from 'types/Grid';
 import { Card as CardType } from 'types/Collection';
@@ -237,6 +238,28 @@ class Card extends React.Component<CardContainerProps> {
 								textSize={textSize}
 								showMeta={showMeta}
 								canShowPageViewData={canShowPageViewData}
+							/>
+							{getSublinks}
+							{numSupportingArticles === 0
+								? children
+								: this.state.showCardSublinks && children}
+						</>
+					);
+				case CardTypesMap.INTERACTIVE_ATOM:
+					return (
+						<>
+							<InteractiveAtomCard
+								frontId={frontId}
+								collectionId={collectionId}
+								id={uuid}
+								isUneditable={isUneditable}
+								{...getNodeProps()}
+								onDelete={this.onDelete}
+								onAddToClipboard={this.handleAddToClipboard}
+								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								size={size}
+								textSize={textSize}
+								showMeta={showMeta}
 							/>
 							{getSublinks}
 							{numSupportingArticles === 0
