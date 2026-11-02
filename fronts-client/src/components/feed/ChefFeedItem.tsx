@@ -46,7 +46,9 @@ export const ChefFeedItemComponent = ({
 			onAddToClipboard={onAddToClipboard}
 			handleDragStart={handleDragStartForCard(CardTypesMap.CHEF, chef)}
 			shouldObscureFeed={shouldObscureFeed}
-			metaContent={<ContentInfo>Chef</ContentInfo>}
+			metaContent={
+				<ContentInfo>{chef.type == 'Profile' ? 'Chef' : 'Byline'}</ContentInfo>
+			}
 		/>
 	);
 };

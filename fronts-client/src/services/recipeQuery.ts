@@ -62,8 +62,8 @@ const widthParam = /width=(\d+)/;
 export const updateImageScalingParams = (url: string) => {
 	return url.replace(widthParam, 'width=83');
 };
-const normaliseByline = (str: string) => {
-	return str.replace(/[^\\w]+/, '-');
+export const normaliseByline = (str: string) => {
+	return 'byline/' + str.replace(/\W+/, '-').toLowerCase();
 };
 
 const toChef = (chefOrByline: {

@@ -1,6 +1,15 @@
-import { updateImageScalingParams, liveRecipes } from '../recipeQuery';
+import {
+	updateImageScalingParams,
+	liveRecipes,
+	normaliseByline,
+} from '../recipeQuery';
 import { FeastGraphQL } from '@guardian/feast-multiplatform-backend-api';
 
+describe('normaliseByline', () => {
+	it('should correctly normalise a byline name', () => {
+		expect(normaliseByline('Nigel Slater')).toEqual('byline/nigel-slater');
+	});
+});
 describe('updateImageScalingParams', () => {
 	it('should correctly update a URL with scaling params', () => {
 		expect(

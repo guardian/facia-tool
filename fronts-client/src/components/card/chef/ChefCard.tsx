@@ -67,7 +67,9 @@ export const ChefCard = ({
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!chef}>
 						{!!chef ? (
-							<CardMetaHeading>Chef</CardMetaHeading>
+							<CardMetaHeading>
+								{chef.type == 'Profile' ? 'Chef' : 'Byline'}
+							</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
