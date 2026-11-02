@@ -10,6 +10,7 @@ import { ChefCard } from '../chef/ChefCard';
 const chefFixture = {
 	backgroundHex: '#20809E',
 	id: 'profile/yotamottolenghi',
+	type: 'Profile',
 	image:
 		'https://media.guim.co.uk/266825657a291ab9c1c0b798a0391f827b6c53ec/93_150_907_907/500.jpg',
 	bio: 'Inspiration and global flavours for special occasions',
