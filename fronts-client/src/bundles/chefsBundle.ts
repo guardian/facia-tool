@@ -31,7 +31,13 @@ export const fetchChefs =
 		try {
 			const chefSearchResponse = await liveRecipes.chefs(params, ids);
 			dispatch(
-				actions.fetchSuccess(chefSearchResponse.results.map(sanitizeChef)),
+				// The app only supports 'Profile' chefs on the fronts at the moment (bylines don't show) so
+				// there is no point in displaying them
+				actions.fetchSuccess(
+					chefSearchResponse.results
+						.filter((c) => c.type === 'Profile')
+						.map(sanitizeChef),
+				),
 			);
 		} catch (e) {
 			dispatch(actions.fetchError(e));
