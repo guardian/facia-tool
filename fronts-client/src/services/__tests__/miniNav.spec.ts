@@ -18,19 +18,19 @@ describe('getMiniNavResolutionError', () => {
 		);
 	});
 
-	it('explains unpublished or missing subnavs', () => {
+	it('explains missing subnavs', () => {
 		expect(getMiniNavResolutionError({ status: 404 })).toBe(
 			'This subnav does not exist',
 		);
 	});
 
-	it('preserves URL validation errors', () => {
+	it('surfaces URL validation errors', () => {
 		expect(getMiniNavResolutionError(new Error('Invalid URL'))).toBe(
 			'Invalid URL',
 		);
 	});
 
-	it('surfaces lookup failures rather than treating them as missing subnavs', () => {
+	it('surfaces lookup failures', () => {
 		expect(
 			getMiniNavResolutionError({
 				status: 500,
