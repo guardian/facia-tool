@@ -36,14 +36,14 @@ describe('chefsBundle', () => {
 				type: 'Profile',
 				webTitle: 'Anna Del Conte',
 				webUrl: 'https://www.theguardian.com/profile/anna-del-conte',
-				bio: '<p>Anna Del Conte is the doyenne of Italian cookery.</p>',
+				bio: 'Anna Del Conte is the doyenne of Italian cookery.',
 			},
 			'profile/anna-jones': {
 				id: 'profile/anna-jones',
 				type: 'Profile',
 				webTitle: 'Anna Jones',
 				webUrl: 'https://www.theguardian.com/profile/anna-jones',
-				bio: '<p>Anna Jones is a chef, writer, and author.</p>',
+				bio: 'Anna Jones is a chef, writer, and author.',
 				bylineImageUrl: 'https://uploads.guim.co.uk/2018/01/29/Anna-Jones.jpg',
 			},
 		});
