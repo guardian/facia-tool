@@ -1,4 +1,5 @@
-import { RecipeNew, RecipeSearchHitNew } from '../types/Recipe';
+import { Chef, ChefSearchResponse } from '../types/Chef';
+import { Recipe, RecipeSearchHit, RecipeSearchResponse } from '../types/Recipe';
 import Raven from 'raven-js';
 import {
 	FeastKeyword,
@@ -53,26 +54,6 @@ export interface RecipeSearchParams {
 	allSponsors?: boolean;
 }
 
-export interface ChefSearchHit {
-	contributorType: 'Profile' | 'Byline';
-	displayName: string;
-	profileId: string;
-	bio?: string;
-	webUrl?: string;
-	bylineImageUrl?: string;
-}
-
-export interface ChefSearchResponse {
-	hits: number;
-	results: ChefSearchHit[];
-}
-
-export interface RecipeSearchResponse {
-	hits: number;
-	maxScore: number;
-	recipes: RecipeSearchHitNew[];
-}
-
 export interface DietSearchResponse {
 	'diet-ids': KeyAndCount[];
 }
@@ -83,6 +64,61 @@ export const updateImageScalingParams = (url: string) => {
 };
 const normaliseByline = (str: string) => {
 	return str.replace(/[^\\w]+/, '-');
+};
+
+const toChef = (chefOrByline: {
+	contributorId?: string;
+	webTitle: string;
+	bylineImageUrl?: string | null;
+	bio?: string | null;
+	webUrl?: string;
+}): Chef => {
+	if ('contributorId' in chefOrByline && chefOrByline.contributorId) {
+		return {
+			type: 'Profile',
+			id: chefOrByline.contributorId,
+			webTitle: chefOrByline.webTitle,
+			bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
+			bio: chefOrByline.bio ?? undefined,
+			webUrl: new URL(chefOrByline.contributorId, url.liveUrlPROD).toString(),
+		};
+	} else {
+		return {
+			type: 'Byline',
+			id: normaliseByline(chefOrByline.webTitle),
+			webTitle: chefOrByline.webTitle,
+		};
+	}
+};
+
+const toRecipeSearchHit = (recipe: {
+	id: string;
+	title?: string | null;
+	contributors: Array<{ webTitle: string }>;
+	canonicalArticle?: string | null;
+	firstPublishedDate?: string | null;
+	publishedDate?: string | null;
+	lastModifiedDate?: string | null;
+	featuredImage?: {
+		templateUrl?: string | null;
+	} | null;
+	score?: number | null;
+}): RecipeSearchHit | null => {
+	if (!recipe || !recipe.id) {
+		return null;
+	}
+
+	return {
+		score: recipe.score ?? 0,
+		id: recipe.id,
+		title: recipe.title ?? '',
+		byline: recipe.contributors.map((c) => c.webTitle),
+		canonicalArticle: recipe.canonicalArticle ?? '',
+		firstPublishedDate: recipe.firstPublishedDate ?? '',
+		publishedDate: recipe.publishedDate ?? '',
+		lastModifiedDate: recipe.lastModifiedDate ?? '',
+		imageTemplateUrl: recipe.featuredImage?.templateUrl ?? undefined,
+	};
 };
 
 const recipeQuery = (baseUrl: string) => {
@@ -123,27 +159,7 @@ const recipeQuery = (baseUrl: string) => {
 			if (response) {
 				return {
 					hits: response.length,
-					results: response.map((chefOrByline) => {
-						if ('contributorId' in chefOrByline) {
-							return {
-								contributorType: 'Profile',
-								profileId: chefOrByline.contributorId,
-								displayName: chefOrByline.webTitle,
-								bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
-								bio: chefOrByline.bio ?? undefined,
-								webUrl: new URL(
-									chefOrByline.contributorId,
-									url.liveUrlPROD,
-								).toString(),
-							};
-						} else {
-							return {
-								contributorType: 'Byline',
-								profileId: normaliseByline(chefOrByline.webTitle),
-								displayName: chefOrByline.webTitle,
-							};
-						}
-					}),
+					results: response.map((chefOrByline) => toChef(chefOrByline)),
 				};
 			} else {
 				throw new Error('No data was returned from search');
@@ -170,26 +186,16 @@ const recipeQuery = (baseUrl: string) => {
 			);
 
 			if (response) {
-				const recipes: RecipeSearchHitNew[] = response.results
+				const recipes = response.results
 					.map((r) =>
-						r.recipe
-							? {
-									score: r.score ?? 0,
-									id: r.recipe.id,
-									title: r.recipe.title ?? '',
-									byline: r.recipe.contributors.map((c) => c.webTitle),
-									canonicalArticle: r.recipe.canonicalArticle ?? '',
-									firstPublishedDate: r.recipe.firstPublishedDate ?? '',
-									publishedDate: r.recipe.publishedDate ?? '',
-									lastModifiedDate: r.recipe.lastModifiedDate ?? '',
-									imageTemplateUrl:
-										r.recipe.featuredImage?.templateUrl ?? undefined,
-								}
-							: null,
+						toRecipeSearchHit({
+							...r.recipe,
+							score: r.score ?? 0,
+						}),
 					)
-					.filter((value) => !!value);
+					.filter((value): value is RecipeSearchHit => !!value);
 				return {
-					hits: recipes.length, //TBD
+					hits: recipes.length,
 					maxScore: response.maxScore ?? 0,
 					recipes,
 				};
@@ -197,7 +203,7 @@ const recipeQuery = (baseUrl: string) => {
 				throw new Error('No data was returned from search');
 			}
 		},
-		recipesById: async (idList: string[]): Promise<RecipeNew[]> => {
+		recipesById: async (idList: string[]): Promise<Recipe[]> => {
 			if (idList.length > 500) {
 				throw new Error(
 					'Too many requests in one go - this should be batched (FIXME!)',

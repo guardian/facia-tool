@@ -1,10 +1,10 @@
 import { createIndexedAsyncResourceBundle } from 'lib/createAsyncResourceBundle';
 import { liveRecipes, RecipeSearchParams } from '../services/recipeQuery';
 import { ThunkResult } from '../types/Store';
-import { RecipeSearchHitNew } from '../types/Recipe';
+import { RecipeSearchHit } from '../types/Recipe';
 
 export const { actions, reducer, selectors } =
-	createIndexedAsyncResourceBundle<RecipeSearchHitNew>('recipes', {
+	createIndexedAsyncResourceBundle<RecipeSearchHit>('recipes', {
 		selectLocalState: (state) => state.recipes,
 	});
 

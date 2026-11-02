@@ -263,8 +263,8 @@ export async function fetchPackageItemDisplays(
 	}
 
 	for (const chef of chefPages.results) {
-		displays[packageItemKey({ cardType: 'chef', id: chef.profileId })] = {
-			title: chef.displayName,
+		displays[packageItemKey({ cardType: 'chef', id: chef.id })] = {
+			title: chef.webTitle,
 			imageUrl: chef.bylineImageUrl,
 		};
 	}

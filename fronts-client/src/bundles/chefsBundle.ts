@@ -29,18 +29,7 @@ export const fetchChefs =
 		dispatch(actions.fetchStart(ids));
 		try {
 			const chefSearchResponse = await liveRecipes.chefs(params, ids);
-
-			const chefs: Chef[] = chefSearchResponse.results
-				.filter((r) => r.contributorType == 'Profile')
-				.map((r) => ({
-					id: r.profileId,
-					type: r.contributorType,
-					webTitle: r.displayName,
-					webUrl: r.webUrl,
-					bio: r.bio,
-					bylineImageUrl: r.bylineImageUrl,
-				}));
-			dispatch(actions.fetchSuccess(chefs));
+			dispatch(actions.fetchSuccess(chefSearchResponse.results));
 		} catch (e) {
 			dispatch(actions.fetchError(e));
 		}
