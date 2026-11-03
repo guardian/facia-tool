@@ -29,7 +29,12 @@ class LoggingFilter @Inject() (implicit
         "method" -> requestHeader.method,
         "url" -> requestHeader.uri,
         "requestTime" -> requestTime,
-        "status" -> result.header.status
+        "status" -> result.header.status,
+        // X-Forwarded-For is client-controllable, so also log the socket address
+        "origin" -> requestHeader.headers
+          .get("X-Forwarded-For")
+          .getOrElse(requestHeader.remoteAddress),
+        "remoteAddress" -> requestHeader.remoteAddress
       )
       val logMarker = MarkerContext(appendEntries(markerEntries.asJava))
 
