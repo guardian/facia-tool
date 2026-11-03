@@ -6,8 +6,14 @@ import org.apache.pekko.stream.Materializer
 import play.api.MarkerContext
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+import java.util.UUID
 import logging.Logging
 import net.logstash.logback.marker.Markers.appendEntries
+
+object LoggingFilter {
+  val requestIdHeader = "X-Request-Id"
+}
 
 class LoggingFilter @Inject() (implicit
     val mat: Materializer,
@@ -20,32 +26,66 @@ class LoggingFilter @Inject() (implicit
 
     val startTime = System.currentTimeMillis
 
-    nextFilter(requestHeader).map { result =>
-      val endTime = System.currentTimeMillis
-      val requestTime = endTime - startTime
-      val message =
-        s"${requestHeader.method} ${requestHeader.uri} took ${requestTime}ms and returned ${result.header.status}"
-      val markerEntries = Map(
-        "method" -> requestHeader.method,
-        "url" -> requestHeader.uri,
-        "requestTime" -> requestTime,
-        "status" -> result.header.status,
-        // X-Forwarded-For is client-controllable, so also log the socket address
-        "origin" -> requestHeader.headers
-          .get("X-Forwarded-For")
-          .getOrElse(requestHeader.remoteAddress),
-        "remoteAddress" -> requestHeader.remoteAddress
-      )
-      val logMarker = MarkerContext(appendEntries(markerEntries.asJava))
+    // Reuse an upstream request ID if there is one, so logs can be correlated
+    val request =
+      if (requestHeader.headers.hasHeader(LoggingFilter.requestIdHeader))
+        requestHeader
+      else
+        requestHeader.withHeaders(
+          requestHeader.headers
+            .replace(
+              LoggingFilter.requestIdHeader -> UUID.randomUUID().toString
+            )
+        )
 
-      result.header.status match {
-        case status if (status >= 200 && status <= 399) =>
-          logger.info(message)(logMarker)
-        case _ =>
-          logger.error(message)(logMarker)
-      }
+    nextFilter(request).transform {
+      case Success(result) =>
+        val requestTime = System.currentTimeMillis - startTime
+        log(request, Right(result), requestTime)
+        Success(result.withHeaders("Request-Time" -> requestTime.toString))
+      case Failure(err) =>
+        log(request, Left(err), System.currentTimeMillis - startTime)
+        Failure(err)
+    }
+  }
 
-      result.withHeaders("Request-Time" -> requestTime.toString)
+  private def log(
+      request: RequestHeader,
+      outcome: Either[Throwable, Result],
+      requestTime: Long
+  ): Unit = {
+    val status = outcome.map(_.header.status).getOrElse(500)
+    val message =
+      s"${request.method} ${request.uri} took ${requestTime}ms and returned $status"
+
+    val queryStringEntries = request.queryString.map { case (k, v) =>
+      s"query_string.$k" -> v.mkString(", ")
+    }
+    val optionalEntries = Map(
+      "referrer" -> request.headers.get("Referer"),
+      "userAgent" -> request.headers.get("User-Agent"),
+      "requestId" -> request.headers.get(LoggingFilter.requestIdHeader)
+    ).collect { case (k, Some(v)) => k -> v }
+
+    val markerEntries = Map(
+      "method" -> request.method,
+      "url" -> request.uri,
+      "path" -> request.path,
+      "requestTime" -> requestTime,
+      "status" -> status,
+      // X-Forwarded-For is client-controllable, so also log the socket address
+      "origin" -> request.headers
+        .get("X-Forwarded-For")
+        .getOrElse(request.remoteAddress),
+      "remoteAddress" -> request.remoteAddress
+    ) ++ optionalEntries ++ queryStringEntries
+    val logMarker = MarkerContext(appendEntries(markerEntries.asJava))
+
+    outcome match {
+      case Left(err) => logger.error(message, err)(logMarker)
+      case Right(_) if status >= 400 || status < 200 =>
+        logger.error(message)(logMarker)
+      case Right(_) => logger.info(message)(logMarker)
     }
   }
 }
