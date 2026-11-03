@@ -60,7 +60,7 @@ class LoggingFilterTest extends FreeSpec with Matchers with BeforeAndAfterAll {
       result.isSuccess shouldBe true
       seenRequestId should not be empty
       events should have size 1
-      val marker = events.head.getMarker.toString
+      val marker = events.head.getMarkerList.get(0).toString
       marker should include("origin=1.2.3.4")
       marker should include("userAgent=curl/8.5.0")
       marker should include("query_string.foo=bar")
@@ -71,7 +71,9 @@ class LoggingFilterTest extends FreeSpec with Matchers with BeforeAndAfterAll {
       val request =
         FakeRequest("GET", "/").withHeaders("X-Request-Id" -> "abc-123")
       val (_, events) = run(request, _ => Future.successful(Results.Ok))
-      events.head.getMarker.toString should include("requestId=abc-123")
+      events.head.getMarkerList.get(0).toString should include(
+        "requestId=abc-123"
+      )
     }
 
     "logs failed requests as errors and propagates the failure" in {
@@ -83,7 +85,7 @@ class LoggingFilterTest extends FreeSpec with Matchers with BeforeAndAfterAll {
 
       result.isFailure shouldBe true
       events.map(_.getLevel.toString) shouldBe List("ERROR")
-      events.head.getMarker.toString should include("status=500")
+      events.head.getMarkerList.get(0).toString should include("status=500")
     }
   }
 }
