@@ -38,7 +38,7 @@ export const fetchChefs =
 						.filter((c) => c.type === 'Profile')
 						.map(sanitizeChef),
 					ids !== undefined ? { ignoreOrder: true } : {},
-				)
+				),
 			);
 		} catch (e) {
 			dispatch(actions.fetchError(e));
