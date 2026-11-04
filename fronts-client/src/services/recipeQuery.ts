@@ -1,11 +1,13 @@
-import url from '../constants/url';
-import { Recipe, RecipePartialIndexContent } from '../types/Recipe';
+import { Chef, ChefSearchResponse } from '../types/Chef';
+import { Recipe, RecipeSearchHit, RecipeSearchResponse } from '../types/Recipe';
 import Raven from 'raven-js';
 import {
 	FeastKeyword,
 	FeastKeywordResponse,
 	FeastKeywordType,
 } from '../types/FeastKeyword';
+import { FeastGraphQL } from '@guardian/feast-multiplatform-backend-api';
+import url from '../constants/url';
 
 interface KeyAndCount {
 	key: string;
@@ -52,32 +54,6 @@ export interface RecipeSearchParams {
 	allSponsors?: boolean;
 }
 
-export interface ChefSearchHit {
-	contributorType: 'Profile' | 'Byline';
-	nameOrId: string;
-	docCount: number;
-}
-
-export interface ChefSearchResponse {
-	hits: number;
-	results: ChefSearchHit[];
-}
-
-export interface RecipeSearchResponse {
-	hits: number;
-	maxScore: number;
-	recipes: RecipeSearchHit[];
-}
-
-interface RecipeSearchTitlesResponse {
-	score: number;
-	href: string;
-}
-
-export type RecipeSearchHit = Recipe & {
-	score: number;
-};
-
 export interface DietSearchResponse {
 	'diet-ids': KeyAndCount[];
 }
@@ -86,28 +62,63 @@ const widthParam = /width=(\d+)/;
 export const updateImageScalingParams = (url: string) => {
 	return url.replace(widthParam, 'width=83');
 };
+export const normaliseByline = (str: string) => {
+	return 'byline/' + str.replace(/\W+/g, '-').toLowerCase();
+};
 
-const setupRecipeThumbnails = (recep: Recipe) => {
-	try {
+const toChef = (chefOrByline: {
+	contributorId?: string;
+	webTitle: string;
+	bylineImageUrl?: string | null;
+	bio?: string | null;
+	webUrl?: string;
+}): Chef => {
+	if ('contributorId' in chefOrByline && chefOrByline.contributorId) {
 		return {
-			...recep,
-			previewImage: recep.previewImage
-				? {
-						...recep.previewImage,
-						url: updateImageScalingParams(recep.previewImage.url),
-					}
-				: undefined,
-			featuredImage: recep.featuredImage
-				? {
-						...recep.featuredImage,
-						url: updateImageScalingParams(recep.featuredImage.url),
-					}
-				: undefined,
+			type: 'Profile',
+			id: chefOrByline.contributorId,
+			webTitle: chefOrByline.webTitle,
+			bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
+			bio: chefOrByline.bio ?? undefined,
+			webUrl: new URL(chefOrByline.contributorId, url.liveUrlPROD).toString(),
 		};
-	} catch (err) {
-		console.error(err);
-		return recep;
+	} else {
+		return {
+			type: 'Byline',
+			id: normaliseByline(chefOrByline.webTitle),
+			webTitle: chefOrByline.webTitle,
+		};
 	}
+};
+
+const toRecipeSearchHit = (recipe: {
+	id: string;
+	title?: string | null;
+	contributors: Array<{ webTitle: string }>;
+	canonicalArticle?: string | null;
+	firstPublishedDate?: string | null;
+	publishedDate?: string | null;
+	lastModifiedDate?: string | null;
+	featuredImage?: {
+		templateUrl?: string | null;
+	} | null;
+	score?: number | null;
+}): RecipeSearchHit | null => {
+	if (!recipe || !recipe.id) {
+		return null;
+	}
+
+	return {
+		score: recipe.score ?? 0,
+		id: recipe.id,
+		title: recipe.title ?? '',
+		byline: recipe.contributors.map((c) => c.webTitle),
+		canonicalArticle: recipe.canonicalArticle ?? '',
+		firstPublishedDate: recipe.firstPublishedDate ?? '',
+		publishedDate: recipe.publishedDate ?? '',
+		lastModifiedDate: recipe.lastModifiedDate ?? '',
+		imageTemplateUrl: recipe.featuredImage?.templateUrl ?? undefined,
+	};
 };
 
 const recipeQuery = (baseUrl: string) => {
@@ -119,45 +130,7 @@ const recipeQuery = (baseUrl: string) => {
 		console.error(content);
 	};
 
-	const fetchOne = async (href: string): Promise<Recipe | undefined> => {
-		const response = await fetch(`${baseUrl}${href}`);
-
-		switch (response.status) {
-			case 200:
-				const content = await response.json();
-				return setupRecipeThumbnails(content as unknown as Recipe);
-			case 404:
-			case 403:
-				console.warn(
-					`Search response returned outdated recipe ${baseUrl}${href}`,
-				);
-				return undefined;
-			default:
-				console.error(`Could not retrieve recipe ${href}: ${response.status}`);
-				return undefined;
-		}
-	};
-
-	const fetchAllRecipes = async (
-		forRecipes: RecipeSearchTitlesResponse[],
-	): Promise<RecipeSearchHit[]> => {
-		const results = await Promise.all(
-			forRecipes.map((r) =>
-				fetchOne(r.href)
-					.then((recep) =>
-						recep
-							? {
-									...recep,
-									score: r.score,
-								}
-							: undefined,
-					)
-					.catch(console.warn),
-			),
-		);
-
-		return results.filter((r) => !!r) as RecipeSearchHit[];
-	};
+	const gqlClient = new FeastGraphQL(baseUrl);
 
 	const baseUrlForKwType = (kwType: FeastKeywordType) => {
 		switch (kwType) {
@@ -173,21 +146,23 @@ const recipeQuery = (baseUrl: string) => {
 	};
 
 	return {
-		chefs: async (params: ChefSearchParams): Promise<ChefSearchResponse> => {
-			const args = [
-				params.query ? `q=${encodeURIComponent(params.query)}` : undefined,
-				params.limit ? `limit=${encodeURIComponent(params.limit)}` : undefined,
-			].filter((arg) => !!arg);
+		chefs: async (
+			params: ChefSearchParams,
+			ids?: string[],
+		): Promise<ChefSearchResponse> => {
+			const response = await gqlClient.faciaChefSearch(
+				params.limit ?? 50,
+				params.query,
+				ids ?? null,
+			);
 
-			const queryString = args.length > 0 ? '?' + args.join('&') : '';
-			const url = `${baseUrl}/keywords/contributors${queryString}`;
-			const response = await fetch(url);
-			const content = await response.text();
-			if (response.status == 200) {
-				return JSON.parse(content) as ChefSearchResponse;
+			if (response) {
+				return {
+					hits: response.length,
+					results: response.map((chefOrByline) => toChef(chefOrByline)),
+				};
 			} else {
-				captureErrors(response.status, content, url);
-				throw new Error(`Unable to contact recipe API: ${response.status}`);
+				throw new Error('No data was returned from search');
 			}
 		},
 		diets: async (): Promise<DietSearchResponse> => {
@@ -203,79 +178,63 @@ const recipeQuery = (baseUrl: string) => {
 		recipes: async (
 			params: RecipeSearchParams,
 		): Promise<RecipeSearchResponse> => {
-			const queryDoc = JSON.stringify({
-				...params,
-				noStats: true, //we are not reading stats, so no point slowing the query down by retrieving them.
-			});
-			const response = await fetch(`${baseUrl}/search`, {
-				method: 'POST',
-				body: queryDoc,
-				mode: 'cors',
-				headers: new Headers({ 'Content-Type': 'application/json' }),
-			});
-			const content = await response.text();
-			if (response.status == 200) {
-				const searchResponse = JSON.parse(content);
-				const recipes = await fetchAllRecipes(searchResponse.results);
+			const response = await gqlClient.faciaRecipeSearch(
+				params.queryText ?? '',
+				params.filters?.celebrations ? params.filters.celebrations[0] : null,
+				params.filters?.diets ? params.filters.diets[0] : null,
+				params.uprateByDate,
+			);
+
+			if (response) {
+				const recipes = response.results
+					.map((r) =>
+						toRecipeSearchHit({
+							...r.recipe,
+							score: r.score ?? 0,
+						}),
+					)
+					.filter((value): value is RecipeSearchHit => !!value);
 				return {
-					hits: searchResponse.hits,
-					maxScore: searchResponse.maxScore,
+					hits: recipes.length,
+					maxScore: response.maxScore ?? 0,
 					recipes,
 				};
 			} else {
-				const prevContext = Raven.getContext();
-				Raven.setUserContext({ ...prevContext, query: queryDoc });
-				captureErrors(response.status, content, `${baseUrl}/search`);
-				Raven.setUserContext(prevContext);
-				throw new Error(`Unable to contact recipe API: ${response.status}`);
+				throw new Error('No data was returned from search');
 			}
 		},
 		recipesById: async (idList: string[]): Promise<Recipe[]> => {
-			const doTheFetch = async (idsToFind: string[]) => {
-				const indexResponse = await fetch(
-					`/recipes/api/content/by-uid?ids=${idsToFind.join(',')}`,
-					{
-						credentials: 'include',
-					},
-				);
-				if (indexResponse.status != 200) {
-					const content = await indexResponse.text();
-					captureErrors(
-						indexResponse.status,
-						content,
-						`/recipes/api/content/by-uid?ids=${idsToFind.join(',')}`,
-					);
-					throw new Error(
-						`Unable to retrieve partial index: server error ${indexResponse.status}`,
-					);
-				}
-
-				const content =
-					(await indexResponse.json()) as RecipePartialIndexContent;
-				const recipeResponses = await Promise.all(
-					content.results.map((entry) =>
-						fetch(`${baseUrl}/content/${entry.checksum}`),
-					),
-				);
-				const successes = recipeResponses.filter((_) => _.status === 200);
-				return Promise.all(successes.map((_) => _.json())) as Promise<Recipe[]>;
-			};
-
-			const recurseTheList = async (
-				idsToFind: string[],
+			const getNextPage = async (
+				head: string[],
+				tail: string[],
 				prevResults: Recipe[],
-			): Promise<Recipe[]> => {
-				const thisBatch = idsToFind.slice(0, 50); //we need to avoid a 414 URI Too Long error so batch into 50s
-				const results = (await doTheFetch(thisBatch)).concat(prevResults);
-				if (thisBatch.length == idsToFind.length) {
-					//we finished the list
-					return results;
+			) => {
+				const response = await gqlClient.getRecipeBatch(head);
+				const results = [
+					...prevResults,
+					...response.map((result) => ({
+						id: result.id,
+						title: result.title ?? '',
+						byline: result.contributors.map((c) => c.webTitle),
+						firstPublishedDate: result.firstPublishedDate ?? '',
+						lastModifiedDate: result.lastModifiedDate ?? '',
+						publishedDate: result.publishedDate ?? '',
+						canonicalArticle: result.canonicalArticle ?? '',
+						imageTemplateUrl: result.featuredImage?.templateUrl ?? undefined,
+					})),
+				];
+				if (tail.length > 0) {
+					return getNextPage(tail.slice(0, 500), tail.slice(500), results);
 				} else {
-					return recurseTheList(idsToFind.slice(50), results);
+					return results;
 				}
 			};
 
-			return recurseTheList(idList, []);
+			if (idList.length > 500) {
+				return getNextPage(idList.slice(0, 500), idList.slice(500), []);
+			} else {
+				return getNextPage(idList, [], []);
+			}
 		},
 		keywords: async (kwType: FeastKeywordType): Promise<FeastKeyword[]> => {
 			const url = baseUrlForKwType(kwType);

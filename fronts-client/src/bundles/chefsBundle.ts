@@ -1,20 +1,15 @@
-import {
-	createIndexedAsyncResourceBundle,
-	IPagination,
-} from '../lib/createAsyncResourceBundle';
+import { createIndexedAsyncResourceBundle } from '../lib/createAsyncResourceBundle';
 import { Chef } from '../types/Chef';
 import { selectCard } from 'selectors/shared';
 import { State } from 'types/State';
 import { createSelector } from 'reselect';
-import { stripHtml } from 'util/sanitizeHTML';
 import { ThunkResult } from 'types/Store';
-import { liveCapi } from 'services/capiQuery';
-import { Tag } from '../types/Capi';
 import { ChefSearchParams, liveRecipes } from '../services/recipeQuery';
+import { stripHtml } from '../util/sanitizeHTML';
 
-const sanitizeTag = (tag: Tag) => ({
-	...tag,
-	bio: stripHtml(tag.bio ?? ''),
+const sanitizeChef = (chef: Chef) => ({
+	...chef,
+	bio: stripHtml(chef.bio ?? ''),
 });
 
 const bundle = createIndexedAsyncResourceBundle<Chef>('chefs', {
@@ -34,69 +29,19 @@ export const fetchChefs =
 	async (dispatch) => {
 		dispatch(actions.fetchStart(ids));
 		try {
-			const chefs = await liveRecipes.chefs(params);
-			const chefsWithTags = chefs.results.filter(
-				(chef) => chef.contributorType === 'Profile',
-			);
-			if (chefsWithTags.length == 0) {
-				dispatch(actions.fetchSuccess([]));
-				return;
-			}
-
+			const chefSearchResponse = await liveRecipes.chefs(params, ids);
 			dispatch(
-				fetchChefsById(
-					chefsWithTags.map((chef) => chef.nameOrId),
-					1,
-					20,
-					true,
+				// The app only supports 'Profile' chefs on the fronts at the moment (bylines don't show) so
+				// there is no point in displaying them
+				actions.fetchSuccess(
+					chefSearchResponse.results
+						.filter((c) => c.type === 'Profile')
+						.map(sanitizeChef),
+					ids !== undefined ? { ignoreOrder: true } : {},
 				),
 			);
 		} catch (e) {
 			dispatch(actions.fetchError(e));
-		}
-	};
-
-export const fetchChefsById =
-	(
-		tagIds: string[],
-		page = 1,
-		pageSize = 100,
-		alreadyStarted: boolean = false,
-	): ThunkResult<void> =>
-	async (dispatch) => {
-		//we could be called as the second part of a two-stage fetch, OR we could be called directly.
-		//if called directly, indicate that we started a fetch. Otherwise, the first part should
-		if (!alreadyStarted) dispatch(actions.fetchStart(tagIds));
-
-		try {
-			const chefTags = await liveCapi.chefs({
-				ids: tagIds.join(','),
-				'show-elements': 'image',
-				'show-fields': 'all',
-				'page-size': pageSize,
-			});
-
-			const payload: {
-				ignoreOrder?: undefined;
-				pagination?: IPagination;
-				order?: string[];
-			} = {
-				pagination: {
-					pageSize: chefTags.response.pageSize,
-					totalPages: chefTags.response.pages,
-					currentPage: chefTags.response.currentPage,
-				},
-				order: tagIds,
-			};
-
-			dispatch(
-				actions.fetchSuccess(
-					chefTags.response.results.map(sanitizeTag),
-					payload,
-				),
-			);
-		} catch (err) {
-			dispatch(actions.fetchError(err));
 		}
 	};
 

@@ -1,10 +1,7 @@
 import { createIndexedAsyncResourceBundle } from 'lib/createAsyncResourceBundle';
-import {
-	liveRecipes,
-	RecipeSearchHit,
-	RecipeSearchParams,
-} from '../services/recipeQuery';
+import { liveRecipes, RecipeSearchParams } from '../services/recipeQuery';
 import { ThunkResult } from '../types/Store';
+import { RecipeSearchHit } from '../types/Recipe';
 
 export const { actions, reducer, selectors } =
 	createIndexedAsyncResourceBundle<RecipeSearchHit>('recipes', {
@@ -29,6 +26,7 @@ export const fetchRecipes =
 				}),
 			);
 		} catch (e) {
+			console.error('Could not fetch recipes: ', e);
 			dispatch(actions.fetchError(e));
 		}
 	};

@@ -1,16 +1,15 @@
+export type ChefContributorType = 'Profile' | 'Byline';
+
 export interface Chef {
 	id: string;
-	type: string;
-	sectionId?: string;
-	sectionName?: string;
-	internalName: string;
+	type: ChefContributorType;
 	webTitle: string;
-	webUrl: string;
-	apiUrl: string;
-	bio?: string;
+	webUrl?: string;
 	bylineImageUrl?: string;
-	bylineLargeImageUrl?: string;
-	firstName: string;
-	lastName: string;
-	twitterHandle?: string;
+	bio?: string;
+}
+
+export interface ChefSearchResponse {
+	hits: number;
+	results: Chef[];
 }
