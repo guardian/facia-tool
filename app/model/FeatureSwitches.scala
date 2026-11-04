@@ -33,7 +33,6 @@ object MultimediaSlideshow
       enabled = false
     )
 
-
 object MiniNav
     extends FeatureSwitch(
       key = "mini-nav",
