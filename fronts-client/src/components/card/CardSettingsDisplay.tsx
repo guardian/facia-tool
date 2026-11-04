@@ -1,8 +1,8 @@
-import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
 import { styled, theme } from 'constants/theme';
 import React from 'react';
 import type { BoostLevels } from 'types/Collection';
 import { CollectionToggles as BoostToggles } from '../form/BoostToggles';
+import { isFlexibleGeneral } from '../../util/frontsUtils';
 
 const ArticleMetadataProperties = styled.div`
 	padding: 0 4px 3px 0;
@@ -19,13 +19,17 @@ const ArticleMetadataProperty = styled.div`
 	margin: 0 2px 1px 0;
 `;
 
+const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
+	/* don't show old Boost option in flexible containers */
+	isBoosted && !isFlexibleGeneral(collectionType);
+
 const shouldShowBoostLevel = (
 	collectionType?: string,
 	boostLevel?: BoostLevels,
 ) =>
 	boostLevel !== 'default' &&
 	/* show new Boost level in flexible containers or clipboard */
-	(FLEXIBLE_CONTAINER_SET.includes(collectionType) || !collectionType);
+	(isFlexibleGeneral(collectionType) || !collectionType);
 
 export const getBoostLevelLabel = (
 	boostLevel?: BoostLevels,
@@ -35,13 +39,12 @@ export const getBoostLevelLabel = (
 	if (
 		!boostLevel ||
 		groupIndex === undefined ||
-		!collectionType ||
-		!['flexible/general', 'flexible/special'].includes(collectionType)
+		!isFlexibleGeneral(collectionType)
 	)
 		return undefined;
 
-	const toggles = BoostToggles[collectionType]?.[groupIndex];
-	const label = toggles?.find((toggle) => toggle.value === boostLevel)?.label;
+	const toggles = BoostToggles[groupIndex];
+	const label = toggles.find((toggle) => toggle.value === boostLevel)?.label;
 	// If the label is 'Default', return undefined so that it doesn't appear in the UI
 	return label === 'Default' ? undefined : label;
 };
