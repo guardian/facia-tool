@@ -64,8 +64,8 @@ contexts are written under `target/` and are not committed.
 - Use the repository dev container, or install the versions in the root and e2e
   `.tool-versions` files, including Node, Yarn 1, Java, and sbt.
 - Install the e2e dependencies with `yarn install --frozen-lockfile` from this
-  directory. On Linux ARM64, the test runner downloads the pinned Chromium pack
-  on first use and caches it in the system temporary directory.
+  directory, then install Chromium with
+  `yarn playwright install --with-deps chromium`.
 - No private repository checkout, SSH access, Guardian credentials, or AWS
   credentials are needed.
 
