@@ -36,6 +36,34 @@ const MiniNavInput = (
 		return undefined;
 	}
 
+	const renderFeedback = () => {
+		if (pending) {
+			return (
+				<ResolutionStatus id={errorId} role="status">
+					{message}
+				</ResolutionStatus>
+			);
+		}
+
+		if (message) {
+			return (
+				<ValidationError id={errorId} role="alert">
+					{message}
+				</ValidationError>
+			);
+		}
+
+		if (props.resolvedTitle) {
+			return (
+				<ResolutionStatus id={titleId} role="status">
+					{props.resolvedTitle}
+				</ResolutionStatus>
+			);
+		}
+
+		return null;
+	};
+
 	return (
 		<>
 			<InputBase
@@ -45,19 +73,7 @@ const MiniNavInput = (
 				aria-invalid={!!message && !pending}
 				aria-describedby={getDescribedById()}
 			/>
-			{pending ? (
-				<ResolutionStatus id={errorId} role="status">
-					{message}
-				</ResolutionStatus>
-			) : message ? (
-				<ValidationError id={errorId} role="alert">
-					{message}
-				</ValidationError>
-			) : props.resolvedTitle ? (
-				<ResolutionStatus id={titleId} role="status">
-					{props.resolvedTitle}
-				</ResolutionStatus>
-			) : null}
+			{renderFeedback()}
 		</>
 	);
 };
@@ -98,12 +114,19 @@ export const MiniNavUrlField = ({
 		};
 	}, [value]);
 
-	const validationError = !value.trim()
-		? 'Enter a custom subnav URL.'
-		: resolution?.url === value
-			? resolution.error
-			: 'Resolving custom subnav...';
+	const getValidationError = () => {
+		if (!value.trim()) {
+			return 'Enter a custom subnav URL.';
+		}
+		if (resolution?.url === value) {
+			return resolution.error;
+		}
+		return 'Resolving custom subnav...';
+	};
+
+	const validationError = getValidationError();
 	const validate = useCallback(() => validationError, [validationError]);
+
 	return (
 		<Field
 			name="miniNavUrl"
