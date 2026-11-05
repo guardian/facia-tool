@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import { selectHasSubnavPermission } from 'selectors/configSelectors';
+import { selectFronts } from 'selectors/shared';
+import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
+import { fetchFrontsConfig } from 'services/faciaApi';
 import { subnavRoutes } from 'routes/routes';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import { fetchSubnavConfig, publishSubnav, upsertSubnav } from './subnavApi';
@@ -35,8 +38,23 @@ const NoPermission = () => (
 
 const SubnavSection = () => {
 	const hasPermission = useSelector(selectHasSubnavPermission);
+	const fronts = useSelector(selectFronts);
 	const dispatch = useDispatch();
 	const history = useHistory();
+
+	// The fronts config isn't fetched on this route, so load it here (once) to
+	// power the front path picker in the subnav form.
+	const hasFronts = Object.keys(fronts).length > 0;
+	useEffect(() => {
+		if (!hasPermission || hasFronts) {
+			return;
+		}
+		void fetchFrontsConfig()
+			.then((config) => dispatch(frontsConfigActions.fetchSuccess(config)))
+			.catch(() => {
+				// The picker falls back to free text if fronts can't be loaded.
+			});
+	}, [hasPermission, hasFronts, dispatch]);
 
 	const notifyError = useCallback(
 		(message: string) =>

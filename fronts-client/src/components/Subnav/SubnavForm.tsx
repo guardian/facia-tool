@@ -37,6 +37,7 @@ import {
 	TargetedPageType,
 } from './types';
 import SubnavImagesSection from './SubnavImagesSection';
+import FrontPathPicker from './FrontPathPicker';
 import {
 	AddRow,
 	DragHandle,
@@ -582,9 +583,8 @@ const SubnavForm = ({
 																		updateLink(index, { linkText: value })
 																	}
 																/>
-																<TextInput
-																	aria-label="Dotcom path"
-																	fluid
+																<FrontPathPicker
+																	label="Dotcom path"
 																	value={link.dotcomPath}
 																	onChange={(value) =>
 																		updateLink(index, { dotcomPath: value })
@@ -644,14 +644,22 @@ const SubnavForm = ({
 												</Option>
 											))}
 										</Select>
-										<TextInput
-											label={index === 0 ? 'Path' : undefined}
-											aria-label="Path"
-											fluid
-											value={page.path}
-											onChange={(value) => updatePage(index, { path: value })}
-											placeholder="e.g. politics/uk-election-2024"
-										/>
+										{page.type === 'front' ? (
+											<FrontPathPicker
+												label="Path"
+												value={page.path}
+												onChange={(value) => updatePage(index, { path: value })}
+											/>
+										) : (
+											<TextInput
+												label={index === 0 ? 'Path' : undefined}
+												aria-label="Path"
+												fluid
+												value={page.path}
+												onChange={(value) => updatePage(index, { path: value })}
+												placeholder="e.g. politics/uk-election-2024"
+											/>
+										)}
 									</RowFields>
 									<IconButton
 										type="button"
