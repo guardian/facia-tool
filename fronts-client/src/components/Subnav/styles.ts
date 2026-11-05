@@ -1,5 +1,6 @@
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { keyframes } from 'styled-components';
+import { Typography } from '@guardian/stand/Typography';
 
 // Scopes the @guardian/stand Open Sans font to subnav components only
 export const SubnavRoot = styled.div`
@@ -11,10 +12,10 @@ export const SubnavContainer = styled.div`
 	max-width: 720px;
 `;
 
-export const SubnavContainerHeading = styled.h1`
-	font-family: GHGuardianHeadline, Georgia, serif;
-	font-size: 24px;
-	font-weight: 500;
+export const SubnavContainerHeading = styled(Typography).attrs({
+	element: 'h1',
+	variant: 'titleLg',
+})`
 	margin-bottom: 16px;
 `;
 
@@ -82,6 +83,15 @@ export const StatusTag = styled.span<{ draft?: boolean }>`
 		draft ? theme.base.colors.brandColor : '#AED2A6'};
 `;
 
+export const ListViewSidebar = styled.div`
+	align-self: stretch;
+	flex: 0 0 130px;
+	min-height: 100vh;
+	height: 100%;
+	background: ${theme.colors.whiteMedium};
+	border-radius: 4px;
+`;
+
 export const Panel = styled.section`
 	height: 100%;
 	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
@@ -98,6 +108,23 @@ export const PanelThumb = styled.div<{ url: string }>`
 	background-image: url(${({ url }) => url});
 	background-size: cover;
 	background-position: center;
+`;
+
+export const PanelThumbEmpty = styled.div`
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1px;
+	width: 40px;
+	height: 40px;
+	border-radius: 3px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	color: ${({ theme }) => theme.base.colors.textMuted};
+	font-size: 7px;
+	line-height: 1;
+	text-align: center;
 `;
 
 /**
@@ -160,7 +187,7 @@ export const Select = styled.select`
 
 export const RepeatableRow = styled.div`
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
 	gap: 8px;
 	margin-bottom: 12px;
 `;
@@ -193,21 +220,40 @@ export const ColumnHeaderLabel = styled.span`
 	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
+export const CharacterCountRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 4px;
+`;
+
+export const CharacterCount = styled.span`
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+`;
+
 export const ItemHeader = styled.span`
+	margin-top: 16px;
 	font-size: 16px;
+	letter-spacing: -0.5px;
 	font-weight: 700;
 	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
 export const ItemText = styled.span`
 	font-size: 14px;
-	font-weight: 460;
-	color: ${({ theme }) => theme.colors.greyMediumDarker};
+	font-weight: 500;
+	letter-spacing: -0.5px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
 `;
 
 export const DragHandle = styled.div`
+	flex: 0 0 auto;
+	width: 24px;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	align-self: flex-end;
 	height: 2.5rem;
 	color: ${({ theme }) => theme.base.colors.textMuted};
@@ -215,11 +261,23 @@ export const DragHandle = styled.div`
 	font-size: 18px;
 `;
 
+// Reserves a consistent column for the per-row remove button so the field
+// columns keep the same width (and stay aligned with the header labels)
+// whether or not the button is rendered.
+export const RemoveButtonSlot = styled.div`
+	flex: 0 0 auto;
+	width: 40px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-start;
+`;
+
 export const IconButton = styled.button`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	align-self: flex-end;
+	align-self: flex-start;
+	margin-top: 4px;
 	height: 2.5rem;
 	padding: 0;
 	background: none;
@@ -236,7 +294,7 @@ export const IconButton = styled.button`
 
 export const AddRow = styled.div`
 	display: flex;
-	justify-content: flex-end;
+	justify-content: flex-start;
 `;
 
 export const FormActions = styled.div`
@@ -260,9 +318,16 @@ export const SubnavCreateFormPage = styled.div`
 	z-index: 0;
 `;
 
+export const CreateFormTopBar = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+`;
+
 export const CreateFormSidebar = styled.div`
 	position: sticky;
-	top: 80px;
+	top: 0;
 	align-self: flex-start;
 	width: 221px;
 	margin: 0;
@@ -281,13 +346,12 @@ export const CreateFormMain = styled.div`
 export const CreateFormSection = styled.section<{ active?: boolean }>`
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 8px;
 	margin-top: 16px;
 	scroll-margin-top: 16px;
 	padding-left: 24px;
 	border-left: 2px solid
-		${({ active, theme }) =>
-			active ? theme.base.colors.textDark : theme.base.colors.borderColor};
+		${({ active, theme }) => (active ? theme.colors.orange200 : 'transparent')};
 	transition: border-color 0.15s ease;
 
 	/* Keep the indicator bar aligned to the heading text, not its top margin. */
@@ -304,11 +368,9 @@ export const CreateFormActions = styled.div`
 
 export const CreateFormPreview = styled.div`
 	position: sticky;
-	top: 80px;
-	align-self: flex-start;
+	top: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
 	min-width: 0;
 	height: calc(100vh - 100px);
 	margin: 8px;
@@ -330,11 +392,11 @@ export const CreateFormPreviewTitleRow = styled.div`
 	gap: 8px;
 `;
 
-export const CreateFormPreviewTitle = styled.h2`
+export const CreateFormPreviewTitle = styled(Typography).attrs({
+	element: 'h3',
+	variant: 'headingMd',
+})`
 	margin: 0;
-	font-size: 20px;
-	font-weight: 700;
-	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
 export const CreateFormPreviewToolbar = styled.div`
@@ -383,11 +445,12 @@ export const ImagePlatformGroup = styled.div`
 	gap: 12px;
 `;
 
-export const ImagePlatformGroupHeading = styled.h2`
+export const ImagePlatformGroupHeading = styled(Typography).attrs({
+	element: 'h2',
+	variant: 'headingMd',
+})`
 	margin: 0;
-	font-size: 15px;
-	font-weight: 700;
-	color: ${({ theme }) => theme.base.colors.textDark};
+	margin-top: 28px;
 `;
 
 export const ImageBreakpointGrid = styled.div`
@@ -403,6 +466,10 @@ export const ImageBreakpointCard = styled.div`
 `;
 
 export const ImageBreakpointLabel = styled.span`
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
 	font-size: 12px;
 	font-weight: 600;
 	color: ${({ theme }) => theme.base.colors.textMuted};
@@ -419,8 +486,10 @@ export const ImagePreview = styled.img`
 
 export const ImagePreviewEmpty = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	gap: 4px;
 	width: 100%;
 	height: 90px;
 	font-size: 12px;
@@ -433,7 +502,8 @@ export const ImagePreviewEmpty = styled.div`
 export const ImageBreakpointCollapsible = styled.div`
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 16px;
+	margin-bottom: 16px;
 `;
 
 export const ImageBreakpointToggle = styled.button`
@@ -444,20 +514,26 @@ export const ImageBreakpointToggle = styled.button`
 	background: none;
 	border: none;
 	padding: 0;
-	font-size: 13px;
+	font-size: 14px;
+	line-height: 115%;
+	letter-spacing: -0.5px;
 	font-weight: 600;
 	color: ${({ theme }) => theme.base.colors.textDark};
 	cursor: pointer;
 
-	&:hover {
-		text-decoration: underline;
+	&:hover span:first-of-type {
+		text-decoration: none;
 	}
 `;
 
+export const ImageBreakpointToggleLabel = styled.span``;
+
 export const ImageBreakpointToggleIcon = styled.span<{ expanded: boolean }>`
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	transition: transform 0.15s ease;
-	transform: rotate(${({ expanded }) => (expanded ? '90deg' : '0deg')});
+	transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
 `;
 
 const spin = keyframes`
