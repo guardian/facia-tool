@@ -35,7 +35,7 @@ const getStateWithTestOnExampleCard = (test: Test): State => ({
 	},
 });
 
-const renderForm = (state: State, onSave = jest.fn()) => {
+const renderForm = (state: State, onSave = jest.fn(), frontId = 'us') => {
 	const store = configureStore(state);
 	return {
 		store,
@@ -45,7 +45,7 @@ const renderForm = (state: State, onSave = jest.fn()) => {
 					<ArticleMetaForm
 						cardId={cardId}
 						form={cardId}
-						frontId="us"
+						frontId={frontId}
 						onSave={onSave}
 						onCancel={jest.fn()}
 					/>
@@ -478,42 +478,51 @@ describe('ArticleMetaForm - mini nav', () => {
 });
 
 describe('ArticleMetaForm - headline AB testing', () => {
-	it('copies the card headline into headlineA when the AB test toggle is switched on', () => {
-		const store = configureStore(initialState);
+	it.each(['uk', 'international'])(
+		'hides headline testing controls on %s',
+		(frontId) => {
+			const { queryByTestId, getByTestId } = renderForm(
+				initialState,
+				jest.fn(),
+				frontId,
+			);
 
-		const { getByTestId } = render(
-			<Provider store={store}>
-				<ThemeProvider theme={theme}>
-					<ArticleMetaForm
-						cardId={cardId}
-						form={cardId}
-						frontId="us"
-						onSave={jest.fn()}
-						onCancel={jest.fn()}
-					/>
-				</ThemeProvider>
-			</Provider>,
-		);
+			expect(queryByTestId('edit-form-ab-test-toggle')).toBeNull();
+			expect(queryByTestId('edit-form-headline-a-field')).toBeNull();
+			expect(queryByTestId('edit-form-headline-b-field')).toBeNull();
+			expect(getByTestId('edit-form-headline-field')).toBeTruthy();
+		},
+	);
 
-		const abTestToggle = getByTestId(
-			'edit-form-ab-test-toggle',
-		) as HTMLInputElement;
-		expect(abTestToggle.checked).toBe(false);
-		// headlineA is an empty string by default, we transform it to undefined later using getStringField
-		expect(store.getState().form[cardId]?.values?.headlineA).toBe('');
+	it.each(['us', 'au'])(
+		'copies the card headline into headlineA when the AB test toggle is switched on for %s',
+		(frontId) => {
+			const { store, getByTestId } = renderForm(
+				initialState,
+				jest.fn(),
+				frontId,
+			);
 
-		fireEvent.click(abTestToggle);
+			const abTestToggle = getByTestId(
+				'edit-form-ab-test-toggle',
+			) as HTMLInputElement;
+			expect(abTestToggle.checked).toBe(false);
+			// headlineA is an empty string by default, we transform it to undefined later using getStringField
+			expect(store.getState().form[cardId]?.values?.headlineA).toBe('');
 
-		expect(abTestToggle.checked).toBe(true);
-		expect(store.getState().form[cardId]?.values?.headlineA).toBe(
-			'Bill Shorten',
-		);
+			fireEvent.click(abTestToggle);
 
-		const headlineAField = getByTestId(
-			'edit-form-headline-a-field',
-		) as HTMLTextAreaElement;
-		expect(headlineAField.value).toBe('Bill Shorten');
-	});
+			expect(abTestToggle.checked).toBe(true);
+			expect(store.getState().form[cardId]?.values?.headlineA).toBe(
+				'Bill Shorten',
+			);
+
+			const headlineAField = getByTestId(
+				'edit-form-headline-a-field',
+			) as HTMLTextAreaElement;
+			expect(headlineAField.value).toBe('Bill Shorten');
+		},
+	);
 
 	it('disables the Headline A & Headline B input when the card has an active launched test', () => {
 		const launchedTest = makeTest({
