@@ -1,0 +1,4 @@
+{
+  "request": { "method": "GET", "urlPath": "/guardian-tool-accessed" },
+  "response": { "status": 204 }
+}

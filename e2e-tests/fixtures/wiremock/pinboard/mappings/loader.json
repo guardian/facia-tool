@@ -1,0 +1,8 @@
+{
+  "request": { "method": "GET", "urlPath": "/pinboard.loader.js" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/javascript" },
+    "bodyFileName": "pinboard.loader.js"
+  }
+}
