@@ -64,8 +64,8 @@ contexts are written under `target/` and are not committed.
 - Use the repository dev container, or install the versions in the root and e2e
   `.tool-versions` files, including Node, Yarn 1, Java, and sbt.
 - Install the e2e dependencies with `yarn install --frozen-lockfile` from this
-  directory. On Linux ARM64, the test runner downloads the pinned Chromium pack
-  on first use and caches it in the system temporary directory.
+  directory, then install Chromium with
+  `yarn playwright install --with-deps chromium`.
 - No private repository checkout, SSH access, Guardian credentials, or AWS
   credentials are needed.
 
@@ -111,6 +111,20 @@ Local HTML reports are written to `target/playwright-report/`. Screenshots,
 videos, traces, and other Playwright output are written to
 `target/test-results/`. Traces and videos are retained on the first retry, and
 screenshots are retained on failure.
+
+## Continuous integration
+
+`.github/workflows/e2e-tests.yml` runs the complete suite for pull requests,
+pushes to `main`, and manual dispatches. The job uses `ubuntu-22.04`, caches the
+Yarn dependencies, installs only Playwright's Chromium headless shell, and runs
+`yarn test:ci`. Testcontainers builds the app image and owns the isolated stack;
+the workflow does not use service containers, remote Guardian services, AWS
+credentials, or private repository credentials.
+
+If the job fails, GitHub Actions uploads `target/test-results/` as the
+`playwright-failure-artifacts` artifact and retains it for seven days. This
+directory contains any screenshots, traces, and videos retained by Playwright.
+All third-party actions in the workflow are pinned to immutable commit SHAs.
 
 ## Folder structure
 
