@@ -8,8 +8,6 @@ import {
 	EventWithDataHandler,
 	WrappedFieldArrayProps,
 	FieldArray,
-	SubmissionError,
-	getFormValues,
 } from 'redux-form';
 import { styled, theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
@@ -88,7 +86,7 @@ import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { CollectionToggles, renderBoostToggles } from './BoostToggles';
-import { memoize, debounce, isEqual } from 'lodash';
+import { memoize, debounce } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
@@ -108,7 +106,6 @@ import {
 } from '../../util/extractAtom';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { MiniNavUrlField } from './MiniNavUrlField';
-import { getMiniNavResolutionError, resolveMiniNavUrl } from 'services/miniNav';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -1515,66 +1512,37 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 		// By using a thunk, we get access to the application state. We could use
 		// mergeProps, or thread state through the component, to achieve the same
 		// result -- this seemed to be the most concise way.
-		const save = () =>
-			dispatch((_, getState) => {
-				const state = getState();
-				const meta: CardMeta = getCardMetaFromFormValues(
-					state,
-					props.cardId,
-					values,
-				);
-				const maybeTest = getCardTestFromFormValues(
-					state,
-					props.cardId,
-					values,
-				);
-
-				const preSaveCard = selectCard(state, props.cardId);
-				const currentCapiHeadline = selectExternalArticleFromCard(
-					state,
-					props.cardId,
-				)?.fields.headline;
-
-				// When the card is in sync with CAPI (at creation, while the custom headline is mirroring CAPI,
-				// or when adopting an updated headline) we re-baseline to the
-				// current CAPI headline so the "headline changed" indicator - which is
-				// derived from this baseline - stays correct.
-				if (
-					shouldRebaselineCapiHeadline(
-						preSaveCard?.meta.headline,
-						meta.headline,
-						currentCapiHeadline,
-					)
-				) {
-					meta.baselineCapiHeadline = currentCapiHeadline;
-				}
-
-				props.onSave(meta, maybeTest);
-			});
-		if (
-			values.showMiniNav &&
-			shouldRenderField('miniNavUrl', props.editableFields || [])
-		) {
-			return resolveMiniNavUrl(values.miniNavUrl).then(
-				() => {
-					return dispatch((_, getState) => {
-						const currentValues = getFormValues(props.cardId)(getState());
-						if (!isEqual(currentValues, values)) {
-							throw new SubmissionError({
-								miniNavUrl: 'Card settings changed. Please save again.',
-							});
-						}
-						return save();
-					});
-				},
-				(error: unknown) => {
-					throw new SubmissionError({
-						miniNavUrl: getMiniNavResolutionError(error),
-					});
-				},
+		return dispatch((_, getState) => {
+			const state = getState();
+			const meta: CardMeta = getCardMetaFromFormValues(
+				state,
+				props.cardId,
+				values,
 			);
-		}
-		return save();
+			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
+
+			const preSaveCard = selectCard(state, props.cardId);
+			const currentCapiHeadline = selectExternalArticleFromCard(
+				state,
+				props.cardId,
+			)?.fields.headline;
+
+			// When the card is in sync with CAPI (at creation, while the custom headline is mirroring CAPI,
+			// or when adopting an updated headline) we re-baseline to the
+			// current CAPI headline so the "headline changed" indicator - which is
+			// derived from this baseline - stays correct.
+			if (
+				shouldRebaselineCapiHeadline(
+					preSaveCard?.meta.headline,
+					meta.headline,
+					currentCapiHeadline,
+				)
+			) {
+				meta.baselineCapiHeadline = currentCapiHeadline;
+			}
+
+			props.onSave(meta, maybeTest);
+		});
 	},
 })(FormComponent);
 
