@@ -30,6 +30,12 @@ const MiniNavInput = (
 	const pending = message === 'Resolving custom subnav...';
 	const errorId = `${props.id}-error`;
 	const titleId = `${props.id}-title`;
+	function getDescribedById() {
+		if (message) return errorId;
+		if (props.resolvedTitle) return titleId;
+		return undefined;
+	}
+
 	return (
 		<>
 			<InputBase
@@ -37,9 +43,7 @@ const MiniNavInput = (
 				id={props.id}
 				type="text"
 				aria-invalid={!!message && !pending}
-				aria-describedby={
-					message ? errorId : props.resolvedTitle ? titleId : undefined
-				}
+				aria-describedby={getDescribedById()}
 			/>
 			{pending ? (
 				<ResolutionStatus id={errorId} role="status">
