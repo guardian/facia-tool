@@ -50,7 +50,7 @@ class CustomSubnavController(
   private def persist(config: CustomSubnavConfig): Result =
     customSubnavApi.putConfig(config) match {
       case Success(saved) => Ok(Json.toJson(saved)).as("application/json")
-      case Failure(_) =>
+      case Failure(_)     =>
         InternalServerError("Failed to save custom subnav config")
     }
 
@@ -58,7 +58,7 @@ class CustomSubnavController(
       id: String
   )(f: CustomSubnavConfig => Option[CustomSubnavConfig]): Result =
     configForMutation match {
-      case Left(error) => error
+      case Left(error)   => error
       case Right(config) =>
         f(config) match {
           case Some(updated) => persist(updated)
@@ -71,7 +71,7 @@ class CustomSubnavController(
       _ =>
         NoCache {
           val (config, warning) = customSubnavApi.getConfig() match {
-            case Right(c) => (c, None)
+            case Right(c)      => (c, None)
             case Left(message) =>
               (CustomSubnavConfigFunctions.empty, Some(message))
           }
@@ -92,7 +92,7 @@ class CustomSubnavController(
             )
           case Some(subnav) =>
             configForMutation match {
-              case Left(error) => error
+              case Left(error)   => error
               case Right(config) =>
                 val stamped =
                   CustomSubnavConfigFunctions.stamp(subnav, request.user)
