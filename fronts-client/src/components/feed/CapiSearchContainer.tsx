@@ -74,6 +74,7 @@ const RefreshButton = styled.button`
 
 const FeedsContainerWrapper = styled.div`
 	height: 100%;
+	min-height: 0;
 `;
 
 const PaginationContainer = styled.div`
