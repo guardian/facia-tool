@@ -54,16 +54,14 @@ const TOGGLES: Record<BoostLevels, Toggle> = {
  * - **Group 3 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
  * */
-export const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
-	'flexible/general': {
-		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
-		1: [
-			{ ...TOGGLES.boost, label: 'Default' },
-			{ ...TOGGLES.megaboost, label: 'Boost' },
-		],
-		2: [{ ...TOGGLES.megaboost, label: 'Default' }],
-		3: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
-	},
+export const CollectionToggles: Record<number, Toggle[]> = {
+	0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
+	1: [
+		{ ...TOGGLES.boost, label: 'Default' },
+		{ ...TOGGLES.megaboost, label: 'Boost' },
+	],
+	2: [{ ...TOGGLES.megaboost, label: 'Default' }],
+	3: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 };
 
 const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
@@ -84,7 +82,7 @@ export const renderBoostToggles = (
 		return [];
 	}
 
-	const toggles = CollectionToggles[collectionType][groupIndex];
+	const toggles = CollectionToggles[groupIndex];
 
 	return toggles.map(({ label, id, value }) => (
 		<Field
