@@ -66,7 +66,7 @@ describe('Form utils', () => {
 
 			//Mini nav fields are not removed, so they can appear again
 			//By moving back to a supported type
-			it.each(['flexible/special', 'dynamic/slow', 'type'])(
+			it.each(['scrollable/highlights', 'dynamic/slow', 'type'])(
 				'should exclude mini nav fields in %s when they exist',
 				(collectionType) => {
 					const localState = cloneDeep(state);
