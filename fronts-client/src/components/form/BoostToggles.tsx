@@ -1,5 +1,5 @@
 import InputRadio from 'components/inputs/InputRadio';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
+import { flexibleGeneral } from 'constants/fronts';
 import React from 'react';
 import { Field } from 'redux-form';
 import type { BoostLevels } from 'types/Collection';
@@ -78,7 +78,7 @@ export const renderBoostToggles = (
 	collectionType?: string,
 ) => {
 	// Only render boost toggles for flexible collections
-	if (collectionType !== FLEXIBLE_GENERAL_NAME) {
+	if (collectionType !== flexibleGeneral) {
 		return [];
 	}
 
