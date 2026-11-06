@@ -33,12 +33,12 @@ import {
 import { Recipe } from '../types/Recipe';
 import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { EventGraphic } from '../constants/eventGraphics';
+import { flexibleGeneral } from '../constants/fronts';
 import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
 import { PosSpec } from 'lib/dnd';
 import { selectCollectionType } from 'selectors/frontsSelectors';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
@@ -366,7 +366,7 @@ const getArticleEntitiesFromFeedDrop = (
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
 	function getGroupDefaultBoostLevel() {
-		if (to && collectionType === FLEXIBLE_GENERAL_NAME) {
+		if (to && collectionType === flexibleGeneral) {
 			switch (to.groupName) {
 				case 'very big':
 					return 'megaboost';
