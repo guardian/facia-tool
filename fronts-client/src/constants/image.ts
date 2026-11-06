@@ -1,7 +1,4 @@
-import {
-	FLEXIBLE_GENERAL_NAME,
-	FLEXIBLE_SPECIAL_NAME,
-} from './flexibleContainers';
+import { FLEXIBLE_GENERAL_NAME } from './flexibleContainers';
 
 export const landScapeCardImageCriteria = {
 	minWidth: 400,
@@ -34,7 +31,6 @@ export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [
 
 export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
 	FLEXIBLE_GENERAL_NAME,
-	FLEXIBLE_SPECIAL_NAME,
 	'scrollable/small',
 	'scrollable/medium',
 	'static/medium/4',

@@ -409,13 +409,15 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(queryByText('Old title')).toBeNull();
 	});
 
-	it.each(['feature switch disabled', 'Flex Special'])(
+	it.each(['feature switch disabled', 'unsupported container'])(
 		'preserves hidden settings and allows unrelated edits with %s',
 		(hiddenBy) => {
 			const savedSettings = { showMiniNav: true, miniNavUrl: 'invalid' };
 			const state = getMiniNavState(
 				savedSettings,
-				hiddenBy === 'Flex Special' ? 'flexible/special' : 'flexible/general',
+				hiddenBy === 'unsupported container'
+					? 'scrollable/highlights'
+					: 'flexible/general',
 			);
 			if (hiddenBy === 'feature switch disabled') {
 				state.featureSwitches['mini-nav'].enabled = false;
@@ -461,14 +463,14 @@ describe('ArticleMetaForm - mini nav', () => {
 		expect(queryByText(miniNavWarning)).toBeNull();
 	});
 
-	it('hides both controls and the warning in Flex Special even with existing settings', () => {
+	it('hides both controls and the warning in unsupported containers even with existing settings', () => {
 		const { queryByLabelText, queryByText } = renderForm(
 			getMiniNavState(
 				{
 					showMiniNav: true,
 					miniNavUrl: 'https://www.theguardian.com/custom-nav',
 				},
-				'flexible/special',
+				'scrollable/highlights',
 			),
 		);
 		expect(queryByLabelText('Enable mini nav')).toBeNull();

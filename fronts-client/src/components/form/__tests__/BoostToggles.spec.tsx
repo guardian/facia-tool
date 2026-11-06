@@ -28,16 +28,6 @@ const groupToggles = [
 		collectionType: 'flexible/general',
 		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
 	},
-	{
-		group: 0,
-		collectionType: 'flexible/special',
-		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
-	},
-	{
-		group: 1,
-		collectionType: 'flexible/special',
-		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
-	},
 ];
 
 describe('renderBoostToggles', () => {
