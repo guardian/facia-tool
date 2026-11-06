@@ -1,7 +1,4 @@
-import {
-	FLEXIBLE_CONTAINER_SET,
-	FLEXIBLE_GENERAL_NAME,
-} from 'constants/flexibleContainers';
+import { flexibleGeneral } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
 import React from 'react';
 import type { BoostLevels } from 'types/Collection';
@@ -28,7 +25,7 @@ const shouldShowBoostLevel = (
 ) =>
 	boostLevel !== 'default' &&
 	/* show new Boost level in flexible containers or clipboard */
-	(FLEXIBLE_CONTAINER_SET.includes(collectionType) || !collectionType);
+	(collectionType === flexibleGeneral || !collectionType);
 
 export const getBoostLevelLabel = (
 	boostLevel?: BoostLevels,
@@ -38,7 +35,7 @@ export const getBoostLevelLabel = (
 	if (
 		!boostLevel ||
 		groupIndex === undefined ||
-		collectionType !== FLEXIBLE_GENERAL_NAME
+		collectionType !== flexibleGeneral
 	)
 		return undefined;
 
