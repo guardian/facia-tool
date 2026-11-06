@@ -42,7 +42,7 @@ export const getBoostLevelLabel = (
 	)
 		return undefined;
 
-	const toggles = BoostToggles[collectionType]?.[groupIndex];
+	const toggles = BoostToggles[groupIndex];
 	const label = toggles?.find((toggle) => toggle.value === boostLevel)?.label;
 	// If the label is 'Default', return undefined so that it doesn't appear in the UI
 	return label === 'Default' ? undefined : label;
