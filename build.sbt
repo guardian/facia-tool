@@ -83,7 +83,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "editorial-permissions-client" % "5.0.0",
   "com.gu" %% "fapi-client-play30" % "47.1.0",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
-  "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.0",
+  "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.1-SNAPSHOT",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
@@ -119,9 +119,7 @@ excludeDependencies ++= Seq(
 
 dependencyOverrides ++= Seq(
   // Pinned to resolve transitive dependencies between Play and Scalikejdbc
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
-  // Transitive via Play and others; pinned to the first version patched for CVE-2026-102554
-  "com.google.guava" % "guava" % "33.7.2-jre"
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
 )
 
 val UsesDatabaseTest = config("database-int") extend Test
