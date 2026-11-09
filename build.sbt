@@ -119,7 +119,9 @@ excludeDependencies ++= Seq(
 
 dependencyOverrides ++= Seq(
   // Pinned to resolve transitive dependencies between Play and Scalikejdbc
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
+  // Transitive via Play and others; pinned to the first version patched for CVE-2026-102554
+  "com.google.guava" % "guava" % "33.7.2-jre"
 )
 
 val UsesDatabaseTest = config("database-int") extend Test
