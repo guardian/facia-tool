@@ -17,7 +17,6 @@ const draftArticle = {
 		firstPublicationDate: undefined,
 		canShowPageViewData: false,
 		featureFlagPageViewData: false,
-		isHeadlineUpdateIndicatorEnabled: false,
 	},
 };
 
@@ -37,7 +36,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -60,7 +58,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -81,7 +78,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -103,7 +99,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -124,7 +119,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -145,7 +139,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -164,7 +157,6 @@ describe('Article component ', () => {
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
 						hasCapiHeadlineChanged={false}
-						isHeadlineUpdateIndicatorEnabled={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -188,7 +180,6 @@ it('should show the page view data graph if 3 conditions are true: canShowPageVi
 					featureFlagPageViewData={true}
 					canShowPageViewData={true}
 					hasCapiHeadlineChanged={false}
-					isHeadlineUpdateIndicatorEnabled={false}
 				/>
 			</ThemeProvider>
 		</Provider>,
@@ -210,7 +201,6 @@ it('should NOT show the page view data graph if any of these conditions are fals
 					featureFlagPageViewData={false}
 					canShowPageViewData={true}
 					hasCapiHeadlineChanged={false}
-					isHeadlineUpdateIndicatorEnabled={false}
 				/>
 			</ThemeProvider>
 		</Provider>,
