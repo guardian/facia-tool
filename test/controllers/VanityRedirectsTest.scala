@@ -8,7 +8,7 @@ class VanityRedirectsTest extends FreeSpec with Matchers {
       VanityRedirects.untrailTarget("editorial") should be("/editorial")
     }
 
-    "does not produce a protocol-relative URL" in {
+    "prevents open redirects to malicious sites by never producing a protocol-relative URL" in {
       VanityRedirects.untrailTarget("/evil.com") should be("/evil.com")
       VanityRedirects.untrailTarget("//evil.com") should be("/evil.com")
     }
