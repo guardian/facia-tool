@@ -21,7 +21,14 @@ const createSelectCardType = () =>
 			return CardTypesMap.EVENT_GRAPHIC;
 		}
 
-		return validateId(card.id) ? CardTypesMap.SNAP_LINK : CardTypesMap.ARTICLE;
+		if (!validateId(card.id)) {
+			return CardTypesMap.ARTICLE;
+		}
+
+		// Display-only: interactive atom snaps are saved as ordinary snaps.
+		return card.meta?.snapType === 'interactive' && card.meta.atomId
+			? CardTypesMap.INTERACTIVE_ATOM
+			: CardTypesMap.SNAP_LINK;
 	});
 
 const createSelectCutoutUrl = () =>
