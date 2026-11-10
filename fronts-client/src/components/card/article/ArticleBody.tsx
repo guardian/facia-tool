@@ -417,7 +417,8 @@ const articleBodyDefault = React.memo(
 		const isClipboard = frontId === clipboardId;
 		const shouldShowAbTestStatus =
 			!!abTestStatus && (isAbTestingEnabledOnFront || isClipboard);
-
+		const shouldShowHeadlineUpdateIndicator =
+			isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && !isLive;
 		return (
 			<>
 				{showMeta && (
@@ -547,8 +548,7 @@ const articleBodyDefault = React.memo(
 				<ThumbnailArea
 					size={size}
 					$reserveBadgeSpace={
-						shouldShowAbTestStatus ||
-						(isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged)
+						shouldShowAbTestStatus || shouldShowHeadlineUpdateIndicator
 					}
 				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
@@ -634,7 +634,7 @@ const articleBodyDefault = React.memo(
 				</ThumbnailArea>
 
 				<BadgeWrapper>
-					{isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && (
+					{shouldShowHeadlineUpdateIndicator && (
 						<Badge
 							size="sm"
 							weight="strong"
