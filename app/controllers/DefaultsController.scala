@@ -44,7 +44,8 @@ case class Defaults(
     availableTerritories: Iterable[TargetedTerritory] = Nil,
     availableTemplates: List[CuratedPlatformDefinition],
     telemetryUrl: String,
-    baseUrls: BaseUrls
+    baseUrls: BaseUrls,
+    showProdWarning: Boolean = false
 )
 
 class DefaultsController(
