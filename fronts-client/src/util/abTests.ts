@@ -1,5 +1,12 @@
 import { Card, VariantId, Test } from '../types/Collection';
 
+/*
+ * Initial rollout of Editorial AB testing is limited to the US and Aus fronts.
+ * Removal of this restriction: https://github.com/guardian/frontend/issues/29129
+ */
+export const isHeadlineAbTestingEnabledOnFront = (frontId: string) =>
+	frontId === 'us' || frontId === 'au';
+
 export const isActiveTest = (test: Test) =>
 	!test.hasManuallyEndedOnThisTrail &&
 	!!test.expiryDate &&

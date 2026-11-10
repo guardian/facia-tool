@@ -60,7 +60,10 @@ import {
 	IntendedAudienceSignifierProps,
 } from '@guardian/stand/IntendedAudienceSignifier';
 import { Badge } from '@guardian/stand/Badge';
-import { AbTestHeadlineErrorType } from '../../../util/abTests';
+import {
+	AbTestHeadlineErrorType,
+	isHeadlineAbTestingEnabledOnFront,
+} from '../../../util/abTests';
 
 type ABStatusMessage =
 	| 'Test in progress'
@@ -408,15 +411,12 @@ const articleBodyDefault = React.memo(
 			frontId,
 		);
 
-		/*
-		 * Initial rollout of Editorial AB testing will be limited to the US front only.
-		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-		 */
-		const isUSNetworkFront = frontId === 'us';
+		const isAbTestingEnabledOnFront =
+			isHeadlineAbTestingEnabledOnFront(frontId);
 
 		const isClipboard = frontId === clipboardId;
 		const shouldShowAbTestStatus =
-			!!abTestStatus && (isUSNetworkFront || isClipboard);
+			!!abTestStatus && (isAbTestingEnabledOnFront || isClipboard);
 
 		return (
 			<>

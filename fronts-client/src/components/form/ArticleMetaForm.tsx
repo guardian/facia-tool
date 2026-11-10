@@ -105,6 +105,7 @@ import {
 	extractVideoImage,
 } from '../../util/extractAtom';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
+import { MiniNavUrlField } from './MiniNavUrlField';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -980,24 +981,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								<InputLabel htmlFor={getInputId(cardId, 'mini-nav-url')}>
 									Custom nav URL
 								</InputLabel>
-								<Field
-									name="miniNavUrl"
-									component={InputText}
+								<MiniNavUrlField
+									value={miniNavUrl || ''}
 									id={getInputId(cardId, 'mini-nav-url')}
-									aria-describedby={
-										miniNavUrl
-											? getInputId(cardId, 'mini-nav-warning')
-											: undefined
-									}
 								/>
-								{miniNavUrl && (
-									<div
-										id={getInputId(cardId, 'mini-nav-warning')}
-										role="status"
-									>
-										<InvalidWarning warning="Not implemented: you can save this url but the mini nav will not yet show" />
-									</div>
-								)}
 							</InputContainer>
 						)}
 						{showByline && (
@@ -1392,6 +1379,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						onClick={this.handleSubmit}
 						disabled={
 							pristine ||
+							this.props.submitting ||
 							!articleExists ||
 							invalidCardReplacement ||
 							!valid ||
@@ -1524,7 +1512,7 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 		// By using a thunk, we get access to the application state. We could use
 		// mergeProps, or thread state through the component, to achieve the same
 		// result -- this seemed to be the most concise way.
-		dispatch((_, getState) => {
+		return dispatch((_, getState) => {
 			const state = getState();
 			const meta: CardMeta = getCardMetaFromFormValues(
 				state,
