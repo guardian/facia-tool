@@ -640,7 +640,7 @@ const articleBodyDefault = React.memo(
 							weight="strong"
 							cssOverrides={getBadgeStyles(theme.headlineUpdateBadge)}
 						>
-							Headline has been updated
+							Headline updated
 						</Badge>
 					)}
 					{shouldShowAbTestStatus && (
