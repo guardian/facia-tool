@@ -131,11 +131,19 @@ const AppFonts = createGlobalStyle`
   }
 `;
 
+// The banners take their natural height and the app fills the rest, so they do not push it off the bottom of the page.
+const AppLayout = styled.div`
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+`;
+
 const AppContainer = styled.div`
 	background-color: ${theme.base.colors.backgroundColorLight};
 	position: relative;
 	color: ${theme.base.colors.textDark};
-	height: 100%;
+	flex: 1;
+	min-height: 0;
 	width: 100%;
 `;
 
@@ -161,32 +169,34 @@ const App = () => {
 	return (
 		<ThemeProvider theme={styleTheme}>
 			<DropDisabler>
-				<EnvironmentBanner />
-				<BannerNotification />
-				<AppContainer>
-					<BackgroundHeader>
-						<SectionHeaderWithLogo greyHeader={true} />
-					</BackgroundHeader>
-					<Switch>
-						<Route {...frontsEditPathProps} component={FrontsEdit} />
-						<Route {...issuePathProps} component={FrontsEdit} />
-						<Route {...frontsFeatureProps} component={FeaturesView} />
-						<Route {...subnavRoutes.sectionProps} component={SubnavSection} />
-						<Route exact path="/" component={Home} />
-						<Route exact path={manageEditions} component={ManageView} />
-						<Route
-							path={packagesRoutes.manageProps.path}
-							exact={packagesRoutes.manageProps.exact}
-							component={ManageFeastPackages}
-						/>
-						<Route
-							path="/packages/manage"
-							exact={true}
-							component={ManageFeastPackages}
-						/>
-						<Route component={NotFound} />
-					</Switch>
-				</AppContainer>
+				<AppLayout>
+					<EnvironmentBanner />
+					<BannerNotification />
+					<AppContainer>
+						<BackgroundHeader>
+							<SectionHeaderWithLogo greyHeader={true} />
+						</BackgroundHeader>
+						<Switch>
+							<Route {...frontsEditPathProps} component={FrontsEdit} />
+							<Route {...issuePathProps} component={FrontsEdit} />
+							<Route {...frontsFeatureProps} component={FeaturesView} />
+							<Route {...subnavRoutes.sectionProps} component={SubnavSection} />
+							<Route exact path="/" component={Home} />
+							<Route exact path={manageEditions} component={ManageView} />
+							<Route
+								path={packagesRoutes.manageProps.path}
+								exact={packagesRoutes.manageProps.exact}
+								component={ManageFeastPackages}
+							/>
+							<Route
+								path="/packages/manage"
+								exact={true}
+								component={ManageFeastPackages}
+							/>
+							<Route component={NotFound} />
+						</Switch>
+					</AppContainer>
+				</AppLayout>
 				<PlaceholderAnimation />
 				<AppFonts />
 				<OptionsModal />
