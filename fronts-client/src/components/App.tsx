@@ -43,6 +43,7 @@ import SubnavSection from './Subnav';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
+import EnvironmentBanner from './notifications/EnvironmentBanner';
 import pageConfig from 'util/extractConfigFromPage';
 import { useLocation } from 'react-router';
 import ManageFeastPackages from './Packages/ManageFeastPackages';
@@ -160,6 +161,7 @@ const App = () => {
 	return (
 		<ThemeProvider theme={styleTheme}>
 			<DropDisabler>
+				<EnvironmentBanner />
 				<BannerNotification />
 				<AppContainer>
 					<BackgroundHeader>
