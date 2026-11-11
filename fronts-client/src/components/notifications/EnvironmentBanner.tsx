@@ -1,6 +1,13 @@
 import React from 'react';
 import { AlertBanner } from '@guardian/stand/AlertBanner';
+import { semanticColors } from '@guardian/stand';
 import pageConfig from 'util/extractConfigFromPage';
+
+const iconColours = {
+	information: semanticColors.text.information,
+	warning: semanticColors.text.warning,
+	error: semanticColors.text.error,
+};
 
 const getEnvironment = () => {
 	if (pageConfig.dev) {
@@ -19,7 +26,15 @@ const getEnvironment = () => {
 const EnvironmentBanner = () => {
 	const environment = getEnvironment();
 	return environment ? (
-		<AlertBanner level={environment.level} showIcon>
+		<AlertBanner
+			level={environment.level}
+			showIcon
+			theme={{
+				shared: {
+					content: { icon: { color: iconColours[environment.level] } },
+				},
+			}}
+		>
 			You are working in the Fronts Tool {environment.name} Environment
 		</AlertBanner>
 	) : null;
