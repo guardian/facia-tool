@@ -53,7 +53,7 @@ routesImport += "model.editions._"
 val capiModelsVersion = "53.0.0"
 val capiClientVersion = "51.0.0"
 val json4sVersion = "4.0.3"
-val circeVersion = "0.14.10"
+val circeVersion = "0.14.17"
 val awsSdkVersion = "2.57.5"
 
 resolvers ++= Seq(
@@ -81,9 +81,9 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "5.0.0",
-  "com.gu" %% "fapi-client-play30" % "47.1.0",
+  "com.gu" %% "fapi-client-play30" % "47.2.1",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
-  "com.gu" %% "pan-domain-auth-play_3-0" % "22.2.0",
+  "com.gu" %% "pan-domain-auth-play_3-0" % "23.0.1",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
