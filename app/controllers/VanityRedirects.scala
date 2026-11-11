@@ -23,7 +23,12 @@ class VanityRedirects(val acl: Acl, val deps: BaseFaciaControllerComponents)(
     }
 
   def untrail(path: String) = Action { request =>
-    NoCache(Redirect("/" + path, 301))
+    NoCache(Redirect(VanityRedirects.untrailTarget(path), 301))
   }
 
+}
+
+object VanityRedirects {
+  // A "//host" Location is protocol-relative, so leading slashes must be stripped to avoid an open redirect
+  def untrailTarget(path: String): String = "/" + path.dropWhile(_ == '/')
 }
