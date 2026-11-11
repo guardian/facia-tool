@@ -199,7 +199,7 @@ object FaciaApi {
     // set dates on those
     val updatedMeta = trail.meta.map { meta =>
       meta.supporting match {
-        case None => meta
+        case None             => meta
         case Some(supporting) =>
           val updatedSupporting =
             supporting.map(item => addTestDatesToSupportingItem(item, now))
@@ -216,7 +216,7 @@ object FaciaApi {
       collectionJson: CollectionJson
   ): CollectionJson = {
     collectionJson.draft match {
-      case None => collectionJson
+      case None         => collectionJson
       case Some(drafts) =>
         val now = DateTime.now
         val updated = drafts.map(draft => addTestDatesToTrail(draft, now))
