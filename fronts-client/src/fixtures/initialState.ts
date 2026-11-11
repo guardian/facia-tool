@@ -260,6 +260,7 @@ const config: Config = {
 		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
 		videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
 	},
+	showProdWarning: false,
 };
 
 const externalArticles: State['externalArticles'] = {
