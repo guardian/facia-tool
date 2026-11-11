@@ -47,13 +47,22 @@ object MiniNav
       enabled = false
     )
 
+object ClientPerformanceMetrics
+    extends FeatureSwitch(
+      key = "client-performance-metrics",
+      title =
+        "Collect client performance diagnostics (for investigating editing lag)",
+      enabled = false
+    )
+
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
     HeadlineUpdateIndicator,
     MultimediaSlideshow,
-    MiniNav
+    MiniNav,
+    ClientPerformanceMetrics
   )
 
   def updateFeatureSwitchesForUser(

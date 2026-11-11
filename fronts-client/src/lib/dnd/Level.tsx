@@ -6,6 +6,12 @@ import AddParentInfo, { PathConsumer, Parent } from './AddParentInfo';
 import { TRANSFER_TYPE, NO_STORE_ERROR } from './constants';
 import DropZone from './DropZone';
 import { Group } from 'types/Collection';
+import {
+	beginDrop,
+	endDrop,
+	isPhaseTimingEnabled,
+	DropOperation,
+} from 'util/performance';
 
 interface PosSpec {
 	type: string;
@@ -30,6 +36,17 @@ const adjustToIndexForMove = (from: PosSpec, to: PosSpec): PosSpec =>
 
 const isMoveToSamePosition = (from: PosSpec, to: PosSpec): boolean =>
 	isOnSameLevel(from, to) && from.index === to.index;
+
+/**
+ * Describe a drop for diagnostics. A falsy `from` means the card is being
+ * cloned rather than relocated, because the source is keeping its copy.
+ */
+const classifyDrop = (from: false | PosSpec, to: PosSpec): DropOperation => {
+	if (!from) {
+		return 'copy';
+	}
+	return isOnSameLevel(from, to) ? 'reorder' : 'move';
+};
 
 interface Move<T> {
 	data: T;
@@ -200,7 +217,15 @@ class Level<T> extends React.Component<Props<T>, State> {
 		};
 
 		if (!af) {
-			return onDrop(e, to);
+			// A drop from outside the fronts tree, e.g. the feed or a URL.
+			const timing = isPhaseTimingEnabled()
+				? beginDrop('insert', this.props.collectionId, this.props.arr.length)
+				: null;
+			try {
+				return onDrop(e, to);
+			} finally {
+				endDrop(timing);
+			}
 		}
 
 		const { parents, id, index, type, data, forceClone } = JSON.parse(af);
@@ -217,7 +242,20 @@ class Level<T> extends React.Component<Props<T>, State> {
 			const adjustedTo = from ? adjustToIndexForMove(from, to) : to;
 
 			if (!(from && isMoveToSamePosition(from, adjustedTo))) {
-				return onMove({ data, to: adjustedTo, from });
+				// Classifying the drop is only worth doing when something is
+				// listening; when it isn't, this costs a single boolean check.
+				const timing = isPhaseTimingEnabled()
+					? beginDrop(
+							classifyDrop(from, adjustedTo),
+							this.props.collectionId,
+							this.props.arr.length,
+						)
+					: null;
+				try {
+					return onMove({ data, to: adjustedTo, from });
+				} finally {
+					endDrop(timing);
+				}
 			}
 		}
 	};

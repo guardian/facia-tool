@@ -18,6 +18,7 @@ import {
 	selectEditorFavouriteFrontIds,
 } from 'bundles/frontsUI';
 import { selectFront } from '../selectors/shared';
+import { markCollectionEditQueued } from 'util/performance';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> =
 	({ dispatch, getState }: { dispatch: Dispatch; getState: () => State }) =>
@@ -84,6 +85,7 @@ const persistCollectionOnEdit =
 		);
 
 		const persistCollectionEdits = (ids: string[]) => {
+			markCollectionEditQueued(ids);
 			ids.forEach((id) => {
 				if (!pendingCollectionIds.includes(id)) {
 					pendingCollectionIds.push(id);

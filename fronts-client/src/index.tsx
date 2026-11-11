@@ -32,8 +32,30 @@ import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { deleteIssue } from 'util/delete';
 import notifications from 'services/notifications';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
+import {
+	PERFORMANCE_FEATURE_SWITCH_KEY,
+	setPhaseTimingEnabled,
+	startPassiveObservers,
+} from 'util/performance';
 
 initGA();
+
+/**
+ * Performance instrumentation is read once, synchronously, at startup rather
+ * than tracked through the store. Keeping it fixed for the session means the
+ * decision never has to be re-evaluated while the user is editing. Toggling
+ * the switch takes effect on reload.
+ */
+if (
+	pageConfig.userData?.featureSwitches?.some(
+		(featureSwitch) =>
+			featureSwitch.key === PERFORMANCE_FEATURE_SWITCH_KEY &&
+			featureSwitch.enabled,
+	)
+) {
+	startPassiveObservers();
+	setPhaseTimingEnabled(true);
+}
 
 const store = configureStore();
 

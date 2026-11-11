@@ -9,7 +9,14 @@
  */
 import { startEventTimingObserver, startLongTaskObserver } from './observers';
 import { createRingBuffer } from './ringBuffer';
-import { InteractionSample, LongTaskSample, MetricsSink } from './types';
+import { notifySinks } from './sinks';
+import { InteractionSample, LongTaskSample } from './types';
+
+/**
+ * The feature switch gating all client performance instrumentation. Defined
+ * server-side in `app/model/FeatureSwitches.scala`.
+ */
+export const PERFORMANCE_FEATURE_SWITCH_KEY = 'client-performance-metrics';
 
 /**
  * Bounded so that a long editing session with no consumer draining samples
@@ -23,39 +30,12 @@ const interactions = createRingBuffer<InteractionSample>(
 );
 const longTasks = createRingBuffer<LongTaskSample>(LONG_TASK_BUFFER_SIZE);
 
-let sinks: MetricsSink[] = [];
 let stopObservers: Array<() => void> = [];
 
 /**
  * Notifying subscribers must never break collection, so a throwing subscriber
  * is isolated rather than allowed to propagate into the observer callback.
  */
-const notify = <T>(
-	sample: T,
-	getHandler: (sink: MetricsSink) => ((sample: T) => void) | undefined,
-) => {
-	for (const sink of sinks) {
-		const handler = getHandler(sink);
-		if (!handler) {
-			continue;
-		}
-		try {
-			handler(sample);
-		} catch {
-			// Ignore: a faulty subscriber shouldn't stop us collecting.
-		}
-	}
-};
-
-/**
- * Subscribe to samples as they arrive. Returns an unsubscribe function.
- */
-export const subscribeToMetrics = (sink: MetricsSink): (() => void) => {
-	sinks = [...sinks, sink];
-	return () => {
-		sinks = sinks.filter((s) => s !== sink);
-	};
-};
 
 /**
  * Begin collecting. Safe to call more than once; subsequent calls are ignored
@@ -71,12 +51,12 @@ export const startPassiveObservers = (): boolean => {
 
 	const stopEventTiming = startEventTimingObserver((sample) => {
 		interactions.push(sample);
-		notify(sample, (sink) => sink.onInteraction);
+		notifySinks(sample, (sink) => sink.onInteraction);
 	});
 
 	const stopLongTasks = startLongTaskObserver((sample) => {
 		longTasks.push(sample);
-		notify(sample, (sink) => sink.onLongTask);
+		notifySinks(sample, (sink) => sink.onLongTask);
 	});
 
 	stopObservers = [stopEventTiming, stopLongTasks].filter(
@@ -111,4 +91,21 @@ export const drainSamples = (): DrainedSamples => {
 	};
 };
 
-export type { InteractionSample, LongTaskSample, MetricsSink };
+export { subscribeToMetrics } from './sinks';
+export {
+	beginCollectionSave,
+	beginDrop,
+	endCollectionSave,
+	endDrop,
+	isPhaseTimingEnabled,
+	markCollectionEditQueued,
+	setPhaseTimingEnabled,
+} from './phaseTimings';
+export type {
+	DropOperation,
+	DropSample,
+	InteractionSample,
+	LongTaskSample,
+	MetricsSink,
+	SaveSample,
+} from './types';

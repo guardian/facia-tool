@@ -72,6 +72,7 @@ import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
+import { beginCollectionSave, endCollectionSave } from 'util/performance';
 
 const selectAllCardsInCollections = createSelectAllCardsInCollections();
 
@@ -280,6 +281,7 @@ function updateCollection(
 				recordUnpublishedChanges(collection.id, true),
 			]),
 		);
+		const pendingSave = beginCollectionSave(collection.id);
 		try {
 			const denormalisedCollection = denormaliseCollection(
 				getState(),
@@ -291,6 +293,7 @@ function updateCollection(
 				denormalisedCollection,
 				mode,
 			);
+			endCollectionSave(pendingSave, true);
 			dispatch(collectionActions.updateSuccess(collection.id));
 			const visibleArticles = await getVisibleArticles(
 				collection,
@@ -307,6 +310,7 @@ function updateCollection(
 				);
 			}
 		} catch (e) {
+			endCollectionSave(pendingSave, false);
 			dispatch(collectionActions.updateError(e, collection.id));
 			throw e;
 		}
