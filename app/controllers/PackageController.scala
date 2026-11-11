@@ -55,13 +55,11 @@ class PackageController(
   private def psqlErrorHandler(err: PSQLException) =
     err.getSQLState match {
       // See https://www.postgresql.org/docs/current/errcodes-appendix.html for a list of codes
-      case s
-          if s == PSQLState.UNIQUE_VIOLATION.getState => // unique constraint violation
+      case s if s == PSQLState.UNIQUE_VIOLATION.getState => // unique constraint violation
         Conflict(
           ErrorResponse.conflict("Cannot overwrite existing object")
         )
-      case s
-          if s == PSQLState.FOREIGN_KEY_VIOLATION.getState => // foreign key violation
+      case s if s == PSQLState.FOREIGN_KEY_VIOLATION.getState => // foreign key violation
         Conflict(
           ErrorResponse.conflict("Sub-object conflict")
         )

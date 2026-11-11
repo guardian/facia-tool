@@ -53,7 +53,7 @@ object ContentUpgrade extends Logging {
   def upgradeItem(json: JValue): JValue = {
     Try(getUpgradedItem(json)) match {
       case Success(capiItem) => capiItem
-      case Failure(_) => {
+      case Failure(_)        => {
         logger.warn(s"Unable to upgrade provided json: ${json}")
         json
       }
