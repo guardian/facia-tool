@@ -1,4 +1,4 @@
-import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
+import { flexibleGeneral } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
 import React from 'react';
 import type { BoostLevels } from 'types/Collection';
@@ -25,7 +25,7 @@ const shouldShowBoostLevel = (
 ) =>
 	boostLevel !== 'default' &&
 	/* show new Boost level in flexible containers or clipboard */
-	(FLEXIBLE_CONTAINER_SET.includes(collectionType) || !collectionType);
+	(collectionType === flexibleGeneral || !collectionType);
 
 export const getBoostLevelLabel = (
 	boostLevel?: BoostLevels,
@@ -35,12 +35,11 @@ export const getBoostLevelLabel = (
 	if (
 		!boostLevel ||
 		groupIndex === undefined ||
-		!collectionType ||
-		!['flexible/general', 'flexible/special'].includes(collectionType)
+		collectionType !== flexibleGeneral
 	)
 		return undefined;
 
-	const toggles = BoostToggles[collectionType]?.[groupIndex];
+	const toggles = BoostToggles[groupIndex];
 	const label = toggles?.find((toggle) => toggle.value === boostLevel)?.label;
 	// If the label is 'Default', return undefined so that it doesn't appear in the UI
 	return label === 'Default' ? undefined : label;

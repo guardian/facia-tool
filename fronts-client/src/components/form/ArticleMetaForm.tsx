@@ -1474,7 +1474,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	) => {
 		if (fieldToSet === 'isImmersive') {
 			const defaultBoostLevel = !value
-				? CollectionToggles['flexible/general'][group][0].value
+				? CollectionToggles[group][0].value
 				: 'default';
 			this.props.change('boostLevel', defaultBoostLevel);
 		} else {

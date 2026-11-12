@@ -8,7 +8,6 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
     ("flexible/general", Flexible(FlexibleGeneral)),
-    ("flexible/special", Flexible(FlexibleSpecial)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
     ("news/most-popular", MostPopular),
