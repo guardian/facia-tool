@@ -90,7 +90,7 @@ const PackageListHeader: React.FC<PackageListHeaderProps> = ({
 	const [showDropdown, setShowDropdown] = useState(false);
 
 	return (
-		<ControlsContainer>
+		<ControlsContainer role="group" aria-label="Search for packages">
 			<SearchDropdownContainer>
 				<TextInput
 					placeholder="Search package names"

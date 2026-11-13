@@ -38,16 +38,18 @@ export const ChefFeedItemComponent = ({
 		<FeedItem
 			id={chef.id}
 			type={CardTypesMap.CHEF}
-			title={chef.internalName}
+			title={chef.webTitle}
 			hasVideo={false}
 			isLive={true}
-			urlPath={chef.apiUrl}
-			liveUrl={`https://theguardian.com/${chef.apiUrl}`}
-			thumbnail={chef.bylineLargeImageUrl}
+			urlPath={chef.webUrl ?? ''}
+			showViewButton={chef.type == 'Profile'}
+			thumbnail={chef.bylineImageUrl}
 			onAddToClipboard={onAddToClipboard}
 			handleDragStart={handleDragStartForCard(CardTypesMap.CHEF, chef)}
 			shouldObscureFeed={shouldObscureFeed}
-			metaContent={<ContentInfo>Chef</ContentInfo>}
+			metaContent={
+				<ContentInfo>{chef.type == 'Profile' ? 'Chef' : 'Byline'}</ContentInfo>
+			}
 		/>
 	);
 };

@@ -79,7 +79,6 @@ export const RecipeSearchContainer = ({
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
 	const [celebrationFilter, setCelebrationFilter] = useState<string>('');
 	const [dietFilter, setDietFilter] = useState<string>('');
-	const [orderingForce, setOrderingForce] = useState<string>('default');
 	const [forceDates, setForceDates] = useState(false);
 
 	const dispatch: Dispatch = useDispatch();
@@ -134,32 +133,12 @@ export const RecipeSearchContainer = ({
 
 	useEffect(() => {
 		runSearch(page);
-	}, [page, dateField, orderingForce, filters, selectedOption]);
+	}, [page, dateField, filters, selectedOption]);
 	const chefsPagination: IPagination | null = useSelector((state: State) =>
 		chefSelectors.selectPagination(state),
 	);
 
 	const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
-
-	const getUpdateConfig = () => {
-		switch (orderingForce) {
-			case 'gentle':
-				return {
-					decay: 0.95,
-					dropoffScaleDays: 90,
-					offsetDays: 7,
-				};
-			case 'forceful':
-				return {
-					decay: 0.7,
-					dropoffScaleDays: 180,
-					offsetDays: 14,
-				};
-			case 'default':
-			default:
-				return undefined;
-		}
-	};
 
 	const runSearch = useCallback(
 		(page: number = 1) => {
@@ -174,14 +153,13 @@ export const RecipeSearchContainer = ({
 						queryText: searchText,
 						uprateByDate: dateField,
 						filters: filters,
-						uprateConfig: getUpdateConfig(),
 						limit: !!filters ? 300 : 100,
 						allSponsors: true,
 					});
 					break;
 			}
 		},
-		[selectedOption, searchText, page, dateField, orderingForce, filters],
+		[selectedOption, searchText, page, dateField, filters],
 	);
 
 	const renderTheFeed = () => {
@@ -199,7 +177,7 @@ export const RecipeSearchContainer = ({
 				//It seems that some null values got into the `chefSearchIds` list
 				return chefSearchIds
 					.filter((chefId) => !!chefId)
-					.map((chefId) => <ChefFeedItem key={chefId} id={chefId} />);
+					.map((chefId, idx) => <ChefFeedItem key={idx} id={chefId} />);
 		}
 	};
 
@@ -295,28 +273,6 @@ export const RecipeSearchContainer = ({
 								<option value={'lastModifiedDate'}>
 									Most recently modified
 								</option>
-							</select>
-						</div>
-					</TopOptions>
-					<TopOptions>
-						<div>
-							<label
-								htmlFor="orderingForce"
-								style={{ color: !dateField ? 'gray' : 'inherit' }}
-							>
-								Ordering preference
-							</label>
-						</div>
-						<div>
-							<select
-								id="orderingForce"
-								value={orderingForce}
-								disabled={!dateField}
-								onChange={(evt) => setOrderingForce(evt.target.value)}
-							>
-								<option value={'default'}>Default</option>
-								<option value={'gentle'}>Prefer relevance</option>
-								<option value={'forceful'}>Prefer date</option>
 							</select>
 						</div>
 					</TopOptions>

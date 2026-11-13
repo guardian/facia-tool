@@ -1,9 +1,22 @@
 import { default as sanitize } from 'sanitize-html';
 
 export const stripHtml = (html: string) => {
-	const tempNode = document.createElement('div');
-	tempNode.innerHTML = html;
-	return tempNode.innerText || '';
+	const normalizedHtml = html ?? '';
+
+	if (typeof document === 'undefined') {
+		// If there is no DOM document available we can't use document.createElement
+		return normalizedHtml
+			.replace(/<[^>]*>/g, ' ')
+			.replace(/\s+/g, ' ')
+			.trim();
+	} else {
+		const tempNode = document.createElement('div');
+		tempNode.innerHTML = normalizedHtml;
+		return (
+			(tempNode.textContent ?? tempNode.innerText ?? '').replace(/\s+/g, ' ') ||
+			''
+		).trim();
+	}
 };
 
 // these are the defaults from html-sanitize (although disallowing `iframes`)
