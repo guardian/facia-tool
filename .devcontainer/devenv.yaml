@@ -41,6 +41,8 @@ plugins:
 postCreateCommand:
   - cmd: "sudo apt-get update && sudo apt-get -y install postgresql && sudo mkdir /etc/gu && sudo chown vscode /etc/gu"
     workingDirectory: "."
+  - cmd: "copilot plugin marketplace add guardian/agentsy && copilot plugin install feature-files@agentsy || echo \"Skipping feature-files plugin install\""
+    workingDirectory: "."
   
 # postStartCommand:
 #   - cmd: "echo 'Container started successfully'"
