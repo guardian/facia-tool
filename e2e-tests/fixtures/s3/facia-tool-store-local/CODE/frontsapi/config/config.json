@@ -1,7 +1,7 @@
 {
   "fronts": {
-    "e2e/editorial": {
-      "id": "e2e/editorial",
+    "test-editorial-front": {
+      "id": "test-editorial-front",
       "collections": ["e2e-collection"],
       "priority": "editorial"
     }
