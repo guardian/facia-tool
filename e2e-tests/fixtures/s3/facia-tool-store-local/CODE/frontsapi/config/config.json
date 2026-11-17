@@ -10,7 +10,7 @@
     "e2e-collection": {
       "id": "e2e-collection",
       "displayName": "E2E Editorial Collection",
-      "type": "fixed/medium/slow-IV",
+      "type": "static/medium/4",
       "uneditable": false
     }
   }
