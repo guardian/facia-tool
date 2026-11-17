@@ -57,14 +57,7 @@ export function writeRuntimeConfig({
     mode,
     "application.e2e.conf",
   );
-  const propertiesPath = join(
-    applicationRoot,
-    "e2e-tests",
-    "target",
-    "runtime",
-    mode,
-    "facia-tool.properties",
-  );
+  const propertiesPath = join(runtimeDirectory, "facia-tool.properties");
 
   writeFileSync(
     join(runtimeDirectory, "application.e2e.conf"),
@@ -143,7 +136,7 @@ sentry.publicDSN = ""
   );
 
   writeFileSync(
-    join(runtimeDirectory, "facia-tool.properties"),
+    propertiesPath,
     "STAGE=CODE\nSTS_ROLE=arn:aws:iam::000000000000:role/e2e\nFRONT_PRESSED_TABLE=front-pressed-e2e\nUSER_DATA_TABLE=user-data-e2e\n",
   );
 
@@ -161,7 +154,6 @@ sentry.publicDSN = ""
       AWS_DEFAULT_REGION: region,
       AWS_REGION: region,
       AWS_ENDPOINT_URL_S3: permissionsS3Endpoint,
-      FACIA_PROPERTIES_FILE: propertiesPath,
     },
   };
 }

@@ -51,6 +51,11 @@ export async function startAppContainer({
     .withNetworkAliases("facia-tool")
     .withBindMounts([
       { source: repoRoot, target: "/workspace", mode: "rw" },
+      {
+        source: runtimeConfig.propertiesPath,
+        target: "/etc/gu/facia-tool.properties",
+        mode: "ro",
+      },
       ...sbtCacheBindMounts(),
     ])
     .withEnvironment(runtimeConfig.environment)

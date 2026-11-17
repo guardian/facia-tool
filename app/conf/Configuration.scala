@@ -30,10 +30,7 @@ class ApplicationConfiguration(
     // Override properties defined in configuration. Useful for testing.
     val propertyOverrides: Map[String, String] = Map.empty
 ) extends Logging {
-  private val propertiesFile = sys.env.getOrElse(
-    "FACIA_PROPERTIES_FILE",
-    "/etc/gu/facia-tool.properties"
-  )
+  private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
