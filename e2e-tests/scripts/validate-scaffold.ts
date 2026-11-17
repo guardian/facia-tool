@@ -53,7 +53,7 @@ if (!/^nodejs 22\./m.test(toolVersions) || !/^yarn 1\.22\./m.test(toolVersions))
   throw new Error(".tool-versions must pin Node 22 and Yarn 1.22");
 }
 
-for (const runtimePath of [".features-gen", "node_modules", "target"]) {
+for (const runtimePath of [".features-gen/", "node_modules/", "target/"]) {
   const ignored = spawnSync("git", ["check-ignore", "--quiet", runtimePath], {
     cwd: e2eRoot,
   });
