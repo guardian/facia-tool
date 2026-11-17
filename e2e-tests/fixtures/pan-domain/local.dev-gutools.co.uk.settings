@@ -1,0 +1,5 @@
+cookieName=gutoolsAuth-assym
+clientId=e2e
+clientSecret=e2e
+discoveryDocumentUrl=http://pan-domain-auth.local.dev-gutools.co.uk:8080/.well-known/openid-configuration
+organizationDomain=guardian.co.uk

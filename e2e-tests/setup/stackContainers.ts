@@ -1,7 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { resolve } from "node:path";
+import {
+  authCookieName,
+  createE2eAuthCookie,
+  generatePanDomainKeys,
+} from "./panDomain.js";
 import { bootstrapAws } from "./stack/bootstrap.js";
 import { startAppContainer } from "./stack/app-container.js";
+import { startAuthRedirect } from "./stack/auth-redirect.js";
 import { startInfrastructure } from "./stack/infrastructure.js";
 import { startMocks } from "./stack/mocks.js";
 import { startNativeApp, stopNativeApp } from "./stack/native-app.js";
@@ -25,14 +31,17 @@ export async function startLocalStack(
   const e2eRoot = resolve(import.meta.dirname, "..");
   const repoRoot = resolve(e2eRoot, "..");
   const runId = randomUUID();
+  const panDomainKeys = generatePanDomainKeys();
+  const authCookie = createE2eAuthCookie(panDomainKeys.privateKeyPem);
   const infrastructure = await startInfrastructure(runId);
   let mocks: StartedMock[] = [];
   let app: StartedTestContainer | undefined;
+  let authRedirect: StartedTestContainer | undefined;
   let nativeApp: NativeApp | undefined;
 
   try {
     const hostAwsEndpoint = `http://${infrastructure.localstack.getHost()}:${infrastructure.localstack.getMappedPort(4566)}`;
-    await bootstrapAws(hostAwsEndpoint);
+    await bootstrapAws(hostAwsEndpoint, e2eRoot, panDomainKeys);
     if (appMode === "container") {
       const runtimeConfig = writeRuntimeConfig({
         e2eRoot,
@@ -43,7 +52,7 @@ export async function startLocalStack(
         mocks: [],
       });
       const [mocksResult, appResult] = await Promise.allSettled([
-        startMocks(infrastructure.network, runId),
+        startMocks(e2eRoot, infrastructure.network, runId),
         startAppContainer({
           e2eRoot,
           repoRoot,
@@ -66,7 +75,7 @@ export async function startLocalStack(
         throw failure.reason;
       }
     } else {
-      mocks = await startMocks(infrastructure.network, runId);
+      mocks = await startMocks(e2eRoot, infrastructure.network, runId);
       const runtimeConfig = writeRuntimeConfig({
         e2eRoot,
         repoRoot,
@@ -78,20 +87,30 @@ export async function startLocalStack(
       nativeApp = await startNativeApp({ repoRoot, runtimeConfig });
     }
 
+    authRedirect = await startAuthRedirect(
+      e2eRoot,
+      infrastructure.network,
+      runId,
+      appMode,
+      authCookie,
+    );
+
     return {
       ...infrastructure,
+      authRedirect,
       app,
       nativeApp,
       mocks,
       connection: {
-        baseUrl: app
-          ? `http://${app.getHost()}:${app.getMappedPort(9000)}`
-          : "http://localhost:9000",
+        baseUrl: `http://${authRedirect.getHost()}:${authRedirect.getMappedPort(80)}`,
         localStackEndpoint: hostAwsEndpoint,
+        authCookieName,
+        panDomainPrivateKey: panDomainKeys.privateKeyPem,
       },
       runId,
     };
   } catch (error) {
+    await authRedirect?.stop().catch(() => undefined);
     if (nativeApp) {
       await stopNativeApp(nativeApp);
     }
@@ -109,6 +128,7 @@ export async function startLocalStack(
 }
 
 export async function stopLocalStack(stack: LocalStack): Promise<void> {
+  await stack.authRedirect.stop().catch(() => undefined);
   if (stack.nativeApp) {
     await stopNativeApp(stack.nativeApp);
   }

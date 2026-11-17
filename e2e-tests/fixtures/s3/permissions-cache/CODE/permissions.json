@@ -1,0 +1,30 @@
+[
+  {
+    "permission": {
+      "name": "fronts_access",
+      "app": "fronts",
+      "defaultValue": false
+    },
+    "overrides": [
+      {
+        "userId": "e2e.editor@guardian.co.uk",
+        "active": true,
+        "isCasualNotOnShift": false
+      }
+    ]
+  },
+  {
+    "permission": {
+      "name": "edit_editorial_fronts",
+      "app": "fronts",
+      "defaultValue": false
+    },
+    "overrides": [
+      {
+        "userId": "e2e.editor@guardian.co.uk",
+        "active": true,
+        "isCasualNotOnShift": false
+      }
+    ]
+  }
+]
