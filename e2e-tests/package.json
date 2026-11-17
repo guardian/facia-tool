@@ -12,13 +12,18 @@
     "dev": "../scripts/dev-start.sh",
     "dev:local": "tsx setup/run-dev-local.ts",
     "test": "tsx scripts/run-tests.ts",
-    "test:ci": "tsx scripts/run-tests.ts",
-    "test:ui": "tsx scripts/run-tests.ts --ui",
+    "test:ci": "E2E_FORCE_OWNED_STACK=true E2E_APP_MODE=container tsx scripts/run-tests.ts",
+    "test:ui": "E2E_START_STACK=true E2E_APP_MODE=native tsx scripts/run-tests.ts --ui",
     "test:report": "playwright show-report target/playwright-report --port 9098",
     "typecheck": "tsc --noEmit",
-    "validate:scaffold": "tsx scripts/validate-scaffold.ts"
+    "validate:scaffold": "tsx scripts/validate-scaffold.ts",
+    "validate:stack": "tsx scripts/validate-stack.ts"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.890.0",
+    "@aws-sdk/client-s3": "^3.890.0",
+    "@aws-sdk/client-sns": "^3.890.0",
+    "@aws-sdk/client-sqs": "^3.890.0",
     "@playwright/test": "^1.55.0",
     "@types/node": "^22.18.0",
     "playwright": "^1.55.0",

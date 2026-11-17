@@ -1,7 +1,7 @@
 package conf
 
 import java.io.{File, FileInputStream, InputStream}
-import java.net.URL
+import java.net.{URI, URL}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
@@ -162,11 +162,19 @@ class ApplicationConfiguration(
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
-    lazy val s3Client = S3Client
+    private lazy val s3ClientBuilder = S3Client
       .builder()
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
-      .build()
+
+    lazy val s3Client = {
+      localS3Endpoint.foreach(endpoint =>
+        s3ClientBuilder
+          .endpointOverride(URI.create(endpoint))
+          .forcePathStyle(true)
+      )
+      s3ClientBuilder.build()
+    }
   }
 
   object postgres {
