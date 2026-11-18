@@ -108,11 +108,11 @@ class V2App(
         clipboardCards
       )
 
-      // The lookup is only made in PROD. A failed lookup counts as "not an engineer", as the warning isn't essential.
       val showProdWarning = config.environment.stage == "prod" &&
-        googleGroupChecker
-          .flatMap(_.isEngineer(userEmail).toOption)
-          .contains(true)
+        deps.permissions.hasPermission(
+          Permissions.ViewProdEnvironmentWarnings,
+          userEmail
+        )
 
       val conf = Defaults(
         isDev,
