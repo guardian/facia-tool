@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import format from 'date-fns/format';
+import { FiMinusCircle, FiMoreVertical, FiTrash2 } from 'react-icons/fi';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
-import { Button } from '@guardian/stand/Button';
+import { IconButton } from '@guardian/stand/IconButton';
+import { Menu, MenuItem, MenuToggle } from '@guardian/stand/Menu';
 import {
 	Table,
 	TableBody,
@@ -13,16 +15,17 @@ import {
 	TableRow,
 } from '@guardian/stand/Table';
 import { Badge } from '@guardian/stand/Badge';
-import { Link } from '@guardian/stand/Link';
+import { Icon } from '@guardian/stand/Icon';
 import { theme } from 'constants/theme';
 import { RunAction, SubnavListEntry } from './helpers';
-import { Panel, PanelThumb } from './styles';
+import { CustomSubnav } from './types';
+import { deleteSubnav, unpublishSubnav } from './subnavApi';
+import { DeleteSubnavModal, UnpublishSubnavModal } from './SubnavActionModals';
+import { ListViewSidebar, Panel, PanelThumb, PanelThumbEmpty } from './styles';
 
 interface SubnavListViewProps {
 	entries: SubnavListEntry[];
 	isLoading: boolean;
-	pendingActionId: string | null;
-	onCreate: () => void;
 	onEdit: (id: string) => void;
 	runAction: RunAction;
 }
@@ -36,14 +39,14 @@ const panelsGridTheme = {
 	},
 	lg: {
 		columns: 2,
-		gap: '12px',
-		padding: '60px',
+		gap: '16px',
+		paddingRight: '60px',
 	},
 };
 
 const tableColumns = {
 	sm: 'minmax(0, 1fr)',
-	lg: 'minmax(0, 2.4fr) 130px 135px',
+	lg: 'minmax(0, 2.4fr) 130px 141px',
 };
 
 const subnavCellStyles = css`
@@ -53,10 +56,10 @@ const subnavCellStyles = css`
 	min-width: 0;
 `;
 
-const thumbLinkStyles = css`
-	flex: 0 0 auto;
-	line-height: 0;
-`;
+const thumbWrapStyles: React.CSSProperties = {
+	flex: '0 0 auto',
+	lineHeight: 0,
+};
 
 const subnavTextStyle: React.CSSProperties = {
 	display: 'flex',
@@ -66,10 +69,14 @@ const subnavTextStyle: React.CSSProperties = {
 };
 
 const titleLinkStyles = css`
-	text-decoration: underline;
+	text-decoration: none;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+`;
+
+const rowStyles = css`
+	cursor: pointer;
 `;
 
 const metaStyles = css`
@@ -95,16 +102,34 @@ const badgeGroupStyle: React.CSSProperties = {
 	flexWrap: 'wrap',
 };
 
-const createHeaderCellStyle: React.CSSProperties = {
+const statusCellStyle: React.CSSProperties = {
 	display: 'flex',
-	justifyContent: 'flex-end',
+	alignItems: 'center',
+	justifyContent: 'space-between',
+	gap: '8px',
 	width: '100%',
 };
+
+const menuTriggerStyle = css`
+	border: none;
+	&:hover,
+	&:active {
+		border: none;
+	}
+`;
+
+const menuStyle = css`
+	max-width: 160px;
+`;
 
 const tableHeaderStyles = css`
 	& > tr {
 		align-items: center;
 	}
+`;
+
+const columnHeaderText = css`
+	font-size: 14px;
 `;
 
 const formatUpdated = (lastUpdated: number) =>
@@ -119,28 +144,58 @@ const StatusBadges = ({
 }) => (
 	<span style={badgeGroupStyle}>
 		{hasLive && (
-			<Badge color="green" size="sm" weight="light">
+			<Badge color="green" size="sm" weight="strong">
 				Live
 			</Badge>
 		)}
 		{hasDraft && (
-			<Badge color="orange" size="sm" weight="light">
+			<Badge color="orange" size="sm" weight="strong">
 				{hasLive ? 'Draft changes' : 'New draft'}
 			</Badge>
 		)}
 	</span>
 );
 
+// Completion across the three required sections, mapped to a 0/33/66/100 scale for each of the required sections.
+const requiredProgress = (subnav: CustomSubnav) => {
+	const hasHeader = subnav.header.headerText.trim().length > 0;
+	const hasLink = subnav.links.some((link) => link.linkText.trim().length > 0);
+	const hasPage = subnav.pages.some((page) => page.path.trim().length > 0);
+	return [hasHeader, hasLink, hasPage].filter(Boolean).length;
+};
+
+const progressPercent = [0, 33, 66, 100];
+
+const DraftStatusBadge = ({ subnav }: { subnav: CustomSubnav }) => {
+	const completed = requiredProgress(subnav);
+	if (completed === 3) {
+		return (
+			<Badge color="warmPurple" size="sm" weight="light">
+				Ready to launch
+			</Badge>
+		);
+	}
+	return (
+		<Badge color="yellow" size="sm" weight="light">
+			Draft • {progressPercent[completed]}%
+		</Badge>
+	);
+};
+
 const SubnavListPanel = ({
 	status,
 	entries,
 	onEdit,
 	onCreate,
+	onUnpublish,
+	onDelete,
 }: {
 	status: 'live' | 'draft';
 	entries: SubnavListEntry[];
 	onEdit: (id: string) => void;
 	onCreate?: () => void;
+	onUnpublish?: (entry: SubnavListEntry) => void;
+	onDelete?: (entry: SubnavListEntry) => void;
 }) => {
 	const heading = status === 'live' ? 'Launched subnavs' : 'Draft subnavs';
 	const emptyMessage =
@@ -154,22 +209,11 @@ const SubnavListPanel = ({
 							{heading}
 						</Typography>
 					</TableColumnHeader>
-					<TableColumnHeader>Last updated</TableColumnHeader>
-					<TableColumnHeader>
-						{status === 'draft'
-							? onCreate && (
-									<span style={createHeaderCellStyle}>
-										<Button
-											variant="tertiary"
-											size="sm"
-											icon="add"
-											onPress={onCreate}
-										>
-											Create new
-										</Button>
-									</span>
-								)
-							: 'Status'}
+					<TableColumnHeader cssOverrides={columnHeaderText}>
+						Last updated
+					</TableColumnHeader>
+					<TableColumnHeader cssOverrides={columnHeaderText}>
+						Status
 					</TableColumnHeader>
 				</TableHeader>
 				<TableBody
@@ -179,38 +223,47 @@ const SubnavListPanel = ({
 						</Typography>
 					)}
 				>
-					{entries.map(({ id, subnav, hasLive, hasDraft }) => {
+					{entries.map((entry) => {
+						const { id, subnav, hasLive, hasDraft } = entry;
 						const imageSrc = subnav.images?.[0]?.imageSrc;
 						const title = subnav.header.headerText || 'Untitled subnav';
-						const meta = [
-							...subnav.links.map((link) => link.linkText),
-							...subnav.pages.map((page) => page.path),
-						]
+						const meta = [...subnav.links.map((link) => link.linkText)]
 							.filter(Boolean)
+							.slice(0, 2)
 							.join(' · ');
+						const metaLength = subnav.links.length;
 						return (
-							<TableRow key={id} id={id}>
+							<TableRow
+								key={id}
+								id={id}
+								onAction={() => onEdit(id)}
+								aria-label={`Edit ${title}`}
+								cssOverrides={rowStyles}
+							>
 								<TableCell
 									gridColumn={{ lg: '1' }}
 									cssOverrides={subnavCellStyles}
 								>
-									{imageSrc && (
-										<Link
-											onPress={() => onEdit(id)}
-											aria-label={`Edit ${title}`}
-											cssOverrides={thumbLinkStyles}
-										>
+									{imageSrc ? (
+										<span style={thumbWrapStyles}>
 											<PanelThumb url={imageSrc} />
-										</Link>
+										</span>
+									) : (
+										<span style={thumbWrapStyles}>
+											<PanelThumbEmpty>
+												<Icon symbol="image" size="sm" alt="" />
+												No image
+											</PanelThumbEmpty>
+										</span>
 									)}
 									<span style={subnavTextStyle}>
-										<Link
-											onPress={() => onEdit(id)}
-											typography="bodyBoldSm"
+										<Typography
+											element="span"
+											variant="bodyBoldSm"
 											cssOverrides={titleLinkStyles}
 										>
 											{title}
-										</Link>
+										</Typography>
 										{meta && (
 											<Typography
 												element="span"
@@ -218,6 +271,8 @@ const SubnavListPanel = ({
 												cssOverrides={metaStyles}
 											>
 												{meta}
+
+												{metaLength > 2 && ` and ${metaLength - 2} more`}
 											</Typography>
 										)}
 									</span>
@@ -231,10 +286,45 @@ const SubnavListPanel = ({
 								</TableCell>
 								{status === 'live' ? (
 									<TableCell compactLabel="Status: " gridColumn={{ lg: '3' }}>
-										<StatusBadges hasLive={hasLive} hasDraft={hasDraft} />
+										<div style={statusCellStyle}>
+											<StatusBadges hasLive={hasLive} hasDraft={hasDraft} />
+											{onUnpublish && onDelete && (
+												<Menu
+													size="sm"
+													aria-label={`Actions for ${title}`}
+													popoverProps={{
+														cssOverrides: menuStyle,
+														containerPadding: 8,
+													}}
+												>
+													<MenuToggle>
+														<IconButton
+															variant="tertiary"
+															size="sm"
+															ariaLabel={`Actions for ${title}`}
+															cssOverrides={menuTriggerStyle}
+														>
+															<FiMoreVertical />
+														</IconButton>
+													</MenuToggle>
+													<MenuItem
+														label="Take down"
+														icon={<FiMinusCircle />}
+														onAction={() => onUnpublish(entry)}
+													/>
+													<MenuItem
+														label="Delete"
+														icon={<FiTrash2 />}
+														onAction={() => onDelete(entry)}
+													/>
+												</Menu>
+											)}
+										</div>
 									</TableCell>
 								) : (
-									<TableCell gridColumn={{ lg: '3' }}>{null}</TableCell>
+									<TableCell compactLabel="Status: " gridColumn={{ lg: '3' }}>
+										<DraftStatusBadge subnav={subnav} />
+									</TableCell>
 								)}
 							</TableRow>
 						);
@@ -248,41 +338,85 @@ const SubnavListPanel = ({
 export const SubnavListView = ({
 	entries,
 	isLoading,
-	onCreate,
 	onEdit,
+	runAction,
 }: SubnavListViewProps) => {
+	const [pendingModal, setPendingModal] = useState<{
+		type: 'delete' | 'unpublish';
+		entry: SubnavListEntry;
+	} | null>(null);
+
 	const draftEntries = entries.filter((entry) => entry.hasDraft);
 
 	const publishedEntries = entries.filter(
 		(entry) => entry.hasLive && !entry.hasDraft,
 	);
 
+	const closeModal = () => setPendingModal(null);
+	const modalHeaderText =
+		pendingModal?.entry.subnav.header.headerText || 'Untitled subnav';
+
 	return (
 		<>
-			<div style={{ paddingTop: '80px' }} />
-			{isLoading ? (
-				<Typography element="p" variant="bodySm" cssOverrides={emptyStyle}>
-					Loading…
-				</Typography>
-			) : (
-				<Grid theme={panelsGridTheme}>
-					<Item>
-						<SubnavListPanel
-							status="draft"
-							entries={draftEntries}
-							onEdit={onEdit}
-							onCreate={onCreate}
-						/>
-					</Item>
-					<Item>
-						<SubnavListPanel
-							status="live"
-							entries={publishedEntries}
-							onEdit={onEdit}
-						/>
-					</Item>
-				</Grid>
-			)}
+			<div style={{ flexDirection: 'row', display: 'flex' }}>
+				<ListViewSidebar />
+				<div
+					style={{
+						paddingTop: '80px',
+						paddingLeft: '20px',
+						paddingRight: '60px',
+						display: 'flex',
+						flexDirection: 'row',
+						justifyContent: 'center',
+						width: '100%',
+					}}
+				>
+					{isLoading ? (
+						<Typography element="p" variant="bodySm" cssOverrides={emptyStyle}>
+							Loading…
+						</Typography>
+					) : (
+						<Grid theme={panelsGridTheme}>
+							<Item>
+								<SubnavListPanel
+									status="draft"
+									entries={draftEntries}
+									onEdit={onEdit}
+								/>
+							</Item>
+							<Item>
+								<SubnavListPanel
+									status="live"
+									entries={publishedEntries}
+									onEdit={onEdit}
+									onUnpublish={(entry) =>
+										setPendingModal({ type: 'unpublish', entry })
+									}
+									onDelete={(entry) =>
+										setPendingModal({ type: 'delete', entry })
+									}
+								/>
+							</Item>
+						</Grid>
+					)}
+				</div>
+			</div>
+			<UnpublishSubnavModal
+				isOpen={pendingModal?.type === 'unpublish'}
+				onOpenChange={(open) => !open && closeModal()}
+				headerText={modalHeaderText}
+				onConfirm={() =>
+					pendingModal && runAction(pendingModal.entry.id, unpublishSubnav)
+				}
+			/>
+			<DeleteSubnavModal
+				isOpen={pendingModal?.type === 'delete'}
+				onOpenChange={(open) => !open && closeModal()}
+				headerText={modalHeaderText}
+				onConfirm={() =>
+					pendingModal && runAction(pendingModal.entry.id, deleteSubnav)
+				}
+			/>
 		</>
 	);
 };
