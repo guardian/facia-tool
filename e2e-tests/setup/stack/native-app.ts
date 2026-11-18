@@ -67,6 +67,7 @@ export async function startNativeApp({
     "sbt",
     [
       `-Dconfig.file=${runtimeConfig.applicationConfigPath}`,
+      `-Dfaciatool.properties.file=${runtimeConfig.propertiesPath}`,
       `run ${nativeAppPort}`,
     ],
     repoRoot,
