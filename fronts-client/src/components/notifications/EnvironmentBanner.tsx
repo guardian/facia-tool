@@ -16,7 +16,7 @@ const getEnvironment = () => {
 	if (pageConfig.env === 'code') {
 		return { name: 'CODE', level: 'warning' } as const;
 	}
-	// The server only sets showProdWarning for engineers, so everyone else sees no banner in PROD.
+	// The server only sets showProdWarning for people in product development, so everyone else sees no banner in PROD.
 	if (pageConfig.env === 'prod' && pageConfig.showProdWarning) {
 		return { name: 'PROD', level: 'error' } as const;
 	}
