@@ -54,6 +54,7 @@ interface Config {
 	availableTemplates: EditionPriority[];
 	telemetryUrl: string;
 	baseUrls: BaseUrls;
+	showProdWarning: boolean;
 }
 
 export { Config };

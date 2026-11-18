@@ -108,6 +108,12 @@ class V2App(
         clipboardCards
       )
 
+      val showProdWarning = config.environment.stage == "prod" &&
+        deps.permissions.hasPermission(
+          Permissions.ViewProdEnvironmentWarnings,
+          userEmail
+        )
+
       val conf = Defaults(
         isDev,
         config.environment.stage,
@@ -135,7 +141,8 @@ class V2App(
           config.media.baseUrl.get,
           config.media.apiUrl,
           config.video.baseUrl.get
-        )
+        ),
+        showProdWarning = showProdWarning
       )
 
       Ok(
