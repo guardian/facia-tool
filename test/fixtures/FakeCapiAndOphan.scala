@@ -14,8 +14,8 @@ trait FakeCapiAndOphan {
 
   private val allFalseMetadata = ResolvedMetaData(
     false,
-    false,
     "boostLevel.default",
+    false,
     false,
     false,
     false,

@@ -33,12 +33,12 @@ import {
 import { Recipe } from '../types/Recipe';
 import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { EventGraphic } from '../constants/eventGraphics';
+import { flexibleGeneral } from '../constants/fronts';
 import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
 import { PosSpec } from 'lib/dnd';
 import { selectCollectionType } from 'selectors/frontsSelectors';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
@@ -52,6 +52,7 @@ interface CreateCardOptions {
 	showKickerCustom?: boolean;
 	customKicker?: string;
 	isImmersive?: boolean;
+	baselineCapiHeadline?: string;
 }
 
 // Ideally we will convert this to a type. See
@@ -71,6 +72,7 @@ const createCard = (
 		customKicker = '',
 		imageCutoutSrc,
 		isImmersive = false,
+		baselineCapiHeadline,
 	}: CreateCardOptions = {},
 ): Card => ({
 	uuid: v4(),
@@ -79,6 +81,7 @@ const createCard = (
 	cardType,
 	meta: {
 		...(isImmersive ? { isImmersive } : {}),
+		...(baselineCapiHeadline ? { baselineCapiHeadline } : {}),
 		...(imageHide ? { imageHide } : {}),
 		...(boostLevel ? { boostLevel } : {}),
 		...(imageReplace ? { imageReplace } : {}),
@@ -297,6 +300,7 @@ const getCardEntitiesFromDrop = async (
 				card: createCard(article.id, isEdition, {
 					imageHide: article.frontsMeta.defaults.imageHide,
 					imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+					baselineCapiHeadline: article.fields.headline,
 				}),
 				externalArticle: article,
 			};
@@ -362,7 +366,7 @@ const getArticleEntitiesFromFeedDrop = (
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
 	function getGroupDefaultBoostLevel() {
-		if (to && collectionType === FLEXIBLE_GENERAL_NAME) {
+		if (to && collectionType === flexibleGeneral) {
 			switch (to.groupName) {
 				case 'very big':
 					return 'megaboost';
@@ -390,6 +394,7 @@ const getArticleEntitiesFromFeedDrop = (
 		showKickerCustom: externalArticle.frontsMeta.defaults.showKickerCustom,
 		customKicker: externalArticle.frontsMeta.pickedKicker,
 		isImmersive: false,
+		baselineCapiHeadline: externalArticle.fields.headline,
 	});
 	return { card, externalArticle };
 };

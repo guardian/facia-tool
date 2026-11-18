@@ -1,0 +1,17 @@
+{
+  "email": { "S": "e2e.editor@guardian.co.uk" },
+  "frontIdsByPriority": {
+    "M": {
+      "editorial": {
+        "L": [{ "S": "test-editorial-front" }]
+      }
+    }
+  },
+  "favouriteFrontIdsByPriority": {
+    "M": {
+      "editorial": {
+        "L": [{ "S": "test-editorial-front" }]
+      }
+    }
+  }
+}

@@ -105,7 +105,6 @@ interface FrontsConfig {
 
 interface ArticleDetails {
 	group: number;
-	isBoosted: boolean;
 }
 
 interface CollectionResponse {

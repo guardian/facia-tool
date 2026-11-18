@@ -20,7 +20,10 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
 import { ConicalFlaskIcon } from 'components/icons/Icons';
-import { hasActiveAbTestOnCard } from '../../util/abTests';
+import {
+	hasActiveAbTestOnCard,
+	isHeadlineAbTestingEnabledOnFront,
+} from '../../util/abTests';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -139,11 +142,7 @@ const CollectionOverview = ({
 	hasOpenForms,
 	liveAndDraftCards,
 }: FrontCollectionOverviewProps) => {
-	/*
-	 * Initial rollout of Editorial AB testing will be limited to the US front only.
-	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-	 */
-	const isUSNetworkFront = frontId === 'us';
+	const isAbTestingEnabledOnFront = isHeadlineAbTestingEnabledOnFront(frontId);
 
 	return collection ? (
 		<Container
@@ -202,7 +201,7 @@ const CollectionOverview = ({
 						</EditModeVisibility>
 					) : null)}
 				{liveAndDraftCards.some(
-					(card) => hasActiveAbTestOnCard(card) && isUSNetworkFront,
+					(card) => hasActiveAbTestOnCard(card) && isAbTestingEnabledOnFront,
 				) && (
 					<EditModeVisibility visibleMode="fronts">
 						<TestIndicator priority="primary" size="s" title="Active tests">

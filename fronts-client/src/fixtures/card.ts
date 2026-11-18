@@ -7,15 +7,6 @@ const card = {
 	uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db70',
 };
 
-const boostedCard = {
-	id: 'internal-code/page/5158392',
-	frontPublicationDate: 1539180309305,
-	meta: {
-		isBoosted: true,
-	},
-	uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db71',
-};
-
 const cardWithSlideshowThumbnailMeta = {
 	imageSlideshowReplace: true,
 	slideshow: [
@@ -36,4 +27,4 @@ const cardWithSlideshowThumbnailMeta = {
 	],
 };
 
-export { card, cardMeta, cardWithSlideshowThumbnailMeta, boostedCard };
+export { card, cardMeta, cardWithSlideshowThumbnailMeta };

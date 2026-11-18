@@ -217,11 +217,11 @@ To audit vulernabilities locally:
 - If you wish to delete everything in the database you can use `docker compose down -v` which will delete the container's persistent volumes.
 - If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 - If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
-  - CODE: `facia-tool/cms-fronts/CODE/db/password`
-  - PROD: `facia-tool/cms-fronts/PROD/db/password`
+  - CODE: `/CODE/cms-fronts/facia-tool/db/password`
+  - PROD: `/PROD/cms-fronts/facia-tool/db/password`
   To fetch these can be fetched using the aws cli like so:
 
-  `aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --with-decryption --profile cmsFronts --region eu-west-1`
+  `aws ssm get-parameter --name /CODE/cms-fronts/facia-tool/db/password --with-decryption --profile cmsFronts --region eu-west-1`
 
 ### Linting
 

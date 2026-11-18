@@ -45,7 +45,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/yotam-ottolenghi-recipes",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/yotam-ottolenghi-recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -55,7 +55,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -67,7 +67,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -77,7 +77,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -87,7 +87,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -99,7 +99,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/fruit",
             "apiUrl": "https://preview.content.guardianapis.com/food/fruit",
             "references": [
-              
+
             ]
           },
           {
@@ -109,7 +109,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -121,7 +121,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/yotamottolenghi",
             "apiUrl": "https://preview.content.guardianapis.com/profile/yotamottolenghi",
             "references": [
-              
+
             ],
             "bio": "<p>Yotam Ottolenghi&nbsp;is\n chef-patron of the Ottolenghi delis and NOPI restaurant. He has \npublished six bestselling cookbooks: Plenty and Plenty More; Ottolenghi:\n The Cookbook and Jerusalem, co-authored with Sami Tamimi; The NOPI \nCookbook, co-authored with Ramael Scully, and his latest book, <a href=\"https://www.guardianbookshop.com/sweet-513805.html\">Sweet</a>, \nco-written with Helen Goh</p>",
             "bylineImageUrl": "https://uploads.guim.co.uk/2017/09/27/Yotam-Ottolenghi.jpg",
@@ -139,7 +139,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theguardian",
             "references": [
-              
+
             ],
             "description": "All the latest from the world's leading liberal voice."
           },
@@ -152,7 +152,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/feast",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/feast",
             "references": [
-              
+
             ]
           },
           {
@@ -164,7 +164,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/feast/feast",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/feast/feast",
             "references": [
-              
+
             ]
           },
           {
@@ -174,12 +174,12 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tracking/commissioningdesk/feast",
             "apiUrl": "https://preview.content.guardianapis.com/tracking/commissioningdesk/feast",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -187,13 +187,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"28fe956489ad6432aedcd3cf99da239ba6084ce7\"> <img src=\"https://media.guim.co.uk/28fe956489ad6432aedcd3cf99da239ba6084ce7/0_0_4241_3609/1000.jpg\" alt=\"Yotam Ottolenghiâ€™s white chocolate and pear cookies with lime and cardamom.\" width=\"1000\" height=\"851\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Yotam Ottolenghiâ€™s white chocolate and pear cookies with lime and cardamom. Photographs by Louise Hagger for the Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay.</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2018-11-20T11:55:02Z",
             "lastModifiedDate": "2018-11-20T11:56:26Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "dave.hall@guardian.co.uk",
@@ -289,7 +289,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -334,7 +333,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/fast-food",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/fast-food",
             "references": [
-              
+
             ],
             "description": "<p>Top chefs choose their favourite quick'n'easy meals</p>"
           },
@@ -347,7 +346,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/fast-food",
             "apiUrl": "https://preview.content.guardianapis.com/food/fast-food",
             "references": [
-              
+
             ]
           },
           {
@@ -357,7 +356,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -367,7 +366,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -379,7 +378,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theguardian",
             "references": [
-              
+
             ],
             "description": "All the latest from the world's leading liberal voice."
           },
@@ -392,7 +391,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/g2",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/g2",
             "references": [
-              
+
             ]
           },
           {
@@ -404,7 +403,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/g2/features",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/g2/features",
             "references": [
-              
+
             ]
           },
           {
@@ -414,12 +413,12 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tracking/commissioningdesk/uk-g2-features",
             "apiUrl": "https://preview.content.guardianapis.com/tracking/commissioningdesk/uk-g2-features",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -427,13 +426,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"62686ecf0755985b923912924666bf060f8e8dac\"> <img src=\"https://media.guim.co.uk/62686ecf0755985b923912924666bf060f8e8dac/0_0_1050_589/1000.jpg\" alt=\"Yohini Nandakumarâ€™s Sri Lankan inspired chicken curry, with sweet potato and pea.\" width=\"1000\" height=\"561\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Yohini Nandakumarâ€™s Sri Lankan inspired chicken curry, with sweet potato and peas.</span> <span class=\"element-image__credit\">Photograph: PR</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2018-11-20T12:38:21Z",
             "lastModifiedDate": "2018-11-20T12:53:56Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "edward.henderson@guardian.co.uk",
@@ -517,7 +516,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -563,7 +561,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -573,7 +571,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -585,7 +583,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/baking",
             "apiUrl": "https://preview.content.guardianapis.com/food/baking",
             "references": [
-              
+
             ]
           },
           {
@@ -597,7 +595,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/dessert",
             "apiUrl": "https://preview.content.guardianapis.com/food/dessert",
             "references": [
-              
+
             ]
           },
           {
@@ -607,7 +605,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -619,7 +617,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/the-sweet-spot",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/the-sweet-spot",
             "references": [
-              
+
             ]
           },
           {
@@ -629,7 +627,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -639,7 +637,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/liam-charles",
             "apiUrl": "https://preview.content.guardianapis.com/profile/liam-charles",
             "references": [
-              
+
             ],
             "bio": "<p>Liam Charles presents Bake Off: The Professionals on Channel 4. He was also a contestant in the 2017 series of The Great British Bake Off.&nbsp;</p>",
             "bylineImageUrl": "https://uploads.guim.co.uk/2018/07/11/LIAM_CHARLES.jpg",
@@ -657,7 +655,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theguardian",
             "references": [
-              
+
             ],
             "description": "All the latest from the world's leading liberal voice."
           },
@@ -670,7 +668,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/feast",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/feast",
             "references": [
-              
+
             ]
           },
           {
@@ -682,7 +680,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/feast/feast",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/feast/feast",
             "references": [
-              
+
             ]
           },
           {
@@ -692,15 +690,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tracking/commissioningdesk/feast",
             "apiUrl": "https://preview.content.guardianapis.com/tracking/commissioningdesk/feast",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -708,13 +706,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"3b3eecfeded2d76cc331b67111a6b277dfbfd11a\"> <img src=\"https://media.guim.co.uk/3b3eecfeded2d76cc331b67111a6b277dfbfd11a/0_628_3685_2920/1000.jpg\" alt=\"Liam Charlesâ€™s knickerbocker glory cheesecake.\" width=\"1000\" height=\"792\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Liam Charlesâ€™s knickerbocker glory cheesecake.</span> <span class=\"element-image__credit\">Photograph: Louise Hagger/The Guardian. Food styling: Emily Kydd. Prop styling: Jennifer Kay. Food Assistant: Katy Gilhooly</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2018-08-07T15:25:57Z",
             "lastModifiedDate": "2018-08-07T15:26:36Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "lola.oduba-vine@guardian.co.uk",
@@ -808,7 +806,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -851,7 +848,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -861,7 +858,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -873,7 +870,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -885,7 +882,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/series/back-to-basics",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/series/back-to-basics",
             "references": [
-              
+
             ],
             "description": "Aimed at helping kids, students and anyone else who's a bit nervous in the kitchen to get a few basic tools in their belt"
           },
@@ -898,7 +895,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/soup",
             "apiUrl": "https://preview.content.guardianapis.com/food/soup",
             "references": [
-              
+
             ]
           },
           {
@@ -908,7 +905,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -918,7 +915,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -928,7 +925,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/henry-dimbleby",
             "apiUrl": "https://preview.content.guardianapis.com/profile/henry-dimbleby",
             "references": [
-              
+
             ],
             "bio": "<p>Henry Dimbleby is a regular columnist for Cook and co-founder of the natural fast-food restaurant chain Leon.</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/2/10/1392050666963/HenryDimbleby.png",
@@ -944,7 +941,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/jane-baxter",
             "apiUrl": "https://preview.content.guardianapis.com/profile/jane-baxter",
             "references": [
-              
+
             ],
             "bio": "<p>Chef and food writer Jane Baxter is a regular columnist for Cook. She trained at the Carved Angel under Joyce Molyneux before moving to the River CafÃ©, and in 2005 she set up the acclaimed <a href=\"http://www.theguardian.com/lifeandstyle/2007/sep/01/foodanddrink.restaurants\">Riverford Field Kitchen</a>. She currently runs food and event company <a href=\"http://www.wildartichokes.co.uk\">Wild Artichokes</a>, based in Devon, and her latest book, co-written with Henry Dimbleby, is <a href=\"http://www.guardianbookshop.co.uk/BerteShopWeb/viewProduct.do?ISBN=9781840916102\">Leon: Fast Vegetarian</a>.</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2011/1/12/1294851249814/Chef-Jane-Baxter-003.jpg",
@@ -962,7 +959,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theguardian",
             "references": [
-              
+
             ],
             "description": "All the latest from the world's leading liberal voice."
           },
@@ -975,7 +972,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/cook",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/cook",
             "references": [
-              
+
             ]
           },
           {
@@ -987,15 +984,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theguardian/cook/cook",
             "apiUrl": "https://preview.content.guardianapis.com/theguardian/cook/cook",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -1003,13 +1000,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"99c61b730930025f78de50287525cf5cc6da6b3d\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/2/19/1424343001237/dc34da06-e0ab-4c1e-9e10-633a640c0697-460x276.jpeg\" alt=\"Squash soup\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Take a basic squash soup â€¦ and tart it up with some orange and cardomom.</span> <span class=\"element-image__credit\">Photograph: Jill Mead for the Guardian</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-02-19T10:50:04Z",
             "lastModifiedDate": "2015-02-19T10:50:04Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "pas.paschali.casual@guardian.co.uk",
@@ -1135,7 +1132,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -1180,7 +1176,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slaters-midweek-dinner",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slaters-midweek-dinner",
             "references": [
-              
+
             ],
             "description": "<p>Nigel Slater reveals how to make a special yet simple midweek dinner</p>"
           },
@@ -1191,7 +1187,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -1203,7 +1199,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -1213,7 +1209,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -1223,7 +1219,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -1233,7 +1229,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -1245,7 +1241,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/potatoes",
             "apiUrl": "https://preview.content.guardianapis.com/food/potatoes",
             "references": [
-              
+
             ]
           },
           {
@@ -1255,7 +1251,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -1274,7 +1270,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -1287,7 +1283,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -1299,15 +1295,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -1315,13 +1311,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"285a7337ff9c7e4abbcd985f5419e998a2ef5e0e\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/2/6/1423242637575/b634a73a-d8cf-42d2-aefe-6ee0685fcb50-460x276.jpeg\" alt=\"Sliced hasselback potatoes with ham and cheese on a board\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Easy does it: Nigel Slaterâ€™s hasselback potatoes recipe.</span> <span class=\"element-image__credit\">Photograph: Jonathan Lovekin/Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-02-03T16:02:05Z",
             "lastModifiedDate": "2015-02-06T17:10:40Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "leah.jewett@guardian.co.uk",
@@ -1450,7 +1446,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -1495,7 +1490,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slater-recipes",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slater-recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -1507,7 +1502,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/cake",
             "apiUrl": "https://preview.content.guardianapis.com/food/cake",
             "references": [
-              
+
             ]
           },
           {
@@ -1517,7 +1512,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -1529,7 +1524,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/valentines-day",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/valentines-day",
             "references": [
-              
+
             ]
           },
           {
@@ -1541,7 +1536,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -1551,7 +1546,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -1561,7 +1556,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -1571,7 +1566,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -1581,7 +1576,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -1600,7 +1595,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -1613,7 +1608,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -1625,15 +1620,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -1641,13 +1636,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"dc1dcd854a95f690fc811793a7ec48c039c2c639\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/2/3/1422976656747/Nigel-Slaters-orange-and--005.jpg\" alt=\"Nigel Slater's orange and lemon apricot cake with icing\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">A little of what you fancy: orange and lemon apricot cake. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-02-03T15:17:48Z",
             "lastModifiedDate": "2015-02-03T15:17:48Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "leah.jewett@guardian.co.uk",
@@ -1767,7 +1762,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -1812,7 +1806,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slaters-midweek-dinner",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slaters-midweek-dinner",
             "references": [
-              
+
             ],
             "description": "<p>Nigel Slater reveals how to make a special yet simple midweek dinner</p>"
           },
@@ -1823,7 +1817,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -1835,7 +1829,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -1845,7 +1839,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -1855,7 +1849,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -1867,7 +1861,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/vegetarian",
             "apiUrl": "https://preview.content.guardianapis.com/food/vegetarian",
             "references": [
-              
+
             ]
           },
           {
@@ -1877,7 +1871,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -1887,7 +1881,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -1906,7 +1900,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -1919,7 +1913,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -1931,15 +1925,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -1947,13 +1941,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"45521f2f18f212808c32da63a6c7170343b1c631\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/1/28/1422449623163/Roots-and-rice-recipe-004.jpg\" alt=\"Roots and rice recipe\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">â€˜I always wash rice three times. It never sticksâ€™: Nigel Slaterâ€™s roots and rice recipe. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-01-28T12:53:54Z",
             "lastModifiedDate": "2015-01-29T17:36:27Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "kate.edgley@guardian.co.uk",
@@ -2028,7 +2022,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -2073,7 +2066,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slater-recipes",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slater-recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2083,7 +2076,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -2095,7 +2088,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -2105,7 +2098,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2115,7 +2108,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -2125,7 +2118,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -2135,7 +2128,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -2154,7 +2147,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -2167,7 +2160,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -2179,15 +2172,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -2195,13 +2188,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"e7cb5c0ec4413de9340d172fc40f5c8840c846e0\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/1/28/1422444645834/chicken-croquettes-stuffe-011.jpg\" alt=\"chicken croquettes stuffed with comte\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Melting point: chicken croquettes stuffed with\rcomtÃ©. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-01-28T11:30:56Z",
             "lastModifiedDate": "2015-01-28T11:30:56Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "kate.edgley@guardian.co.uk",
@@ -2294,7 +2287,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -2339,7 +2331,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slaters-midweek-dinner",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slaters-midweek-dinner",
             "references": [
-              
+
             ],
             "description": "<p>Nigel Slater reveals how to make a special yet simple midweek dinner</p>"
           },
@@ -2350,7 +2342,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -2362,7 +2354,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -2374,7 +2366,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/soup",
             "apiUrl": "https://preview.content.guardianapis.com/food/soup",
             "references": [
-              
+
             ]
           },
           {
@@ -2384,7 +2376,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2394,7 +2386,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -2404,7 +2396,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -2414,7 +2406,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -2433,7 +2425,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -2446,7 +2438,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -2458,15 +2450,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -2474,13 +2466,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"18fc1c708ec300e9ebb4abf01e5effa4c8463620\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/1/20/1421764178209/Nigel-Slaters-chicken-cav-011.jpg\" alt=\"Nigel Slater's chicken, cavolo nero and squash soup in a deep bowl\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Nigel Slaterâ€™s chicken, cavolo nero and squash soup. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-01-20T14:29:48Z",
             "lastModifiedDate": "2015-01-22T11:50:11Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "leah.jewett@guardian.co.uk",
@@ -2573,7 +2565,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -2618,7 +2609,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slater-recipes",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slater-recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2628,7 +2619,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -2640,7 +2631,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -2650,7 +2641,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2660,7 +2651,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -2670,7 +2661,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -2680,7 +2671,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -2699,7 +2690,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -2712,7 +2703,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -2724,15 +2715,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -2740,13 +2731,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"0973e4104b365acc3e563034f0b01a76a4e1d5cb\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2015/1/20/1421766918674/Nigel-Slaters-pheasant-wi-011.jpg\" alt=\"Nigel Slater's pheasant with sloe gin and peas on a wooden platter\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Nice and sloe: Nigel Slaterâ€™s pheasant with sloe gin and pears recipe. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2015-01-20T15:15:30Z",
             "lastModifiedDate": "2015-01-20T15:17:00Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "leah.jewett@guardian.co.uk",
@@ -2839,7 +2830,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -2884,7 +2874,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slaters-midweek-dinner",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slaters-midweek-dinner",
             "references": [
-              
+
             ],
             "description": "<p>Nigel Slater reveals how to make a special yet simple midweek dinner</p>"
           },
@@ -2895,7 +2885,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -2907,7 +2897,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -2917,7 +2907,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -2927,7 +2917,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -2937,7 +2927,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -2947,7 +2937,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -2966,7 +2956,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -2979,7 +2969,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -2991,15 +2981,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -3007,13 +2997,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"b0b752e128b1c71548a09eb4f9a02c87cac92c27\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/12/23/1419333575664/Bowl-of-orzo-with-brussel-011.jpg\" alt=\"Bowl of orzo with brussels sprouts and sausage\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Sprouting up: Nigel Slaterâ€™s orzo with brussels sprouts and sausage recipe. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2014-12-23T11:19:46Z",
             "lastModifiedDate": "2014-12-23T11:37:25Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "leah.jewett@guardian.co.uk",
@@ -3106,7 +3096,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,
@@ -3151,7 +3140,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/series/nigel-slater-recipes",
             "apiUrl": "https://preview.content.guardianapis.com/food/series/nigel-slater-recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -3161,7 +3150,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/food/food",
             "apiUrl": "https://preview.content.guardianapis.com/food/food",
             "references": [
-              
+
             ]
           },
           {
@@ -3173,7 +3162,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/lifeandstyle/lifeandstyle",
             "apiUrl": "https://preview.content.guardianapis.com/lifeandstyle/lifeandstyle",
             "references": [
-              
+
             ]
           },
           {
@@ -3183,7 +3172,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/recipes",
             "apiUrl": "https://preview.content.guardianapis.com/tone/recipes",
             "references": [
-              
+
             ]
           },
           {
@@ -3193,7 +3182,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/tone/features",
             "apiUrl": "https://preview.content.guardianapis.com/tone/features",
             "references": [
-              
+
             ]
           },
           {
@@ -3203,7 +3192,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/articles",
             "apiUrl": "https://preview.content.guardianapis.com/type/article",
             "references": [
-              
+
             ]
           },
           {
@@ -3213,7 +3202,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/profile/nigelslater",
             "apiUrl": "https://preview.content.guardianapis.com/profile/nigelslater",
             "references": [
-              
+
             ],
             "bio": "<p>Nigel Slater has been the Observer's food writer for 20 years. His cookery books, which include Appetite, Eat and the Kitchen Diaries have won a host of awards, while his autobiography Toast â€“ The Story of a Boy's Hunger was adapted by BBC Films, starring Helena Bonham Carter and Freddie Highmore</p>",
             "bylineImageUrl": "https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/17/1397749337461/NigelSlaterLv2.jpg",
@@ -3232,7 +3221,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/all",
             "apiUrl": "https://preview.content.guardianapis.com/publication/theobserver",
             "references": [
-              
+
             ],
             "description": "From the Observer, the Sunday newspaper and sister publication of the Guardian."
           },
@@ -3245,7 +3234,7 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine",
             "references": [
-              
+
             ]
           },
           {
@@ -3257,15 +3246,15 @@ module.exports = {
             "webUrl": "https://www.theguardian.com/theobserver/magazine/life-and-style",
             "apiUrl": "https://preview.content.guardianapis.com/theobserver/magazine/life-and-style",
             "references": [
-              
+
             ]
           }
         ],
         "elements": [
-          
+
         ],
         "references": [
-          
+
         ],
         "blocks": {
           "main": {
@@ -3273,13 +3262,13 @@ module.exports = {
             "bodyHtml": "<figure class=\"element element-image\" data-media-id=\"0e098fcc3317a5887bf8a08eda0ebd9c3ea70453\"> <img src=\"https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/12/29/1419867123110/Nigels-chocolate-fruit-an-011.jpg\" alt=\"Nigel's chocolate fruit and nut crisp\" width=\"460\" height=\"276\" class=\"gu-image\" /> <figcaption> <span class=\"element-image__caption\">Nuts, oh, hazelnuts: chocolate fruit and nut crisp. Photograph: Jonathan Lovekin for the Observer</span> </figcaption> </figure>",
             "bodyTextSummary": "",
             "attributes": {
-              
+
             },
             "published": false,
             "createdDate": "2014-12-29T15:32:15Z",
             "lastModifiedDate": "2014-12-29T15:32:15Z",
             "contributors": [
-              
+
             ],
             "createdBy": {
               "email": "kate.edgley@guardian.co.uk",
@@ -3372,7 +3361,6 @@ module.exports = {
         "frontsMeta": {
           "defaults": {
             "isBreaking": false,
-            "isBoosted": false,
             "showMainVideo": false,
             "imageHide": false,
             "showKickerCustom": false,

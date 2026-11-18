@@ -135,7 +135,6 @@ const SnapLinkCard = ({
 						showByline={card.meta.showByline}
 						showQuotedHeadline={card.meta.showQuotedHeadline}
 						showLargeHeadline={card.meta.showLargeHeadline}
-						isBoosted={card.meta.isBoosted}
 					/>
 					<CardHeadingContainer size={size}>
 						{!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}

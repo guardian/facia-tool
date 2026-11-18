@@ -26,19 +26,6 @@ describe('Form utils', () => {
 				selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0', true),
 			).toEqual(supportingFields);
 		});
-		it('should add isBoosted for dynamic collection configs', () => {
-			const localState = cloneDeep(state);
-			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-				'dynamic/slow';
-			const selectFormFields = createSelectFormFieldsForCard();
-			expect(
-				selectFormFields(
-					localState,
-					'95e2bfc0-8999-4e6e-a359-19960967c1e0',
-					false,
-				),
-			).toEqual([...defaultFields, 'isBoosted']);
-		});
 		it('should add boostLevel and isImmersive and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
@@ -54,6 +41,51 @@ describe('Form utils', () => {
 				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
 					(t) => t !== 'showLargeHeadline',
 				),
+			);
+		});
+		describe('mini nav fields', () => {
+			const cardId = '95e2bfc0-8999-4e6e-a359-19960967c1e0';
+			const miniNavFields = ['showMiniNav', 'miniNavUrl'];
+
+			it('should permit mini nav fields below Boosted size in Flex Gen', () => {
+				const localState = cloneDeep(state);
+				localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+					'flexible/general';
+				localState.cards[cardId].meta.boostLevel = 'default';
+				localState.featureSwitches['mini-nav'] = {
+					key: 'mini-nav',
+					title: 'Mini nav',
+					enabled: true,
+				};
+				const selectFormFields = createSelectFormFieldsForCard();
+
+				expect(selectFormFields(localState, cardId, false)).toEqual(
+					expect.arrayContaining(miniNavFields),
+				);
+			});
+
+			//Mini nav fields are not removed, so they can appear again
+			//By moving back to a supported type
+			it.each(['scrollable/highlights', 'dynamic/slow', 'type'])(
+				'should exclude mini nav fields in %s when they exist',
+				(collectionType) => {
+					const localState = cloneDeep(state);
+					localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+						collectionType;
+					localState.featureSwitches['mini-nav'] = {
+						key: 'mini-nav',
+						title: 'Mini nav',
+						enabled: true,
+					};
+					localState.cards[cardId].meta = {
+						showMiniNav: true,
+						miniNavUrl: 'https://www.theguardian.com/custom-nav',
+					};
+					const selectFormFields = createSelectFormFieldsForCard();
+					const fields = selectFormFields(localState, cardId, false);
+
+					miniNavFields.forEach((field) => expect(fields).not.toContain(field));
+				},
 			);
 		});
 		it('should add showLivePlayable for live blogs', () => {

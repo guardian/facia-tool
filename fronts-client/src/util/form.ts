@@ -19,8 +19,9 @@ export interface CardFormData {
 	abTestEnabled: boolean;
 	headlineA: string;
 	headlineB: string;
-	isBoosted: boolean;
 	boostLevel: string;
+	showMiniNav: boolean;
+	miniNavUrl: string;
 	showQuotedHeadline: boolean;
 	showLargeHeadline: boolean;
 	customKicker: string;
@@ -38,6 +39,12 @@ export interface CardFormData {
 	imageCutoutSrc: string;
 	imageSlideshowReplace: boolean;
 	slideshow: Array<ImageData | void> | void;
+	multimediaSlideshowReplace: boolean;
+	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtomId: string;
+	multimediaSlideshowAtom: Atom | string;
+	multimediaSlideshowThumbnail: string;
+	multimediaSlideshowAspectRatio: string;
 	showKickerTag: boolean;
 	showKickerSection: boolean;
 	imageReplace: boolean;
@@ -117,8 +124,9 @@ export const getInitialValuesForCardForm = (
 				abTestEnabled: article.abTestEnabled || false,
 				headlineA: article.headlineA || '',
 				headlineB: article.headlineB || '',
-				isBoosted: article.isBoosted || false,
 				boostLevel: article.boostLevel || 'default',
+				showMiniNav: article.showMiniNav || false,
+				miniNavUrl: article.miniNavUrl || '',
 				showQuotedHeadline: article.showQuotedHeadline || false,
 				showLargeHeadline: article.showLargeHeadline || false,
 				showKickerTag: article.showKickerTag || false,
@@ -137,6 +145,15 @@ export const getInitialValuesForCardForm = (
 				imageSlideshowReplace: article.imageSlideshowReplace || false,
 				videoReplace: article.videoReplace || false,
 				replaceVideoUri: article.replaceVideoUri || '',
+				multimediaSlideshowReplace: article.multimediaSlideshowReplace || false,
+				multimediaSlideshowUrl: article.multimediaSlideshowUrl || '',
+				multimediaSlideshowAtomId: article.multimediaSlideshowAtomId || '',
+				// Not saved on the card: fetched by id when the form loads
+				multimediaSlideshowAtom: '',
+				multimediaSlideshowThumbnail:
+					article.multimediaSlideshowThumbnail || '',
+				multimediaSlideshowAspectRatio:
+					article.multimediaSlideshowAspectRatio || '',
 				primaryImage: {
 					src: article.imageSrc,
 					width: strToInt(article.imageSrcWidth),
@@ -306,6 +323,7 @@ export const getCardMetaFromFormValues = (
 		'headlineA',
 		'headlineB',
 		'abTestEnabled',
+		'multimediaSlideshowAtom',
 	);
 
 	// We only return dirtied values.

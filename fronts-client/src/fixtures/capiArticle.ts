@@ -256,7 +256,6 @@ const capiArticleWithElementsThumbnail = {
 	frontsMeta: {
 		defaults: {
 			isBreaking: false,
-			isBoosted: false,
 			showMainVideo: false,
 			imageHide: false,
 			showKickerCustom: false,

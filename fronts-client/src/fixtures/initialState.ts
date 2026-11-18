@@ -479,7 +479,6 @@ const externalArticles: State['externalArticles'] = {
 			frontsMeta: {
 				defaults: {
 					isBreaking: false,
-					isBoosted: false,
 					showMainVideo: true,
 					imageHide: false,
 					showKickerCustom: false,

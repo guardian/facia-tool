@@ -60,7 +60,10 @@ import {
 	IntendedAudienceSignifierProps,
 } from '@guardian/stand/IntendedAudienceSignifier';
 import { Badge } from '@guardian/stand/Badge';
-import { AbTestHeadlineErrorType } from '../../../util/abTests';
+import {
+	AbTestHeadlineErrorType,
+	isHeadlineAbTestingEnabledOnFront,
+} from '../../../util/abTests';
 
 type ABStatusMessage =
 	| 'Test in progress'
@@ -71,14 +74,14 @@ type ABStatusMessage =
 
 type ABTestTheme = 'active' | 'draft' | 'error';
 
-type ABTestPalette = {
+type Palette = {
 	background: string;
 	text: string;
 	icon: string;
 };
 type ABTestStatus = {
 	message: ABStatusMessage;
-	palette: ABTestPalette;
+	palette: Palette;
 };
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -152,14 +155,18 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
+const getABTestThemeColors = (abTestTheme: ABTestTheme): Palette =>
 	theme.abTestBadge[abTestTheme];
 
-const getABTestBadgeStyles = (palette: ABTestPalette) => css`
+const BadgeWrapper = styled.div`
 	position: absolute;
 	bottom: 1px;
 	right: 1px;
 	gap: 4px;
+	display: flex;
+	flex-direction: column;
+`;
+const getBadgeStyles = (palette: Palette) => css`
 	flex-shrink: 0;
 	white-space: nowrap;
 	background: ${palette.background};
@@ -177,9 +184,7 @@ const ThumbnailArea = styled(ImageAndGraphWrapper)<{
 
 interface ArticleBodyProps {
 	newspaperPageNumber?: number;
-
 	promotionMetric?: number;
-
 	newspaperEditionDate?: string;
 	firstPublicationDate?: string;
 	frontPublicationDate?: number;
@@ -212,12 +217,12 @@ interface ArticleBodyProps {
 	showMeta?: boolean;
 	canDragImage?: boolean;
 	isDraggingImageOver: boolean;
-	isBoosted?: boolean;
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
 	videoReplace?: boolean;
+	multimediaSlideshowReplace?: boolean;
 	mainMediaVideoAtom?: Atom | undefined;
 	replacementVideoAtom?: string | Atom | undefined;
 	tone?: string | undefined;
@@ -238,6 +243,8 @@ interface ArticleBodyProps {
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
+	hasCapiHeadlineChanged: boolean;
+	isHeadlineUpdateIndicatorEnabled: boolean;
 }
 
 const determineABTestStatus = (
@@ -312,7 +319,6 @@ const articleBodyDefault = React.memo(
 		showMeta = true,
 		canDragImage = true,
 		isDraggingImageOver,
-		isBoosted,
 		boostLevel,
 		isImmersive,
 		tone,
@@ -321,6 +327,7 @@ const articleBodyDefault = React.memo(
 		hasMainVideo,
 		showMainVideo,
 		videoReplace,
+		multimediaSlideshowReplace,
 		frontId,
 		collectionId,
 		newspaperPageNumber,
@@ -337,6 +344,8 @@ const articleBodyDefault = React.memo(
 		abTestEnabled,
 		hasLiveAbTest,
 		headlineTestError,
+		hasCapiHeadlineChanged,
+		isHeadlineUpdateIndicatorEnabled,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -402,16 +411,14 @@ const articleBodyDefault = React.memo(
 			frontId,
 		);
 
-		/*
-		 * Initial rollout of Editorial AB testing will be limited to the US front only.
-		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-		 */
-		const isUSNetworkFront = frontId === 'us';
+		const isAbTestingEnabledOnFront =
+			isHeadlineAbTestingEnabledOnFront(frontId);
 
 		const isClipboard = frontId === clipboardId;
 		const shouldShowAbTestStatus =
-			!!abTestStatus && (isUSNetworkFront || isClipboard);
-
+			!!abTestStatus && (isAbTestingEnabledOnFront || isClipboard);
+		const shouldShowHeadlineUpdateIndicator =
+			isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && !isLive;
 		return (
 			<>
 				{showMeta && (
@@ -507,7 +514,6 @@ const articleBodyDefault = React.memo(
 						showByline={showByline}
 						showQuotedHeadline={showQuotedHeadline}
 						showLargeHeadline={showLargeHeadline}
-						isBoosted={isBoosted}
 						boostLevel={boostLevel}
 						isImmersive={isImmersive}
 						groupIndex={groupIndex}
@@ -539,7 +545,12 @@ const articleBodyDefault = React.memo(
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
 				</CardContent>
-				<ThumbnailArea size={size} $reserveBadgeSpace={shouldShowAbTestStatus}>
+				<ThumbnailArea
+					size={size}
+					$reserveBadgeSpace={
+						shouldShowAbTestStatus || shouldShowHeadlineUpdateIndicator
+					}
+				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
 							<ArticleGraph
@@ -608,6 +619,7 @@ const articleBodyDefault = React.memo(
 									replacementVideoSelfHostedPlayerFormat={
 										replacementVideoSelfHostedPlayerFormat
 									}
+									multimediaSlideshowReplace={multimediaSlideshowReplace}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">
@@ -620,21 +632,34 @@ const articleBodyDefault = React.memo(
 							</DraggableArticleImageContainer>
 						))}
 				</ThumbnailArea>
-				{shouldShowAbTestStatus && (
-					<Badge
-						size="sm"
-						weight="strong"
-						cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
-						data-testid="ab-test-status"
-					>
-						<ConicalFlaskCircleIcon
-							size={'s'}
-							fill={abTestStatus.palette.icon}
-						/>
 
-						{abTestStatus.message}
-					</Badge>
-				)}
+				<BadgeWrapper>
+					{shouldShowHeadlineUpdateIndicator && (
+						<Badge
+							size="sm"
+							weight="strong"
+							cssOverrides={getBadgeStyles(theme.headlineUpdateBadge)}
+						>
+							Headline updated
+						</Badge>
+					)}
+					{shouldShowAbTestStatus && (
+						<Badge
+							size="sm"
+							weight="strong"
+							cssOverrides={getBadgeStyles(abTestStatus.palette)}
+							data-testid="ab-test-status"
+						>
+							<ConicalFlaskCircleIcon
+								size={'s'}
+								fill={abTestStatus.palette.icon}
+							/>
+
+							{abTestStatus.message}
+						</Badge>
+					)}
+				</BadgeWrapper>
+
 				<HoverActionsAreaOverlay disabled={isUneditable}>
 					<HoverActionsButtonWrapper
 						size={size}

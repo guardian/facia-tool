@@ -21,6 +21,6 @@ echo "Tunneling to '$RDS_HOST' via '$APP_HOST'"
 
 eval $(ssm ssh --profile cmsFronts -i ${APP_HOST} --raw) -f -N -S "${SOCKET_PATH}" -L 5902:${RDS_HOST}:5432
 
-PASSWORD=$(aws ssm get-parameter --name /facia-tool/cms-fronts/${UPPER_STAGE}/db/password --with-decryption --profile cmsFronts --region eu-west-1 | jq -r .Parameter.Value)
+PASSWORD=$(aws ssm get-parameter --name /${UPPER_STAGE}/cms-fronts/facia-tool/db/password --with-decryption --profile cmsFronts --region eu-west-1 | jq -r .Parameter.Value)
 
 PGPASSWORD=${PASSWORD} psql -h localhost -p 5902 -U faciatool -d faciatool

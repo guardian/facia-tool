@@ -13,13 +13,15 @@ import logging.Logging
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-/** Endpoints for managing custom subnavs. All actions are gated behind the
-  * `configure_custom_subnavs` permission, S3 operations mutate a single shared
-  * config document holding two parallel lists: `live` (rendered by platforms)
-  * and `draft` (unpublished versions edited in the fronts tool).
+/** Endpoints for managing custom subnavs. Management actions are gated behind
+  * the `configure_custom_subnavs` permission, S3 operations mutate a single
+  * shared config document holding two parallel lists: `live` (rendered by
+  * platforms) and `draft` (unpublished versions edited in the fronts tool).
   *
   * API contract:
   *   - `GET /custom-subnav` – return the whole config (`{ live, draft }`).
+  *   - `GET /custom-subnav/:id/resolve` – return a published subnav's id and
+  *     title. Requires fronts access, but not permission to configure subnavs.
   *   - `PUT /custom-subnav/:id` – upsert a single subnav into `draft` (create
   *     or update the entry with that id). The id is client-supplied (a uuid)
   *     and must match the body; audit fields are stamped server-side. 200 on a
@@ -36,6 +38,21 @@ class CustomSubnavController(
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps)
     with Logging {
+
+  def resolvePublishedSubnav(id: String) = AccessAPIAuthAction { _ =>
+    NoCache {
+      customSubnavApi.getPublishedSubnav(id) match {
+        case Left(CustomSubnavApi.DraftSubnav) =>
+          Conflict("Custom subnav is not published, and so cannot be linked")
+        case Left(CustomSubnavApi.ConfigLoadFailed) =>
+          InternalServerError("Failed to load published custom subnavs")
+        case Right(None) =>
+          NotFound(s"Custom subnav found with id '$id'")
+        case Right(Some(subnav)) =>
+          Ok(Json.obj("id" -> subnav.id, "title" -> subnav.header.headerText))
+      }
+    }
+  }
 
   /** Load the config to base a mutation on
     */

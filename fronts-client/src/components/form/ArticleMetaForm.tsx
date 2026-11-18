@@ -33,6 +33,7 @@ import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
 import InputImage from 'components/inputs/InputImage';
 import InputGroup from 'components/inputs/InputGroup';
+import InputContainer from 'components/inputs/InputContainer';
 import InputButton from 'components/inputs/InputButton';
 import Row from '../Row';
 import Col from '../Col';
@@ -49,6 +50,7 @@ import {
 	getCardTestFromFormValues,
 } from 'util/form';
 import { CapiFields } from 'util/form';
+import { shouldRebaselineCapiHeadline } from 'util/headlineUpdate';
 import { Dispatch } from 'types/Store';
 import {
 	landScapeCardImageCriteria,
@@ -89,6 +91,7 @@ import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
+import { selectShouldUseCODELinks } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
@@ -96,6 +99,13 @@ import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
 import { HeadlineInput } from 'components/inputs/HeadlineInput';
 import { clipboardId } from 'constants/fronts';
+import {
+	extractFirstSlideshowImage,
+	extractMultimediaSlideshowAtomId,
+	extractVideoImage,
+} from '../../util/extractAtom';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
+import { MiniNavUrlField } from './MiniNavUrlField';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -133,6 +143,34 @@ const SlideshowRowContainer = styled(RowContainer)`
 	margin-top: 4px;
 	margin-left: ${(props: { size?: string }) =>
 		props.size !== 'wide' ? 0 : '10px'};
+`;
+
+const MultimediaSlideshowContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 8px;
+`;
+
+const MultimediaSlideshowPreview = styled.div`
+	margin-top: 6px;
+	font-size: 12px;
+	color: ${theme.colors.greyMedium};
+`;
+
+const MultimediaSlideshowPreviewImage = styled.img`
+	display: block;
+	max-width: 100%;
+	max-height: 160px;
+	height: auto;
+`;
+
+const MultimediaSlideshowSlideCount = styled.div`
+	margin: 4px 0;
+`;
+
+const MultimediaSlideshowLink = styled.a`
+	font-size: 12px;
 `;
 
 const slideshowGutter = 5;
@@ -433,15 +471,23 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
 	lastKnownCollectionId: string | null;
+	// Id of the slideshow last fetched into the form
+	fetchedMultimediaSlideshowAtomId?: string;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
 	private isFirstLoad = true;
 	private debouncedFetchAndSetReplacementVideoAtom: () => void;
+	private debouncedFetchAndSetMultimediaSlideshowAtom: () => void;
 	constructor(props: Props) {
 		super(props);
 		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
 			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
+		}, 500);
+		this.debouncedFetchAndSetMultimediaSlideshowAtom = debounce(async () => {
+			await this.fetchAndSetMultimediaSlideshowAtom(
+				this.props.multimediaSlideshowAtomId,
+			);
 		}, 500);
 	}
 
@@ -449,11 +495,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		if (this.isFirstLoad) {
 			this.isFirstLoad = false;
 			await this.handleFirstLoad();
+			await this.handleMultimediaSlideshowFirstLoad();
 			return;
 		}
 
 		if (this.props.videoReplace && prevProps.atomId !== this.props.atomId) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
+		}
+
+		if (
+			this.props.multimediaSlideshowReplace &&
+			(!prevProps.multimediaSlideshowReplace ||
+				prevProps.multimediaSlideshowAtomId !==
+					this.props.multimediaSlideshowAtomId)
+		) {
+			this.debouncedFetchAndSetMultimediaSlideshowAtom();
 		}
 	}
 
@@ -520,6 +576,95 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 	};
 
+	private handleMultimediaSlideshowFirstLoad = async () => {
+		const atomId = this.props.multimediaSlideshowAtomId;
+		if (!this.props.multimediaSlideshowReplace || !atomId) {
+			return;
+		}
+		const atomResponse = await this.getMultimediaSlideshowAtom(atomId);
+		// The editor may have pasted another URL while this loaded
+		if (atomId !== this.props.multimediaSlideshowAtomId) {
+			return;
+		}
+
+		// Redux form prefers empty strings to undefined values
+		const atom = isAtom(atomResponse) ? atomResponse : '';
+
+		if (this.props.pristine) {
+			// Reinitialise so the hydrated atom doesn't make a pristine form appear unsaved.
+			this.props.initialize({
+				...this.props.initialValues,
+				multimediaSlideshowAtom: atom,
+			});
+		} else {
+			this.props.change('multimediaSlideshowAtom', atom);
+		}
+		this.setState({ fetchedMultimediaSlideshowAtomId: atomId });
+	};
+
+	private fetchAndSetMultimediaSlideshowAtom = async (
+		atomId: string | undefined,
+	) => {
+		const atomResponse = atomId
+			? await this.getMultimediaSlideshowAtom(atomId)
+			: undefined;
+		const atom = isAtom(atomResponse) ? atomResponse : undefined;
+		const thumbnail = atom
+			? await this.getMultimediaSlideshowThumbnail(atom)
+			: undefined;
+
+		// A slower response for an earlier URL mustn't overwrite the current one
+		if (atomId !== this.props.multimediaSlideshowAtomId) {
+			return;
+		}
+
+		// Redux form prefers empty strings to undefined values
+		this.props.change('multimediaSlideshowAtom', atom ?? '');
+		this.props.change('multimediaSlideshowThumbnail', thumbnail ?? '');
+		this.props.change(
+			'multimediaSlideshowAspectRatio',
+			atom?.data.multimediaSlideshow?.aspectRatio ?? '',
+		);
+		this.setState({ fetchedMultimediaSlideshowAtomId: atomId });
+	};
+
+	private getMultimediaSlideshowThumbnail = async (
+		atom: Atom,
+	): Promise<string | undefined> => {
+		const firstSlideVideoId =
+			atom.data.multimediaSlideshow?.slides?.[0]?.content?.mediaAtom
+				?.mediaAtomId;
+		if (firstSlideVideoId) {
+			const videoAtom = await this.getAtom(
+				`${url.video.capiMediaAtomPath}${firstSlideVideoId}`,
+			);
+			const videoImage = videoAtom && extractVideoImage(videoAtom);
+			if (videoImage) {
+				return videoImage;
+			}
+		}
+		return extractFirstSlideshowImage(atom);
+	};
+
+	private getAtomWorkshopUrl = (atom: Atom): string => {
+		const base = this.props.shouldUseCODELinks
+			? url.atomWorkshopUrlCODE
+			: url.atomWorkshopUrlPROD;
+		const atomUuid = atom.id.split('/').pop() ?? atom.id;
+		return `${base}/atoms/multimediaslideshow/${atomUuid}/edit`;
+	};
+
+	private getMultimediaSlideshowAtom = async (
+		atomId: string,
+	): Promise<Atom | undefined> => {
+		return this.fetchAtom(atomId)
+			.then((response) => response.multimediaslideshow)
+			.catch((error) => {
+				console.error(error);
+				return undefined;
+			});
+	};
+
 	private getAtom = async (atomId: string): Promise<Atom | undefined> => {
 		return this.fetchAtom(atomId)
 			.then((response) => response.media)
@@ -562,6 +707,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleCapiFieldValues,
 			pristine,
 			showByline,
+			showMiniNav,
+			miniNavUrl,
 			abTestEnabled,
 			hasActiveABTest,
 			hasActiveABTestOnLiveCard,
@@ -593,14 +740,31 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			collectionType,
 			form,
 			snapType,
+			multimediaSlideshowEnabled,
+			multimediaSlideshowReplace,
+			multimediaSlideshowAtomId,
+			multimediaSlideshowAtom,
+			multimediaSlideshowThumbnail,
 		} = this.props;
-
 		const isEditionsMode = editMode === 'editions';
 
 		const imageDefined = (img: ImageData | undefined) => img && img.src;
 
 		const slideshowHasAtLeastTwoImages =
 			(slideshow ?? []).filter((field) => !!field).length >= 2;
+
+		const multimediaSlideCount = isAtom(multimediaSlideshowAtom)
+			? (multimediaSlideshowAtom.data.multimediaSlideshow?.slides?.length ?? 0)
+			: 0;
+
+		const multimediaSlideshowLoading =
+			!!multimediaSlideshowAtomId &&
+			multimediaSlideshowAtomId !== this.state.fetchedMultimediaSlideshowAtomId;
+		// The previous atom stays in the form until the debounced fetch replaces it
+		const multimediaSlideshowLoaded =
+			multimediaSlideshowAtomId ===
+				this.state.fetchedMultimediaSlideshowAtomId &&
+			isAtom(multimediaSlideshowAtom);
 
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
@@ -769,13 +933,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 						>
 							<Field
-								name="isBoosted"
-								component={InputCheckboxToggleInline}
-								label="Boost"
-								id={getInputId(cardId, 'boost')}
-								type="checkbox"
-							/>
-							<Field
 								name="showLargeHeadline"
 								component={InputCheckboxToggleInline}
 								label="Large headline"
@@ -811,7 +968,25 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								id={getInputId(cardId, 'show-updates')}
 								type="checkbox"
 							/>
+							<Field
+								name="showMiniNav"
+								component={InputCheckboxToggleInline}
+								label="Enable mini nav"
+								id={getInputId(cardId, 'mini-nav')}
+								type="checkbox"
+							/>
 						</CheckboxFieldsContainer>
+						{showMiniNav && shouldRenderField('miniNavUrl', editableFields) && (
+							<InputContainer>
+								<InputLabel htmlFor={getInputId(cardId, 'mini-nav-url')}>
+									Custom nav URL
+								</InputLabel>
+								<MiniNavUrlField
+									value={miniNavUrl || ''}
+									id={getInputId(cardId, 'mini-nav-url')}
+								/>
+							</InputContainer>
+						)}
 						{showByline && (
 							<ConditionalField
 								permittedFields={editableFields}
@@ -919,7 +1094,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									{primaryImage &&
 										!!primaryImage.src &&
 										!this.props.showMainVideo &&
-										!this.props.imageSlideshowReplace && (
+										!this.props.imageSlideshowReplace &&
+										!this.props.multimediaSlideshowReplace && (
 											<InputGroup>
 												<ConditionalField
 													permittedFields={editableFields}
@@ -1037,6 +1213,29 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												}
 											/>
 										</SelectMediaInput>
+										{multimediaSlideshowEnabled && (
+											<SelectMediaInput>
+												<Field
+													component={InputRadio}
+													disabled={
+														editableFields.indexOf(
+															'multimediaSlideshowReplace',
+														) === -1
+													}
+													icon={<SlideshowIcon />}
+													usesBlockStyling={true}
+													name="media-select"
+													type="radio"
+													label="Multimedia slideshow"
+													id={getInputId(cardId, 'select-multimedia-slideshow')}
+													value="select-multimedia-slideshow"
+													onClick={() =>
+														this.changeMediaField('multimediaSlideshowReplace')
+													}
+													checked={!!this.props.multimediaSlideshowReplace}
+												/>
+											</SelectMediaInput>
+										)}
 									</Col>
 								)}
 							</Row>
@@ -1055,6 +1254,54 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
 									/>
 								</SlideshowRowContainer>
+							)}
+							{multimediaSlideshowReplace && (
+								<MultimediaSlideshowContainer>
+									<InputLabel htmlFor="multimediaSlideshowUrl">
+										Slideshow atom embed URL
+									</InputLabel>
+									<Field
+										name="multimediaSlideshowUrl"
+										component={InputText}
+										placeholder="Paste the slideshow atom embed URL"
+										data-testid="multimedia-slideshow-url"
+										onChange={(_event: unknown, newValue?: string) =>
+											change(
+												'multimediaSlideshowAtomId',
+												extractMultimediaSlideshowAtomId(newValue),
+											)
+										}
+									/>
+									{multimediaSlideshowLoading ? (
+										<MultimediaSlideshowPreview role="status">
+											Loading slideshow…
+										</MultimediaSlideshowPreview>
+									) : multimediaSlideshowLoaded ? (
+										<MultimediaSlideshowPreview>
+											{multimediaSlideshowThumbnail ? (
+												<MultimediaSlideshowPreviewImage
+													src={multimediaSlideshowThumbnail}
+													alt="Thumbnail of the multimedia slideshow"
+												/>
+											) : (
+												<span>
+													Slideshow found, but it has no preview image.
+												</span>
+											)}
+											<MultimediaSlideshowSlideCount>
+												{multimediaSlideCount}{' '}
+												{multimediaSlideCount === 1 ? 'slide' : 'slides'}
+											</MultimediaSlideshowSlideCount>
+											<MultimediaSlideshowLink
+												href={this.getAtomWorkshopUrl(multimediaSlideshowAtom)}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												Edit this slideshow in Atom Workshop
+											</MultimediaSlideshowLink>
+										</MultimediaSlideshowPreview>
+									) : null}
+								</MultimediaSlideshowContainer>
 							)}
 						</ImageRowContainer>
 					</ImageOptionsInputGroup>
@@ -1117,6 +1364,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					(videoReplace && !isAtom(replacementVideoAtom)) ? (
 						<InvalidWarning warning="You need to provide a valid video" />
 					) : null}
+					{multimediaSlideshowReplace &&
+					!multimediaSlideshowLoading &&
+					!multimediaSlideshowLoaded ? (
+						<InvalidWarning warning="You need to provide a valid slideshow atom embed URL" />
+					) : null}
 				</div>
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
@@ -1127,12 +1379,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						onClick={this.handleSubmit}
 						disabled={
 							pristine ||
+							this.props.submitting ||
 							!articleExists ||
 							invalidCardReplacement ||
 							!valid ||
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !isAtom(replacementVideoAtom))
+							(videoReplace && !isAtom(replacementVideoAtom)) ||
+							(multimediaSlideshowReplace && !multimediaSlideshowLoaded)
 						}
 						size="l"
 						data-testid="edit-form-save-button"
@@ -1194,6 +1448,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			'showMainVideo',
 			'coverCardImageReplace',
 			'videoReplace',
+			'multimediaSlideshowReplace',
 		];
 
 		allMediaFields.forEach((field) => {
@@ -1210,8 +1465,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	// A card cannot be both immersive and boosted, so we need to toggle the other field when one is set.
 	// This function is called when one of the fields is toggled, and sets the other field to false.
 	// If the field to set is `isImmersive` to true, we need to set the boost level to lowest boost level (default).
-	// If the fiels to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
-	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
+	// If the field to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
 	// */
 	private toggleCardStyleField = (
 		fieldToSet: string,
@@ -1220,7 +1474,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	) => {
 		if (fieldToSet === 'isImmersive') {
 			const defaultBoostLevel = !value
-				? CollectionToggles['flexible/general'][group][0].value
+				? CollectionToggles[group][0].value
 				: 'default';
 			this.props.change('boostLevel', defaultBoostLevel);
 		} else {
@@ -1258,17 +1512,34 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 		// By using a thunk, we get access to the application state. We could use
 		// mergeProps, or thread state through the component, to achieve the same
 		// result -- this seemed to be the most concise way.
-		dispatch((_, getState) => {
+		return dispatch((_, getState) => {
+			const state = getState();
 			const meta: CardMeta = getCardMetaFromFormValues(
-				getState(),
+				state,
 				props.cardId,
 				values,
 			);
-			const maybeTest = getCardTestFromFormValues(
-				getState(),
+			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
+
+			const preSaveCard = selectCard(state, props.cardId);
+			const currentCapiHeadline = selectExternalArticleFromCard(
+				state,
 				props.cardId,
-				values,
-			);
+			)?.fields.headline;
+
+			// When the card is in sync with CAPI (at creation, while the custom headline is mirroring CAPI,
+			// or when adopting an updated headline) we re-baseline to the
+			// current CAPI headline so the "headline changed" indicator - which is
+			// derived from this baseline - stays correct.
+			if (
+				shouldRebaselineCapiHeadline(
+					preSaveCard?.meta.headline,
+					meta.headline,
+					currentCapiHeadline,
+				)
+			) {
+				meta.baselineCapiHeadline = currentCapiHeadline;
+			}
 
 			props.onSave(meta, maybeTest);
 		});
@@ -1288,6 +1559,8 @@ interface ContainerProps {
 	kickerOptions: ArticleTag;
 	pickedKicker: string | undefined;
 	showByline: boolean;
+	showMiniNav: boolean;
+	miniNavUrl: string;
 	abTestEnabled: boolean;
 	hasActiveABTest: boolean;
 	hasActiveABTestOnLiveCard: boolean;
@@ -1307,6 +1580,13 @@ interface ContainerProps {
 	atomId: string;
 	replacementVideoAtom: Atom | undefined | string;
 	videoBaseUrl: string | null;
+	multimediaSlideshowEnabled: boolean;
+	multimediaSlideshowReplace: boolean;
+	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtomId: string;
+	multimediaSlideshowAtom: Atom | undefined | string;
+	multimediaSlideshowThumbnail: string;
+	shouldUseCODELinks: boolean;
 }
 
 interface InterfaceProps {
@@ -1380,6 +1660,8 @@ const createMapStateToProps = () => {
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
+			showMiniNav: valueSelector(state, 'showMiniNav'),
+			miniNavUrl: valueSelector(state, 'miniNavUrl'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			hasActiveABTest: hasActiveAbTestOnCard(selectCard(state, cardId)),
 			hasActiveABTestOnLiveCard: hasActiveAbTestOnCard(liveCard),
@@ -1403,6 +1685,25 @@ const createMapStateToProps = () => {
 			atomId: valueSelector(state, 'atomId'),
 			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
 			videoBaseUrl: selectVideoBaseUrl(state),
+			multimediaSlideshowEnabled: selectFeatureValue(
+				state,
+				'multimedia-slideshow',
+			),
+			multimediaSlideshowReplace: valueSelector(
+				state,
+				'multimediaSlideshowReplace',
+			),
+			multimediaSlideshowUrl: valueSelector(state, 'multimediaSlideshowUrl'),
+			multimediaSlideshowAtomId: valueSelector(
+				state,
+				'multimediaSlideshowAtomId',
+			),
+			multimediaSlideshowAtom: valueSelector(state, 'multimediaSlideshowAtom'),
+			multimediaSlideshowThumbnail: valueSelector(
+				state,
+				'multimediaSlideshowThumbnail',
+			),
+			shouldUseCODELinks: selectShouldUseCODELinks(state),
 		};
 	};
 };

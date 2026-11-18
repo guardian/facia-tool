@@ -2,16 +2,13 @@ import { selectors } from 'bundles/collectionsBundle';
 import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
-import {
-	isCollectionConfigDynamic,
-	isCollectionConfigFlexible,
-	isCollectionConfigFlexibleGeneral,
-} from '../util/frontsUtils';
+import { isCollectionConfigFlexibleGeneral } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
 import { FormFields } from 'util/form';
 import without from 'lodash/without';
+import { selectFeatureValue } from './featureSwitchesSelectors';
 
 export const defaultFields = [
 	'headline',
@@ -29,6 +26,7 @@ export const defaultFields = [
 	'imageHide',
 	'imageReplace',
 	'imageSlideshowReplace',
+	'multimediaSlideshowReplace',
 	'primaryImage',
 	'cutoutImage',
 	'slideshow',
@@ -56,6 +54,7 @@ export const emailFieldsToExclude = [
 	'showLargeHeadline',
 	'slideshow',
 	'imageSlideshowReplace',
+	'multimediaSlideshowReplace',
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
@@ -76,12 +75,14 @@ export const createSelectFormFieldsForCard = () => {
 		selectIsSupporting,
 		selectEditMode,
 		selectPriority,
+		(state: State) => selectFeatureValue(state, 'mini-nav'),
 		(
 			derivedArticle,
 			parentCollectionConfig,
 			isSupporting,
 			editMode,
 			priority,
+			isMiniNavEnabled,
 		) => {
 			if (!derivedArticle) {
 				return [];
@@ -95,23 +96,21 @@ export const createSelectFormFieldsForCard = () => {
 			let fields = defaultFields.slice();
 
 			// Flexible collections have various boost levels options.
-			// The previously existing dynamic collections only have one boost level (isBoosted)."
 			if (
-				isCollectionConfigFlexible(parentCollectionConfig) ||
+				isCollectionConfigFlexibleGeneral(parentCollectionConfig) ||
 				(derivedArticle.boostLevel &&
 					derivedArticle.boostLevel !== 'default' &&
 					!parentCollectionConfig) /* show in clipboard if it is boosted */
 			) {
 				fields.push('boostLevel');
 			}
-			if (isCollectionConfigFlexible(parentCollectionConfig)) {
-				fields = without(fields, 'showLargeHeadline');
-			}
+
 			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
+				fields = without(fields, 'showLargeHeadline');
 				fields.push('isImmersive');
-			}
-			if (isCollectionConfigDynamic(parentCollectionConfig)) {
-				fields.push('isBoosted');
+				if (isMiniNavEnabled) {
+					fields.push('showMiniNav', 'miniNavUrl');
+				}
 			}
 			if (derivedArticle.liveBloggingNow === 'true') {
 				fields.push('showLivePlayable');
@@ -137,6 +136,7 @@ export const createSelectFormFieldsForCard = () => {
 				return without(
 					fields,
 					'imageSlideshowReplace',
+					'multimediaSlideshowReplace',
 					'isBreaking',
 					'showLargeHeadline',
 				);

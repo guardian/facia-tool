@@ -87,7 +87,7 @@ class CollectionServiceTest extends FreeSpec with Matchers {
       displayName = Some("Example collection"),
       backfill = None,
       metadata = None,
-      `type` = Some("dynamic/slow"),
+      `type` = Some("flexible/general"),
       href = None,
       description = None,
       groups = Some(List("Group 1", "Group 2")),

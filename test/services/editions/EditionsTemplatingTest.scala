@@ -535,8 +535,8 @@ class EditionsTemplatingTest
   private def prefillWithCapiId(capiId: String): Prefill = {
     val allFalseMetadata = ResolvedMetaData(
       false,
-      false,
       "boostLevel.default",
+      false,
       false,
       false,
       false,

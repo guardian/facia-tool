@@ -5,9 +5,21 @@ allowedStages:
   - PROD
 
 deployments:
+  cfn-facia-editions:
+    type: cloud-formation
+    app: facia-db
+    parameters:
+      templateStagePaths:
+        CODE: FaciaEditions-euwest-1-CODE.template.json
+        PROD: FaciaEditions-euwest-1-PROD.template.json
+      cloudFormationStackName: facia-db
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackByTags: false
   cfn-facia-tool:
     type: cloud-formation
     app: facia-tool
+    dependencies:
+        - cfn-facia-editions
     parameters:
       templateStagePaths:
         CODE: FaciaTool-euwest-1-CODE.template.json

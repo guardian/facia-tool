@@ -36,21 +36,6 @@ export default {
 				}
 			]
 		},
-		{
-			'name': 'flexible/special',
-			'groups': [
-				'standard',
-				'snap'
-			],
-			'groupsConfig': [
-				{
-					name: 'standard'
-				},
-				{
-					name: 'snap'
-				}
-			]
-		},
 		{ 'name': 'scrollable/small' },
 		{ 'name': 'scrollable/medium' },
 		{ 'name': 'scrollable/feature' },

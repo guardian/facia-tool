@@ -22,6 +22,7 @@ type DerivedArticle = Partial<
 		headlineA?: string | undefined;
 		headlineB?: string | undefined;
 		abTestEnabled?: boolean;
+		hasCapiHeadlineChanged: boolean;
 	};
 
 export { DerivedArticle };

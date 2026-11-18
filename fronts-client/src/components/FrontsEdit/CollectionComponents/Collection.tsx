@@ -47,6 +47,7 @@ import AbTestHeadlineWarning from './AbTestHeadlineWarning';
 import { createSelectActiveAbTestHeadlineErrorsForCollection } from 'selectors/collection';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
 import { moveFrontCollection } from '../../../actions/Editions';
+import { isHeadlineAbTestingEnabledOnFront } from '../../../util/abTests';
 
 interface CollectionPropsBeforeState {
 	id: string;
@@ -233,7 +234,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const groupIds = groups.map((group) => group.uuid);
 
-		const isUSNetworkFront = frontId === 'us';
+		const isAbTestingEnabledOnFront =
+			isHeadlineAbTestingEnabledOnFront(frontId);
 
 		return (
 			<>
@@ -311,7 +313,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 										</OpenFormsWarningContainer>
 									)}
 									{hasAbTestHeadlineErrors &&
-										isUSNetworkFront &&
+										isAbTestingEnabledOnFront &&
 										this.state.showFormWarnings && (
 											<OpenFormsWarningContainer>
 												<AbTestHeadlineWarning collectionId={id} />

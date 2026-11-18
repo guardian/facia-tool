@@ -1,7 +1,7 @@
 package conf
 
 import java.io.{File, FileInputStream, InputStream}
-import java.net.URL
+import java.net.{URI, URL}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
@@ -71,12 +71,6 @@ class ApplicationConfiguration(
         s"$property of type boolean not configured for stage $stageFromProperties"
       )
     )
-
-  def getMandatoryStringPropertiesSplitByComma(
-      propertyName: String
-  ): List[String] = {
-    getMandatoryString(propertyName).split(",").toList.filter(_.nonEmpty)
-  }
 
   object environment {
     val stage = stageFromProperties.toLowerCase
@@ -168,11 +162,19 @@ class ApplicationConfiguration(
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
-    lazy val s3Client = S3Client
+    private lazy val s3ClientBuilder = S3Client
       .builder()
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
-      .build()
+
+    lazy val s3Client = {
+      localS3Endpoint.foreach(endpoint =>
+        s3ClientBuilder
+          .endpointOverride(URI.create(endpoint))
+          .forcePathStyle(true)
+      )
+      s3ClientBuilder.build()
+    }
   }
 
   object postgres {
@@ -186,7 +188,7 @@ class ApplicationConfiguration(
       if (isProd) {
         val request = GetParameterRequest
           .builder()
-          .name(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+          .name(s"/$stageFromProperties/cms-fronts/facia-tool/db/password")
           .withDecryption(true)
           .build()
 
@@ -291,16 +293,6 @@ class ApplicationConfiguration(
     lazy val host = getMandatoryString("pandomain.host")
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
-    lazy val roleArn = getMandatoryString("pandomain.roleArn")
-    lazy val bucketName = getMandatoryString("pandomain.bucketName")
-    lazy val settingsFileKey = s"$domain.settings"
-    lazy val userGroups = getMandatoryStringPropertiesSplitByComma(
-      "pandomain.user.groups"
-    )
-  }
-
-  object permission {
-    lazy val cache = getMandatoryString("permissions.cache")
   }
 
   object sentry {

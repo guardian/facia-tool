@@ -20,6 +20,7 @@ interface MediaLabelContainerProps {
 	mainVideoSelfHostedPlayerFormat?: SelfHostedVideoPlayerFormat;
 	replacementVideoPlatform?: 'youtube' | 'url';
 	replacementVideoSelfHostedPlayerFormat?: SelfHostedVideoPlayerFormat;
+	multimediaSlideshowReplace?: boolean;
 }
 
 export const MediaLabelContainer = ({
@@ -33,6 +34,7 @@ export const MediaLabelContainer = ({
 	mainVideoSelfHostedPlayerFormat,
 	replacementVideoPlatform,
 	replacementVideoSelfHostedPlayerFormat,
+	multimediaSlideshowReplace,
 }: MediaLabelContainerProps): JSX.Element | null => {
 	const { selectedMediaType, placementType, videoFormatType } =
 		getMediaLabelParts(
@@ -46,6 +48,7 @@ export const MediaLabelContainer = ({
 			mainVideoSelfHostedPlayerFormat,
 			replacementVideoPlatform,
 			replacementVideoSelfHostedPlayerFormat,
+			multimediaSlideshowReplace,
 		);
 
 	const mediaLabel = getMediaLabel(

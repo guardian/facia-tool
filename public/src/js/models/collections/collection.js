@@ -37,8 +37,7 @@ export default class Collection extends BaseClass {
         this.collectionsWhichAreAlsoOnOtherFrontsMeritsWarning = this.collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority
             && this.collectionsWhichAreAlsoOnOtherFronts.some(front => front.priority === 'commercial');
 
-        this.isDynamic = opts.type.indexOf('dynamic/') === 0;
-        this.isFlexible = opts.type === ('flexible/general') || opts.type === ('flexible/special');
+        this.isFlexible = opts.type === 'flexible/general';
 
         this.dom = undefined;
         var onDomLoadResolve;

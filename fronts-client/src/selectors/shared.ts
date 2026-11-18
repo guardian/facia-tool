@@ -29,6 +29,7 @@ import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSe
 import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
 import { FrontConfigMap } from 'types/FaciaApi';
 import { findActiveOrDraftTest, getVariantHeadline } from 'util/abTests';
+import { hasCapiHeadlineChanged } from 'util/headlineUpdate';
 
 const selectCollectionMap: (state: State) => CollectionMap =
 	collectionSelectors.selectAll;
@@ -157,6 +158,12 @@ const createSelectArticleFromCard = () =>
 				...omit(card, 'meta'),
 				...articleMeta,
 				headline: headlineField,
+				hasCapiHeadlineChanged: hasCapiHeadlineChanged(
+					!!activeOrDraftTest,
+					card.meta.baselineCapiHeadline,
+					externalArticle?.fields.headline,
+					card.meta.headline,
+				),
 				/**
 				 * Tests (and headline variant fields) are only persisted to the card
 				 * once the card is saved.

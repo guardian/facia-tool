@@ -6,6 +6,7 @@ import {
 
 const state = {
 	...stateWithCollection,
+	featureSwitches: {},
 	externalArticles: {
 		data: {
 			'article/live/0': capiArticle,
@@ -15,6 +16,7 @@ const state = {
 
 const stateWithVideoArticle = {
 	...stateWithCollection,
+	featureSwitches: {},
 	externalArticles: {
 		data: {
 			'article/live/0': capiArticleWithVideo,

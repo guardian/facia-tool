@@ -141,6 +141,7 @@ POST		/packages														controllers.PackageController.createPackage
 
 # Custom subnavs
 GET         /custom-subnav                           controllers.CustomSubnavController.getSubnavConfig
+GET         /custom-subnav/:id/resolve               controllers.CustomSubnavController.resolvePublishedSubnav(id)
 PUT         /custom-subnav/:id                        controllers.CustomSubnavController.upsertSubnav(id)
 POST        /custom-subnav/:id/publish               controllers.CustomSubnavController.publishSubnav(id)
 POST        /custom-subnav/:id/discard               controllers.CustomSubnavController.discardSubnav(id)

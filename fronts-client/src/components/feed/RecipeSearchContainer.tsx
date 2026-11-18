@@ -39,6 +39,7 @@ const TextInputContainer = styled.div`
 
 interface Props {
 	rightHandContainer?: React.ReactElement<any>;
+	showClipboard?: boolean;
 }
 
 const PaginationContainer = styled.div`
@@ -67,7 +68,10 @@ enum FeedType {
 	chefs = 'chefFeed',
 }
 
-export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
+export const RecipeSearchContainer = ({
+	rightHandContainer,
+	showClipboard = true,
+}: Props) => {
 	const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
 	const [searchText, setSearchText] = useState('');
 
@@ -218,7 +222,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 						value={searchText}
 					/>
 				</TextInputContainer>
-				<ClipboardHeader />
+				{showClipboard && <ClipboardHeader />}
 			</InputContainer>
 
 			{showAdvancedRecipes && selectedOption === FeedType.recipes ? (

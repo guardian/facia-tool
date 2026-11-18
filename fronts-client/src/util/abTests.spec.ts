@@ -9,9 +9,23 @@ import {
 	hasActiveAbTestOnCard,
 	findActiveOrDraftTest,
 	getCurrentAbTestHeadlineError,
+	isHeadlineAbTestingEnabledOnFront,
 } from './abTests';
 
 describe('abTests utils', () => {
+	describe('isHeadlineAbTestingEnabledOnFront', () => {
+		it.each(['us', 'au'])('enables headline testing on %s', (frontId) => {
+			expect(isHeadlineAbTestingEnabledOnFront(frontId)).toBe(true);
+		});
+
+		it.each(['uk', 'international', 'us/news', 'au/news', ''])(
+			'disables headline testing on %s',
+			(frontId) => {
+				expect(isHeadlineAbTestingEnabledOnFront(frontId)).toBe(false);
+			},
+		);
+	});
+
 	describe('hasActiveAbTestOnCard', () => {
 		it('returns false when card is undefined', () => {
 			expect(hasActiveAbTestOnCard(undefined)).toBe(false);

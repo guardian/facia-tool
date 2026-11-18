@@ -29,8 +29,9 @@ const formValues = {
 	imageHide: false,
 	imageReplace: false,
 	imageSlideshowReplace: false,
-	isBoosted: false,
 	boostLevel: 'default',
+	showMiniNav: false,
+	miniNavUrl: '',
 	isImmersive: false,
 	isBreaking: false,
 	showLivePlayable: false,
@@ -59,6 +60,12 @@ const formValues = {
 	replaceVideoUri: '',
 	atomId: '',
 	replacementVideoAtom: '',
+	multimediaSlideshowReplace: false,
+	multimediaSlideshowUrl: '',
+	multimediaSlideshowAtomId: '',
+	multimediaSlideshowAtom: '',
+	multimediaSlideshowThumbnail: '',
+	multimediaSlideshowAspectRatio: '',
 };
 
 const createStateWithChangedFormFields = (
@@ -84,6 +91,40 @@ describe('CardForm transform functions', () => {
 	describe('Derive form values from a derived article', () => {
 		it('should derive values', () => {
 			expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
+		});
+		it('should derive multimedia slideshow values from a derived article', () => {
+			expect(
+				getInitialValuesForCardForm({
+					...derivedArticle,
+					multimediaSlideshowReplace: true,
+					multimediaSlideshowUrl: 'https://example.com/atom-id',
+					multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+					multimediaSlideshowThumbnail: 'thumbnail.jpg',
+					multimediaSlideshowAspectRatio: '5:4',
+				}),
+			).toEqual({
+				...formValues,
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
+			});
+		});
+		it('should restore existing mini nav settings', () => {
+			expect(
+				getInitialValuesForCardForm({
+					...derivedArticle,
+					showMiniNav: true,
+					miniNavUrl:
+						'https://fronts.fake.dev-gutools.co.uk/v2/subnavs/6d4a8d7a-1048-4a55-87f3-ee6399e36d34',
+				}),
+			).toEqual({
+				...formValues,
+				showMiniNav: true,
+				miniNavUrl:
+					'https://fronts.fake.dev-gutools.co.uk/v2/subnavs/6d4a8d7a-1048-4a55-87f3-ee6399e36d34',
+			});
 		});
 		it('should handle existing slideshows of any length', () => {
 			const exampleImage = {
@@ -173,6 +214,44 @@ describe('CardForm transform functions', () => {
 		});
 	});
 	describe('Derive card meta from form values', () => {
+		describe('mini nav settings', () => {
+			const cardId = 'exampleId';
+			const miniNavUrl = 'https://www.theguardian.com/custom-nav';
+			const savedSettings = {
+				showMiniNav: true,
+				miniNavUrl,
+			};
+			const stateWithMiniNav = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					[cardId]: {
+						...initialState.cards[cardId],
+						meta: {
+							...initialState.cards[cardId].meta,
+							...savedSettings,
+						},
+					},
+				},
+			};
+
+			it('should preserve saved mini nav settings during an unrelated edit', () => {
+				const changes = { headline: 'Updated headline' };
+				const state = createStateWithChangedFormFields(
+					stateWithMiniNav,
+					cardId,
+					changes,
+					{ ...formValues, ...savedSettings },
+				);
+				expect(
+					getCardMetaFromFormValues(state, cardId, {
+						...formValues,
+						...changes,
+					}),
+				).toEqual({ ...changes, ...savedSettings });
+			});
+		});
+
 		it('should return existing meta if no form values were dirtied', () => {
 			const state = createStateWithChangedFormFields(
 				initialState,
@@ -247,6 +326,34 @@ describe('CardForm transform functions', () => {
 				imageSrcThumb: 'exampleThumb',
 				imageSrcWidth: '100',
 				headline: 'Bill Shorten',
+			});
+		});
+		it('should persist multimedia slideshow fields when dirtied, but not the fetched atom', () => {
+			const values = {
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowAtom: 'atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
+			};
+			const state = createStateWithChangedFormFields(
+				initialState,
+				'exampleId',
+				values,
+			);
+			expect(
+				getCardMetaFromFormValues(state, 'exampleId', {
+					...formValues,
+					...values,
+				}),
+			).toEqual({
+				headline: 'Bill Shorten',
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtomId: 'atom/multimediaslideshow/atom-id',
+				multimediaSlideshowThumbnail: 'thumbnail.jpg',
+				multimediaSlideshowAspectRatio: '5:4',
 			});
 		});
 		it('should remove customKicker and showKickerCustom if the kicker is empty', () => {

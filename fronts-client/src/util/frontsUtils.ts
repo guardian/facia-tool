@@ -3,12 +3,7 @@ import { CollectionWithNestedArticles, Card } from 'types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'types/Collection';
-import { frontStages } from 'constants/fronts';
-import { DYNAMIC_CONTAINER_SET } from 'constants/dynamicContainers';
-import {
-	FLEXIBLE_CONTAINER_SET,
-	FLEXIBLE_GENERAL_NAME,
-} from 'constants/flexibleContainers';
+import { frontStages, flexibleGeneral } from 'constants/fronts';
 
 const getFrontCollections = (
 	frontId: string | void,
@@ -65,9 +60,8 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
 const getVisibilityArticleDetails = (groupsWithArticles: Card[][]) =>
 	groupsWithArticles.reduce((articles, articlesInGroup, index) => {
 		const numberOfGroups = groupsWithArticles.length;
-		const groupArticles = articlesInGroup.map((story) => ({
+		const groupArticles = articlesInGroup.map(() => ({
 			group: numberOfGroups - index - 1,
-			isBoosted: !!story.meta.isBoosted,
 		}));
 		return articles.concat(groupArticles);
 	}, [] as ArticleDetails[]);
@@ -79,17 +73,9 @@ const getGroupsByStage = (collection: Collection, stage: Stages) => {
 	return collection.live ? collection.live : [];
 };
 
-const isCollectionConfigDynamic = (
-	config: CollectionConfig | undefined,
-): boolean => DYNAMIC_CONTAINER_SET.includes(config?.type);
-
-const isCollectionConfigFlexible = (
-	config: CollectionConfig | undefined,
-): boolean => FLEXIBLE_CONTAINER_SET.includes(config?.type);
-
 const isCollectionConfigFlexibleGeneral = (
 	config: CollectionConfig | undefined,
-): boolean => FLEXIBLE_GENERAL_NAME === config?.type;
+): boolean => flexibleGeneral === config?.type;
 
 export {
 	getFrontCollections,
@@ -98,7 +84,5 @@ export {
 	isFrontStale,
 	getVisibilityArticleDetails,
 	getGroupsByStage,
-	isCollectionConfigDynamic,
-	isCollectionConfigFlexible,
 	isCollectionConfigFlexibleGeneral,
 };

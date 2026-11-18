@@ -88,11 +88,11 @@ type RegularCardMeta = {
 	imageCutoutSrcHeight?: string;
 	imageCutoutSrcOrigin?: string;
 	isBreaking?: boolean;
-	/** For dynamic collections only */
-	isBoosted?: boolean;
 	/** For flexible collections only */
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
+	showMiniNav?: boolean;
+	miniNavUrl?: string;
 	showLivePlayable?: boolean;
 	showMainVideo?: boolean;
 	showLargeHeadline?: boolean;
@@ -112,6 +112,11 @@ type RegularCardMeta = {
 	atomId?: string;
 	imageSlideshowReplace?: boolean;
 	replacementVideoAtom?: Atom | string;
+	multimediaSlideshowReplace?: boolean;
+	multimediaSlideshowUrl?: string;
+	multimediaSlideshowAtomId?: string;
+	multimediaSlideshowThumbnail?: string;
+	multimediaSlideshowAspectRatio?: string;
 	slideshow?: Array<{
 		src?: string;
 		thumb?: string;
@@ -123,6 +128,7 @@ type RegularCardMeta = {
 	coverCardImageReplace?: boolean;
 	coverCardMobileImage?: ImageData;
 	coverCardTabletImage?: ImageData;
+	baselineCapiHeadline?: string | undefined;
 };
 
 type CardRootMeta = ChefCardMeta & FeastCollectionCardMeta & RegularCardMeta;

@@ -174,19 +174,8 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
 
   def fromId(id: String) = {
     val maybeSlices = id match {
-      case "dynamic/fast" =>
-        Some(Seq(HalfQuarterQl2Ql4))
-
-      case "dynamic/slow" =>
-        Some(Seq(HalfHl4))
-
-      case "dynamic/package" =>
-        Some(Seq(ThreeQuarterTallQuarter2))
       case "flexible/general" =>
         Some(Seq(FullMedia75, HalfHl3))
-
-      case "flexible/special" =>
-        Some(Seq(FullMedia75, QuarterQuarterQuarterQuarter))
 
       case "scrollable/highlights" =>
         Some(Seq(ScrollableHighlightsSlice))

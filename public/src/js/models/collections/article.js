@@ -82,7 +82,6 @@ export default class Article extends DropTarget {
             'isLoaded',
             'isEmpty',
             'visited',
-            'inDynamicCollection',
             'inFlexibleCollection',
 			'inFlexibleGeneralCollection',
             'tone',
@@ -99,7 +98,6 @@ export default class Article extends DropTarget {
             'premium']);
 
         this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
-        this.state.inDynamicCollection(deepGet(opts, '.group.parent.isDynamic'));
         this.state.inFlexibleCollection(deepGet(opts, '.group.parent.isFlexible'));
 		this.state.inFlexibleGeneralCollection(deepGet(opts, '.group.parent.isFlexibleGeneral'));
         this.state.visited(opts.visited);

@@ -43,3 +43,5 @@ export const collectionDropTypeDenylist = [
 export const detectPressFailureMs = 10000;
 
 export const noOfOpenCollectionsOnFirstLoad = 3;
+
+export const flexibleGeneral = 'flexible/general';

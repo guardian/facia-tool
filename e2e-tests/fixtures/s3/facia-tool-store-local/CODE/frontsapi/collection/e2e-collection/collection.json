@@ -1,0 +1,15 @@
+{
+  "id": "e2e-collection",
+  "live": [],
+  "draft": [
+    {
+      "id": "e2e/article",
+      "frontPublicationDate": 1789992000000
+    }
+  ],
+  "lastUpdated": 1789992000000,
+  "updatedBy": "E2E Editor",
+  "updatedEmail": "e2e.editor@guardian.co.uk",
+  "displayName": "E2E Editorial Collection",
+  "previously": []
+}

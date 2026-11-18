@@ -49,6 +49,16 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	return '';
 };
 
+const extractMultimediaSlideshowAtomId = (url: string | undefined): string => {
+	// Atom Workshop, CAPI and embed URLs all contain multimediaslideshow/<id>
+	const atomUuid = url
+		? stripQueryParams(url).match(/multimediaslideshow\/([^/#]+)/i)?.[1]
+		: undefined;
+	return atomUuid
+		? `${urlConstants.multimediaSlideshow.capiAtomPath}${atomUuid}`
+		: '';
+};
+
 const extractVideoImage = (atom: Atom): string | undefined => {
 	const imageFile: string | undefined =
 		atom.data?.media?.trailImage?.assets?.[0]?.file ||
@@ -65,9 +75,9 @@ const extractVideoImage = (atom: Atom): string | undefined => {
 const extractCurrentActiveAssets = (atom: Atom): AtomAsset[] => {
 	const activeVersion = atom.data?.media?.activeVersion;
 	return activeVersion !== undefined
-		? atom.data?.media?.assets?.filter(
+		? (atom.data?.media?.assets?.filter(
 				(asset) => asset.version === activeVersion,
-			)
+			) ?? [])
 		: [];
 };
 
@@ -89,7 +99,7 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	const platform = firstActiveAsset?.platform;
 	const videoImage = extractVideoImage(atom);
 	const videoPlayerFormat =
-		atom.data.media.metadata?.selfHost?.videoPlayerFormat;
+		atom.data.media?.metadata?.selfHost?.videoPlayerFormat;
 
 	// Youtube atom
 	if (platform === 'youtube') {
@@ -115,4 +125,17 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	};
 };
 
-export { extractAtomId, getActiveAtomProperties };
+const extractFirstSlideshowImage = (atom: Atom): string | undefined => {
+	const image = atom.data?.multimediaSlideshow?.slides?.find(
+		(slide) => slide.content?.image,
+	)?.content.image;
+	return image?.master?.file ?? image?.assets?.[0]?.file;
+};
+
+export {
+	extractAtomId,
+	extractMultimediaSlideshowAtomId,
+	extractVideoImage,
+	getActiveAtomProperties,
+	extractFirstSlideshowImage,
+};

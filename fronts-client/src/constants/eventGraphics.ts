@@ -25,6 +25,11 @@ export const eventGraphics: EventGraphic[] = [
 		title: 'US general 2024 — congress',
 		kind: 'Election Tracker',
 	},
+	{
+		id: 'event-graphic/election-tracker/us-general-2026/congress',
+		title: 'US general 2026 — congress',
+		kind: 'Election Tracker',
+	},
 ];
 
 export const isEventGraphicId = (id: string): boolean =>

@@ -26,10 +26,24 @@ object PageViewDataVisualisation
       enabled = true
     )
 
-object EventGraphics
+object MultimediaSlideshow
     extends FeatureSwitch(
-      key = "event-graphics",
-      title = "Enable event graphics (e.g. election trackers) in the feed",
+      key = "multimedia-slideshow",
+      title = "Enable multimedia slideshow atoms on cards",
+      enabled = false
+    )
+
+object HeadlineUpdateIndicator
+    extends FeatureSwitch(
+      key = "headline-update-indicator",
+      title = "Enable headline update indicator on cards",
+      enabled = false
+    )
+
+object MiniNav
+    extends FeatureSwitch(
+      key = "mini-nav",
+      title = "Enable custom mini nav controls on Flex Gen cards",
       enabled = false
     )
 
@@ -37,7 +51,9 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    EventGraphics
+    HeadlineUpdateIndicator,
+    MultimediaSlideshow,
+    MiniNav
   )
 
   def updateFeatureSwitchesForUser(

@@ -7,7 +7,10 @@ import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
 import { OphanBanner } from '../OphanBanner';
 import styled from 'styled-components';
-import { normaliseHeadline } from '../../util/abTests';
+import {
+	isHeadlineAbTestingEnabledOnFront,
+	normaliseHeadline,
+} from '../../util/abTests';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -70,16 +73,14 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 
 	const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
-	/*
-	 * Initial rollout of Editorial AB testing will be limited to the US front only.
-	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-	 */
-	const isUSNetworkFront = props.frontId === 'us';
+	const isAbTestingEnabledOnFront = isHeadlineAbTestingEnabledOnFront(
+		props.frontId,
+	);
 	return (
 		<HeadlineInputContainer
-			abTestEnabled={props.abTestEnabled && isUSNetworkFront}
+			abTestEnabled={props.abTestEnabled && isAbTestingEnabledOnFront}
 		>
-			{props.cardId && isUSNetworkFront && (
+			{props.cardId && isAbTestingEnabledOnFront && (
 				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
@@ -95,7 +96,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled && isUSNetworkFront ? (
+			{props.abTestEnabled && isAbTestingEnabledOnFront ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -130,12 +131,14 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					data-testid="edit-form-headline-field"
 				/>
 			)}
-			{isUSNetworkFront && props.abTestEnabled && props.hasActiveABTest && (
-				<OphanBanner
-					isClipboard={props.isClipboard}
-					isTestLive={props.hasActiveABTestOnLiveCard}
-				/>
-			)}
+			{isAbTestingEnabledOnFront &&
+				props.abTestEnabled &&
+				props.hasActiveABTest && (
+					<OphanBanner
+						isClipboard={props.isClipboard}
+						isTestLive={props.hasActiveABTestOnLiveCard}
+					/>
+				)}
 		</HeadlineInputContainer>
 	);
 };

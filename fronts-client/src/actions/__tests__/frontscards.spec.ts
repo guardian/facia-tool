@@ -46,7 +46,9 @@ describe('Fronts cards actions', () => {
 			expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
 			expect(actions[1]).toEqual(
 				cardsReceived({
-					card1: createCard('internal-code/page/5029528', false),
+					card1: createCard('internal-code/page/5029528', false, {
+						baselineCapiHeadline: capiArticle.fields.headline,
+					}),
 				}),
 			);
 		});

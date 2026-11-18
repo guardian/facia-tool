@@ -1,0 +1,28 @@
+{
+  "response": {
+    "status": "ok",
+    "userTier": "internal",
+    "total": 1,
+    "startIndex": 1,
+    "pageSize": 10,
+    "currentPage": 1,
+    "pages": 1,
+    "orderBy": "newest",
+    "results": [
+      {
+        "id": "e2e/article",
+        "type": "article",
+        "webTitle": "Synthetic E2E article",
+        "webUrl": "https://www.theguardian.com/e2e/article",
+        "apiUrl": "https://content.guardianapis.com/e2e/article",
+        "isHosted": false,
+        "fields": {
+          "headline": "Synthetic E2E article",
+          "trailText": "Synthetic content used only by the local test stack",
+          "thumbnail": "/assets/fronts-client-v2/favicon/favicon-32x32.png",
+          "secureThumbnail": "/assets/fronts-client-v2/favicon/favicon-32x32.png"
+        }
+      }
+    ]
+  }
+}
