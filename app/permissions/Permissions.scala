@@ -19,5 +19,8 @@ object Permissions {
   val ConfigureCustomSubnavs =
     PermissionDefinition("configure_custom_subnavs", app)
 
+  val ViewProdEnvironmentWarnings =
+    PermissionDefinition("view_prod_environment_warnings", "global")
+
   val Pinboard = PermissionDefinition("pinboard", "pinboard")
 }

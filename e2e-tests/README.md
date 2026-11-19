@@ -57,6 +57,9 @@ flowchart LR
 All AWS clients receive dummy credentials and explicit LocalStack endpoints.
 Generated runtime configuration, keys, connection metadata, reports, and build
 contexts are written under `target/` and are not committed.
+Native startup passes the generated properties file to Play using
+`-Dfaciatool.properties.file`, leaving `/etc/gu/facia-tool.properties` unchanged.
+Container startup mounts its generated properties file at that default path.
 
 ## Prerequisites
 
