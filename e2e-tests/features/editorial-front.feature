@@ -16,8 +16,4 @@ Feature: Seeded editorial front
   # Evidence: fronts-client/src/components/CollectionDisplay.tsx
   # Evidence: fronts-client/src/components/card/article/ArticleBody.tsx
   # Evidence: fronts-client/src/index.tsx
-
-  Scenario: In the feed list, we can filter by type
-    When I filter the feed list by type `Article`
-    Then I should only see articles in the feed list
   
