@@ -1,0 +1,24 @@
+{
+  "data": {
+    "search": {
+      "maxScore": 1,
+      "results": [
+        {
+          "__typename": "SearchHit",
+          "score": 1,
+          "recipe": {
+            "id": "e2e-recipe-1",
+            "canonicalArticle": "food/e2e/synthetic-recipe-article",
+            "appExclusiveBranding": false,
+            "title": "Synthetic E2E recipe",
+            "lastModifiedDate": "2026-01-01T00:00:00Z",
+            "publishedDate": "2026-01-01T00:00:00Z",
+            "firstPublishedDate": "2026-01-01T00:00:00Z",
+            "featuredImage": null,
+            "contributors": [{ "webTitle": "Synthetic E2E Chef" }]
+          }
+        }
+      ]
+    }
+  }
+}

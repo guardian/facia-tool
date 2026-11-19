@@ -26,5 +26,19 @@
         "isCasualNotOnShift": false
       }
     ]
+  },
+  {
+    "permission": {
+      "name": "edit_editions",
+      "app": "fronts",
+      "defaultValue": false
+    },
+    "overrides": [
+      {
+        "userId": "e2e.editor@guardian.co.uk",
+        "active": true,
+        "isCasualNotOnShift": false
+      }
+    ]
   }
 ]
