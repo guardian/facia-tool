@@ -331,9 +331,9 @@ export class FaciaTool extends GuStack {
 	 * thing we decrypt is the SecureString holding the database password, and it uses the
 	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
 	 */
-	private get viaSsmOnly(): Record<string, Record<string, string>> {
+	private get viaSsmOrSqs(): Record<string, Record<string, string[]>> {
 		return {
-			StringEquals: { 'kms:ViaService': `ssm.${this.region}.amazonaws.com` },
+			StringEquals: { 'kms:ViaService': [`ssm.${this.region}.amazonaws.com`, `sqs.${this.region}.amazonaws.com`] },
 		};
 	}
 
@@ -589,7 +589,7 @@ EOF`,
 					effect: Effect.ALLOW,
 					actions: ['kms:Decrypt'],
 					resources: ['*'],
-					conditions: this.viaSsmOnly,
+					conditions: this.viaSsmOrSqs,
 				}),
 			],
 

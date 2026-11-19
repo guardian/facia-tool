@@ -1313,7 +1313,10 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Action": "kms:Decrypt",
               "Condition": {
                 "StringEquals": {
-                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                  "kms:ViaService": [
+                    "ssm.eu-west-1.amazonaws.com",
+                    "sqs.eu-west-1.amazonaws.com",
+                  ],
                 },
               },
               "Effect": "Allow",
@@ -1562,7 +1565,10 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Action": "kms:Decrypt",
               "Condition": {
                 "StringEquals": {
-                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                  "kms:ViaService": [
+                    "ssm.eu-west-1.amazonaws.com",
+                    "sqs.eu-west-1.amazonaws.com",
+                  ],
                 },
               },
               "Effect": "Allow",
@@ -3850,7 +3856,10 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "Action": "kms:Decrypt",
               "Condition": {
                 "StringEquals": {
-                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                  "kms:ViaService": [
+                    "ssm.eu-west-1.amazonaws.com",
+                    "sqs.eu-west-1.amazonaws.com",
+                  ],
                 },
               },
               "Effect": "Allow",
