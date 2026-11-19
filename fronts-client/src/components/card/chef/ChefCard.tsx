@@ -67,7 +67,9 @@ export const ChefCard = ({
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!chef}>
 						{!!chef ? (
-							<CardMetaHeading>Chef</CardMetaHeading>
+							<CardMetaHeading>
+								{chef.type == 'Profile' ? 'Chef' : 'Byline'}
+							</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
@@ -106,7 +108,7 @@ export const ChefCard = ({
 				)}
 				<ImageAndGraphWrapper size="small">
 					<ThumbnailSmall
-						url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
+						url={chef?.chefImageOverride?.src ?? chef?.bylineImageUrl}
 						showSquareThumbnail={true}
 					/>
 				</ImageAndGraphWrapper>
@@ -117,11 +119,13 @@ export const ChefCard = ({
 						urlPath={undefined}
 						renderButtons={(props) => (
 							<>
-								<HoverViewButton
-									hoverText="View"
-									href={chef?.webUrl}
-									{...props}
-								/>
+								{chef?.webUrl ? (
+									<HoverViewButton
+										hoverText="View"
+										href={chef?.webUrl}
+										{...props}
+									/>
+								) : null}
 								<HoverAddToClipboardButton
 									hoverText="Clipboard"
 									onAddToClipboard={onAddToClipboard}
