@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/graphql",
+    "bodyPatterns": [
+      { "matchesJsonPath": "$[?(@.operationName == 'FaciaChefSearch')]" }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "graphql-chef-search.json"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "data": {
+    "chefs": [
+      {
+        "__typename": "ChefBio",
+        "webTitle": "Synthetic E2E Chef",
+        "bylineImageUrl": null,
+        "contributorId": "profile/synthetic-e2e-chef",
+        "bio": "A synthetic chef used by the e2e tests."
+      }
+    ]
+  }
+}

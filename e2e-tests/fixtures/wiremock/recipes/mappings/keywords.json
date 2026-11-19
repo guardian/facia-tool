@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/keywords/(celebrations|diet-ids|meal-types|cuisines)"
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "keywords.json"
+  }
+}

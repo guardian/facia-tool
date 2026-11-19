@@ -25,7 +25,7 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     launchOptions: {
       args: [
-        "--host-resolver-rules=MAP user-telemetry.local.dev-gutools.co.uk 127.0.0.1:3133",
+        "--host-resolver-rules=MAP user-telemetry.local.dev-gutools.co.uk 127.0.0.1:3133, MAP recipes.guardianapis.com 127.0.0.1:3134",
       ],
     },
   },

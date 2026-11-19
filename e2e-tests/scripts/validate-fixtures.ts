@@ -122,6 +122,9 @@ async function validateSeededAws(endpoint: string): Promise<void> {
   if (!permissions.includes("edit_editorial_fronts")) {
     throw new Error("Seeded editorial permission is missing");
   }
+  if (!permissions.includes("edit_editions")) {
+    throw new Error("Seeded editions permission is missing");
+  }
   if (
     !settings.includes("privateKey=") ||
     !settings.includes("publicKey=") ||
