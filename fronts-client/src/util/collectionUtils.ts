@@ -2,7 +2,7 @@ import React from 'react';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
 import { insertCardWithCreate } from 'actions/Cards';
-import { CapiArticle } from 'types/Capi';
+import { CapiArticle, CapiInteractiveAtom } from 'types/Capi';
 import { Recipe } from '../types/Recipe';
 import { Chef } from '../types/Chef';
 import { CardTypesMap } from 'constants/cardTypes';
@@ -16,6 +16,11 @@ export interface RefDrop {
 export interface CAPIDrop {
 	type: 'CAPI';
 	data: CapiArticle;
+}
+
+export interface InteractiveAtomDrop {
+	type: 'INTERACTIVE_ATOM';
+	data: CapiInteractiveAtom;
 }
 
 export interface RecipeDrop {
@@ -41,6 +46,7 @@ export interface EventGraphicDrop {
 export type MappableDropType =
 	| RefDrop
 	| CAPIDrop
+	| InteractiveAtomDrop
 	| RecipeDrop
 	| ChefDrop
 	| FeastCollectionDrop
@@ -49,6 +55,10 @@ export type MappableDropType =
 const dropToCardMap = {
 	capi: (data: string): CAPIDrop => ({
 		type: 'CAPI',
+		data: JSON.parse(data),
+	}),
+	[CardTypesMap.INTERACTIVE_ATOM]: (data: string): InteractiveAtomDrop => ({
+		type: 'INTERACTIVE_ATOM',
 		data: JSON.parse(data),
 	}),
 	[CardTypesMap.RECIPE]: (data: string): RecipeDrop => ({

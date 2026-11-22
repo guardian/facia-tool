@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { RecipeSearchContainer } from './RecipeSearchContainer';
 import { EventGraphicsSearchContainer } from './EventGraphicsSearchContainer';
+import { InteractiveAtomsSearchContainer } from './InteractiveAtomsSearchContainer';
 
 interface Props {
 	isClipboardOpen: boolean;
@@ -20,6 +21,7 @@ interface Props {
 export enum FeedSource {
 	articles = 'articles',
 	eventGraphics = 'eventGraphics',
+	interactiveAtoms = 'interactiveAtoms',
 }
 
 const FeedSectionContainer = styled.div`
@@ -90,10 +92,13 @@ const FrontsFeed = () => {
 				>
 					<option value={FeedSource.articles}>Articles</option>
 					<option value={FeedSource.eventGraphics}>Event graphics</option>
+					<option value={FeedSource.interactiveAtoms}>Interactive atoms</option>
 				</FeedSourceSelect>
 			</FeedSourceSelectorContainer>
 			{source === FeedSource.eventGraphics ? (
 				<EventGraphicsSearchContainer />
+			) : source === FeedSource.interactiveAtoms ? (
+				<InteractiveAtomsSearchContainer />
 			) : (
 				<CapiSearchContainer />
 			)}
