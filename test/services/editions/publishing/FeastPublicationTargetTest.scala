@@ -435,25 +435,26 @@ class FeastPublicationTargetTest
       ),
       PackageChefCard(
         id = "chef-456",
-        metadata = Some(
-          EditionsChefMetadata(
-            bio = Some("A great chef"),
-            theme = Some(
-              ChefTheme(
-                id = "theme-001",
-                palette = Palette("#FFFFFF", "#000000")
-              )
-            ),
-            chefImageOverride = Some(
-              Image(
-                width = None,
-                height = None,
-                origin = "test-origin",
-                src = "https://example.com/chef.jpg"
+        metadata =
+          Some(
+            EditionsChefMetadata(
+              bio = Some("A great chef"),
+              theme = Some(
+                ChefTheme(
+                  id = "theme-001",
+                  palette = Palette("#FFFFFF", "#000000")
+                )
+              ),
+              chefImageOverride = Some(
+                Image(
+                  width = None,
+                  height = None,
+                  origin = "test-origin",
+                  src = "https://example.com/chef.jpg"
+                )
               )
             )
-          )
-        ),
+          ),
         addedOn = OffsetDateTime.now()
       ),
       PackageSubcollectionCard(

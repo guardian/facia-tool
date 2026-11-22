@@ -154,9 +154,12 @@ class EditionsController(
         // TODO: Make this a case class and serialise it properly
         val raw = Json
           .toJson(Map("action" -> "editionList"))
-          .as[JsObject] + ("content", Json.toJson(
-          EditionsAppTemplates.getAvailableEditionsAppTemplates
-        ))
+          .as[JsObject] + (
+          "content",
+          Json.toJson(
+            EditionsAppTemplates.getAvailableEditionsAppTemplates
+          )
+        )
         publishing.putEditionsList(raw.toString())
         Ok("Published.  Please check processing has succeeded.")
       } catch {
