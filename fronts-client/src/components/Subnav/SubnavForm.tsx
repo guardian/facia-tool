@@ -8,26 +8,24 @@ import {
 	DropResult,
 	Droppable,
 } from 'react-beautiful-dnd';
-import {
-	FiMinusCircle,
-	FiMonitor,
-	FiPlusCircle,
-	FiRefreshCw,
-	FiSmartphone,
-	FiTablet,
-} from 'react-icons/fi';
-import { FaGripVertical } from 'react-icons/fa';
+import { FiMinus, FiPlus, FiRefreshCw } from 'react-icons/fi';
 import {
 	SidebarStepperNavigation,
 	type StepNavConfig,
 } from '@guardian/stand/SidebarStepperNavigation';
+import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { TextInput } from '@guardian/stand/TextInput';
-import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
-import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
+import { Tabs, type TabTheme } from '@guardian/stand/Tabs';
+import {
+	ToggleSwitch,
+	type ToggleSwitchTheme,
+} from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { Icon, type IconProps } from '@guardian/stand/Icon';
+
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
@@ -41,10 +39,9 @@ import {
 	AddRow,
 	DragHandle,
 	ErrorMessage,
-	IconButton,
 	RepeatableRow,
+	RemoveButtonSlot,
 	RowFields,
-	SubnavContainerHeading,
 	CreateFormSection,
 	CreateFormMain,
 	CreateFormActions,
@@ -53,21 +50,19 @@ import {
 	CreateFormPreview,
 	CreateFormPreviewHeader,
 	CreateFormPreviewTitleRow,
-	CreateFormPreviewTitle,
 	CreateFormPreviewToolbar,
 	CreateFormPreviewViewport,
 	CreateFormPreviewScaler,
 	CreateFormPreviewPlaceholder,
 	CreateFormPreviewFrame,
-	CreateFormPreviewNotice,
-	CreateFormPreviewSpinner,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
-	ColumnHeaderLabel,
 	Field,
 	ItemHeader,
 	ItemText,
 } from './styles';
+import { theme } from 'constants/theme';
+import { DragIcon } from 'components/icons/Icons';
 
 interface SubnavFormProps {
 	onSaveDraft: (subnav: CustomSubnav) => Promise<void>;
@@ -88,6 +83,28 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 
 // Local nav-item row carries a stable id for drag-and-drop reordering.
 type LinkRow = SubnavLink & { id: string };
+
+const toggleSwitchTheme: ToggleSwitchTheme = {
+	shared: {
+		track: {
+			selected: { backgroundColor: theme.colors.orange200 },
+		},
+		thumb: {
+			color: theme.colors.orange200,
+		},
+	},
+};
+
+const previewTabTheme: TabTheme = {
+	shared: {
+		selected: {
+			border: {
+				border: `0.5rem solid ${theme.colors.orange}`,
+				background: theme.colors.orange,
+			},
+		},
+	},
+};
 
 const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
 
@@ -128,11 +145,11 @@ const breakpointOptions: {
 	id: Breakpoint;
 	label: string;
 	width: number;
-	icon: React.ReactNode;
+	icon: NonNullable<IconProps['symbol']>;
 }[] = [
-	{ id: 'mobile', label: 'Mobile', width: 375, icon: <FiSmartphone /> },
-	{ id: 'tablet', label: 'Tablet', width: 740, icon: <FiTablet /> },
-	{ id: 'desktop', label: 'Desktop', width: 1300, icon: <FiMonitor /> },
+	{ id: 'desktop', label: 'Desktop', width: 1300, icon: 'computer' },
+	{ id: 'tablet', label: 'Tablet', width: 740, icon: 'tablet_android' },
+	{ id: 'mobile', label: 'Mobile', width: 375, icon: 'mobile' },
 ];
 
 const gridTheme = {
@@ -151,14 +168,53 @@ const gridTheme = {
 
 const stepperOverrides = css`
 	li button > div:first-of-type {
-		border-right: 1px solid #dcdcdc;
+		border-right: 1px solid ${theme.colors.whiteGrey};
 	}
 `;
 
-// Stand's Button has no danger variant, so tint the tertiary delete action red.
+const stepperTheme = {
+	navigation: {
+		shared: {
+			border: `0.0625rem solid ${theme.colors.whiteGrey}`,
+			currentBackgroundColor: `${theme.colors.orange}`,
+		},
+	},
+	step: {
+		shared: {
+			backgroundColor: `${theme.colors.whiteMedium}`,
+			currentBackgroundColor: `${theme.colors.whiteMedium}`,
+			text: {
+				inverseColor: `${theme.colors.blackDark}`,
+			},
+		},
+	},
+	stepNumber: {
+		shared: {
+			backgroundColor: `${theme.colors.orange}`,
+			color: `${theme.colors.blackDark}`,
+		},
+	},
+};
+
+const sidebarItemStyle = css`
+	align-self: stretch;
+	border-radius: 4px;
+	background-color: ${theme.colors.whiteMedium};
+`;
+
 const deleteButtonStyle = css`
 	color: #c70000;
 `;
+
+const sectionHeadingStyle = css({
+	paddingBottom: '0px',
+	marginBottom: '0px',
+});
+
+const sectionDescriptionStyle = css({
+	marginBottom: '16px',
+	color: theme.base.colors.textMuted,
+});
 
 const SubnavForm = ({
 	onSaveDraft,
@@ -180,9 +236,6 @@ const SubnavForm = ({
 	);
 	const [showHeaderText, setShowHeaderText] = useState(
 		initialSubnav?.header.showHeaderText !== false,
-	);
-	const [headerCopy, setHeaderCopy] = useState(
-		initialSubnav?.header.copy ?? '',
 	);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
 		initialSubnav?.header.dotcomPath ?? '',
@@ -365,7 +418,7 @@ const SubnavForm = ({
 				headerText: headerText.trim(),
 				showHeaderText,
 				dotcomPath: headerDotcomPath.trim() || undefined,
-				copy: headerCopy.trim(),
+				copy: initialSubnav?.header.copy ?? '',
 			},
 			format: initialSubnav?.format ?? 'large',
 			links: cleanedLinks.map((link) => ({
@@ -478,13 +531,14 @@ const SubnavForm = ({
 	return (
 		<SubnavCreateFormPage>
 			<Grid theme={gridTheme}>
-				<Item size={{ sm: 12, lg: 'auto' }}>
+				<Item size={{ sm: 12, lg: 'auto' }} cssOverrides={sidebarItemStyle}>
 					<CreateFormSidebar>
 						<SidebarStepperNavigation
 							stepNavTitle="Steps"
 							currentStepId={currentStepId}
 							stepNavConfig={stepNavConfig}
 							onPress={(stepId) => scrollToStep(stepId as StepId)}
+							theme={stepperTheme}
 							cssOverrides={stepperOverrides}
 						/>
 					</CreateFormSidebar>
@@ -497,18 +551,23 @@ const SubnavForm = ({
 							active={currentStepId === 'header'}
 							onFocus={() => setCurrentStepId('header')}
 						>
-							<SubnavContainerHeading>Header</SubnavContainerHeading>
-							<TextArea
-								label="Description"
-								value={headerCopy}
-								onChange={setHeaderCopy}
-								placeholder="Add description"
-								fluid
-							/>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={sectionHeadingStyle}
+							>
+								Header
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={sectionDescriptionStyle}
+							>
+								Add a header text and paste an optional URL link
+							</Typography>
 							<RowFields>
 								<TextInput
 									label="Header text"
-									description="Contextual text for the subnav header"
 									isRequired
 									fluid
 									value={headerText}
@@ -516,22 +575,22 @@ const SubnavForm = ({
 									placeholder="e.g. UK election 2024"
 								/>
 								<TextInput
-									label="URL (Dotcom path)"
-									description="Where the header links to (optional)"
+									label="URL (Dotcom path) (optional)"
 									fluid
 									value={headerDotcomPath}
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
-								<Field>
-									<ItemHeader>Header text display</ItemHeader>
-									<ItemText>Show header text</ItemText>
-									<ToggleSwitch
-										isSelected={showHeaderText}
-										onChange={(isSelected) => setShowHeaderText(isSelected)}
-									/>
-								</Field>
 							</RowFields>
+							<Field>
+								<ItemHeader>Header text display</ItemHeader>
+								<ItemText>Show header text</ItemText>
+								<ToggleSwitch
+									isSelected={showHeaderText}
+									onChange={(isSelected) => setShowHeaderText(isSelected)}
+									theme={toggleSwitchTheme}
+								/>
+							</Field>
 						</CreateFormSection>
 						<CreateFormSection
 							ref={setSectionRef('links')}
@@ -539,14 +598,39 @@ const SubnavForm = ({
 							active={currentStepId === 'links'}
 							onFocus={() => setCurrentStepId('links')}
 						>
-							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={sectionHeadingStyle}
+							>
+								Nav Items
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={sectionDescriptionStyle}
+							>
+								Add navigational menu items and their URLs
+							</Typography>
 							<ColumnHeaders>
-								<ColumnHeadersSpacer width={18} aria-hidden />
-								<RowFields>
-									<ColumnHeaderLabel>Link text</ColumnHeaderLabel>
-									<ColumnHeaderLabel>Dotcom path</ColumnHeaderLabel>
-								</RowFields>
 								<ColumnHeadersSpacer width={24} aria-hidden />
+								<RowFields>
+									<Typography
+										element="bold"
+										variant="bodyBoldMd"
+										cssOverrides={css({ letterSpacing: '-0.05px' })}
+									>
+										Item name
+									</Typography>
+									<Typography
+										element="bold"
+										variant="bodyBoldMd"
+										cssOverrides={css({ letterSpacing: '-0.05px' })}
+									>
+										Dotcom path
+									</Typography>
+								</RowFields>
+								<ColumnHeadersSpacer width={40} aria-hidden />
 							</ColumnHeaders>
 							<DragDropContext onDragEnd={moveLink}>
 								<Droppable droppableId="subnav-nav-items">
@@ -571,7 +655,7 @@ const SubnavForm = ({
 																{...provided.dragHandleProps}
 																aria-label="Reorder nav item"
 															>
-																<FaGripVertical />
+																<DragIcon size="l" />
 															</DragHandle>
 															<RowFields>
 																<TextInput
@@ -591,14 +675,20 @@ const SubnavForm = ({
 																	}
 																/>
 															</RowFields>
-															<IconButton
-																type="button"
-																onClick={() => removeLink(index)}
-																disabled={links.length === 1}
-																aria-label="Remove nav item"
-															>
-																<FiMinusCircle />
-															</IconButton>
+															<RemoveButtonSlot>
+																{links.length > 1 && (
+																	<Button
+																		variant="tertiary"
+																		size="md"
+																		icon={<FiMinus />}
+																		onPress={() => removeLink(index)}
+																		aria-label="Remove nav item"
+																		cssOverrides={css({
+																			padding: '0.25em 0.45em 0.25em 0.5em',
+																		})}
+																	/>
+																)}
+															</RemoveButtonSlot>
 														</RepeatableRow>
 													)}
 												</Draggable>
@@ -610,10 +700,11 @@ const SubnavForm = ({
 							</DragDropContext>
 							<AddRow>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
-									icon={<FiPlusCircle />}
+									icon={<FiPlus />}
 									onPress={addLink}
+									cssOverrides={css({ marginLeft: '26px' })}
 								>
 									Add nav item
 								</Button>
@@ -626,7 +717,21 @@ const SubnavForm = ({
 							active={currentStepId === 'pages'}
 							onFocus={() => setCurrentStepId('pages')}
 						>
-							<SubnavContainerHeading>Assign to pages</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={sectionHeadingStyle}
+							>
+								Assign to pages
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={sectionDescriptionStyle}
+							>
+								Assign the subnav to specific front, tag or article you’d like
+								it to be displayed
+							</Typography>
 							{pages.map((page, index) => (
 								<RepeatableRow key={index}>
 									<RowFields>
@@ -653,21 +758,25 @@ const SubnavForm = ({
 											placeholder="e.g. politics/uk-election-2024"
 										/>
 									</RowFields>
-									<IconButton
-										type="button"
-										onClick={() => removePage(index)}
-										disabled={pages.length === 1}
-										aria-label="Remove page"
-									>
-										<FiMinusCircle />
-									</IconButton>
+									{pages.length > 1 && (
+										<Button
+											variant="tertiary"
+											size="md"
+											icon={<FiMinus />}
+											onPress={() => removePage(index)}
+											aria-label="Remove page"
+											cssOverrides={css({
+												padding: '0.25em 0.45em 0.25em 0.5em',
+											})}
+										/>
+									)}
 								</RepeatableRow>
 							))}
 							<AddRow>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
-									icon={<FiPlusCircle />}
+									icon={<FiPlus />}
 									onPress={addPage}
 								>
 									Add page
@@ -681,7 +790,21 @@ const SubnavForm = ({
 							active={currentStepId === 'images'}
 							onFocus={() => setCurrentStepId('images')}
 						>
-							<SubnavContainerHeading>Image (Optional)</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={sectionHeadingStyle}
+							>
+								Banner Image (optional){' '}
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={sectionDescriptionStyle}
+							>
+								Add images to the Subnav header, you can also add multiple
+								images for different breakpoints
+							</Typography>
 							<SubnavImagesSection images={images} onChange={setImages} />
 						</CreateFormSection>
 
@@ -691,11 +814,22 @@ const SubnavForm = ({
 							active={currentStepId === 'review'}
 							onFocus={() => setCurrentStepId('review')}
 						>
-							<SubnavContainerHeading>Publish</SubnavContainerHeading>
-							<Typography element="p" variant="bodySm">
-								Save a draft to preview the subnav in the panel on the right,
-								then publish when you are ready.
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={sectionHeadingStyle}
+							>
+								Save & Publish
 							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={sectionDescriptionStyle}
+							>
+								Review the subnav in the panel on the right, then publish when
+								you are ready.{' '}
+							</Typography>
+
 							{error && <ErrorMessage>{error}</ErrorMessage>}
 							{draftSaved && (
 								<Typography element="p" variant="bodySm">
@@ -755,13 +889,36 @@ const SubnavForm = ({
 						</CreateFormSection>
 					</CreateFormMain>
 				</Item>
-				<Item size={{ sm: 12, lg: 'grow' }}>
+				<Item size={{ sm: 12, lg: 'grow' }} cssOverrides={sidebarItemStyle}>
 					<CreateFormPreview>
 						<CreateFormPreviewHeader>
 							<CreateFormPreviewTitleRow>
-								<CreateFormPreviewTitle>Preview</CreateFormPreviewTitle>
+								{/* <CreateFormPreviewTitle cssOverrides={}>Preview</CreateFormPreviewTitle> */}
+								<p
+									style={{
+										display: 'flex',
+										alignItems: 'flex-start',
+										gap: '6px',
+										margin: 0,
+									}}
+								>
+									<Icon
+										size="lg"
+										symbol="preview"
+										cssOverrides={css`
+											align-self: center;
+										`}
+									/>
+									<Typography
+										element="h3"
+										variant="headingMd"
+										cssOverrides={css({ fontSize: '18px' })}
+									>
+										Preview
+									</Typography>
+								</p>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
 									icon={<FiRefreshCw />}
 									aria-label="Refresh preview"
@@ -774,28 +931,37 @@ const SubnavForm = ({
 									Refresh
 								</Button>
 							</CreateFormPreviewTitleRow>
-							{previewCountdown !== null && (
-								<CreateFormPreviewNotice>
-									<CreateFormPreviewSpinner>
-										<FiRefreshCw />
-									</CreateFormPreviewSpinner>
-									Draft saved. The preview can take up to a minute to update —
-									refreshing in {previewCountdown}s.
-								</CreateFormPreviewNotice>
-							)}
+							<UserFeedbackSummary
+								level="information"
+								title="Latest preview will refresh every 60 seconds."
+								cssOverrides={css({
+									maxWidth: '100%',
+									backgroundColor: 'white',
+								})}
+							>
+								{previewCountdown !== null && (
+									<>Refreshing in {previewCountdown}s.</>
+								)}
+							</UserFeedbackSummary>
+
 							<CreateFormPreviewToolbar>
-								{breakpointOptions.map((option) => (
-									<Button
-										key={option.id}
-										variant={breakpoint === option.id ? 'primary' : 'secondary'}
-										size="sm"
-										icon={option.icon}
-										aria-label={option.label}
-										onPress={() => setBreakpoint(option.id)}
-									>
-										{option.label}
-									</Button>
-								))}
+								<Tabs
+									selectedKey={breakpoint}
+									onSelectionChange={(key) => setBreakpoint(key as Breakpoint)}
+								>
+									<Tabs.TabList aria-label="Preview breakpoint">
+										{breakpointOptions.map((option) => (
+											<Tabs.Tab
+												key={option.id}
+												id={option.id}
+												theme={previewTabTheme}
+												icon={<Icon symbol={option.icon} fill="grey" />}
+											>
+												{option.label}
+											</Tabs.Tab>
+										))}
+									</Tabs.TabList>
+								</Tabs>
 							</CreateFormPreviewToolbar>
 						</CreateFormPreviewHeader>
 						<CreateFormPreviewViewport ref={previewViewportRef}>
