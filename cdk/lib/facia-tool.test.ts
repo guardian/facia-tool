@@ -31,6 +31,10 @@ describe('The FaciaTool stack', () => {
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
 		});
+		template.hasParameter('CloudFrontWebAclArn', {
+			Type: 'String',
+			Default: '',
+		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});
 
@@ -60,6 +64,10 @@ describe('The FaciaTool stack', () => {
 			Name: '/infosec/waf/services/PROD/facia-tool-alb-arn',
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
+		});
+		template.hasParameter('CloudFrontWebAclArn', {
+			Type: 'String',
+			Default: '',
 		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});

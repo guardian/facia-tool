@@ -10,7 +10,8 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import { Aws, CfnOutput, CfnParameter, Duration, Tags } from 'aws-cdk-lib';
+import  { CfnCondition } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
@@ -209,6 +210,17 @@ export class FaciaTool extends GuStack {
 	}
 
 	/**
+	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
+	 * thing we decrypt is the SecureString holding the database password, and it uses the
+	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
+	 */
+	private get viaSsmOrSqs(): Record<string, Record<string, string[]>> {
+		return {
+			StringEquals: { 'kms:ViaService': [`ssm.${this.region}.amazonaws.com`, `sqs.${this.region}.amazonaws.com`] },
+		};
+	}
+
+	/**
 	 * Parameters inherited from the YAML template this stack replaced. Riff-Raff carries the
 	 * previous value over for the ones without a default, so they keep the values they already have.
 	 */
@@ -245,6 +257,13 @@ export class FaciaTool extends GuStack {
 				description: 'SSM key containing security group of the CAPI endpoint',
 				default: '/newvpc/endpoint/capi/PROD',
 			},
+			{
+				name: 'CloudFrontWebAclArn',
+				type: 'String',
+				description:
+					'ARN of the CloudFront-scoped WAF web ACL. Leave empty to disable the association.',
+				default: '',
+			},
 		];
 
 		const parameters = new Map<string, CfnParameter>(
@@ -279,7 +298,17 @@ export class FaciaTool extends GuStack {
 	}): void {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
+		const webAclArn = parameter('CloudFrontWebAclArn');
+		const hasWebAcl = new CfnCondition(this, 'HasCloudFrontWebAcl', {
+			expression: Fn.conditionNot(Fn.conditionEquals(webAclArn, '')),
+		});
+
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
+			webAclId: Fn.conditionIf(
+				hasWebAcl.logicalId,
+				webAclArn,
+				Aws.NO_VALUE,
+			).toString(),
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,
@@ -330,17 +359,6 @@ export class FaciaTool extends GuStack {
 			resource: bucketName,
 			resourceName: key,
 		});
-	}
-
-	/**
-	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
-	 * thing we decrypt is the SecureString holding the database password, and it uses the
-	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
-	 */
-	private get viaSsmOrSqs(): Record<string, Record<string, string[]>> {
-		return {
-			StringEquals: { 'kms:ViaService': [`ssm.${this.region}.amazonaws.com`, `sqs.${this.region}.amazonaws.com`] },
-		};
 	}
 
 	private dynamoTableArn(tableName: string): string {
