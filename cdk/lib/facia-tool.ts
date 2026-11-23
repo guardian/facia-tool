@@ -43,6 +43,7 @@ import {
 	Role,
 } from 'aws-cdk-lib/aws-iam';
 import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 const app = 'facia-tool';
 const applicationPort = 9000;
@@ -144,6 +145,11 @@ export class FaciaTool extends GuStack {
 			publicSubnets: GuVpc.subnetsFromParameter(this, {
 				type: SubnetType.PUBLIC,
 			}),
+		});
+
+		new StringParameter(this, 'WafLoadBalancerArn', {
+			parameterName: `/infosec/waf/services/${this.stage}/${app}-alb-arn`,
+			stringValue: ec2App.loadBalancer.loadBalancerArn,
 		});
 
 		this.cloudFront({

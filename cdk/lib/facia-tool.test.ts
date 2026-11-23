@@ -26,6 +26,11 @@ describe('The FaciaTool stack', () => {
 			maximumInstances: 2,
 		});
 		const template = Template.fromStack(stack);
+		template.hasResourceProperties('AWS::SSM::Parameter', {
+			Name: '/infosec/waf/services/CODE/facia-tool-alb-arn',
+			Type: 'String',
+			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
+		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});
 
@@ -51,6 +56,11 @@ describe('The FaciaTool stack', () => {
 			maximumInstances: 6,
 		});
 		const template = Template.fromStack(stack);
+		template.hasResourceProperties('AWS::SSM::Parameter', {
+			Name: '/infosec/waf/services/PROD/facia-tool-alb-arn',
+			Type: 'String',
+			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
+		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});
 });
