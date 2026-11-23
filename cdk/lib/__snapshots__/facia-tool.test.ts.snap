@@ -2360,6 +2360,22 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
+    "WafLoadBalancerArnD024167F": {
+      "Properties": {
+        "Name": "/infosec/waf/services/CODE/facia-tool-alb-arn",
+        "Tags": {
+          "Stack": "cms-fronts",
+          "Stage": "CODE",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/facia-tool",
+        },
+        "Type": "String",
+        "Value": {
+          "Ref": "LoadBalancerFaciatool65BDBE55",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
+    },
     "cmsfrontsCODEfaciatoolB7C60B51": {
       "DependsOn": [
         "InstanceRoleFaciatoolBF15D06F",
@@ -4591,6 +4607,22 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "WafLoadBalancerArnD024167F": {
+      "Properties": {
+        "Name": "/infosec/waf/services/PROD/facia-tool-alb-arn",
+        "Tags": {
+          "Stack": "cms-fronts",
+          "Stage": "PROD",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/facia-tool",
+        },
+        "Type": "String",
+        "Value": {
+          "Ref": "LoadBalancerFaciatool65BDBE55",
+        },
+      },
+      "Type": "AWS::SSM::Parameter",
     },
     "cmsfrontsPRODfaciatool6792D81A": {
       "DependsOn": [
