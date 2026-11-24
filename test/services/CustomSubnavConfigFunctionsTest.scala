@@ -15,7 +15,7 @@ class CustomSubnavConfigFunctionsTest
   private def subnav(
       id: String,
       headerText: String = "Header",
-      pages: List[TargetedPage] = Nil
+      pages: Option[List[TargetedPage]] = None
   ): CustomSubnav =
     CustomSubnav(
       id = id,
