@@ -115,9 +115,7 @@ const toLinkRows = (subnav?: CustomSubnav): LinkRow[] =>
 		: [emptyLink()];
 
 const toPageRows = (subnav?: CustomSubnav): TargetedPage[] =>
-	subnav?.pages.length
-		? subnav.pages.map((page) => ({ ...page }))
-		: [emptyPage()];
+	subnav?.pages?.length ? subnav.pages.map((page) => ({ ...page })) : [];
 
 // The preview origin can take up to ~a minute to pick up a saved draft.
 const PREVIEW_PROPAGATION_SECONDS = 60;
@@ -303,7 +301,7 @@ const SubnavForm = ({
 			case 'header':
 				return hasHeader ? 'complete' : 'incomplete';
 			case 'pages':
-				return hasPage ? 'complete' : 'incomplete';
+				return hasPage ? 'complete' : 'optional';
 			case 'links':
 				return hasLink ? 'complete' : 'incomplete';
 			case 'images':
@@ -403,7 +401,7 @@ const SubnavForm = ({
 					linkText: link.linkText.trim(),
 					dotcomPath: link.dotcomPath.trim(),
 				})),
-			pages: subnav.pages
+			pages: (subnav.pages ?? [])
 				.filter((page) => page.path.trim())
 				.map((page) => ({ type: page.type, path: page.path.trim() })),
 			images: (subnav.images ?? []).map((image) => ({
@@ -417,7 +415,7 @@ const SubnavForm = ({
 	const currentSubnav = buildSubnav();
 	const isDirty =
 		!savedSubnav || signature(currentSubnav) !== signature(savedSubnav);
-	const requiredComplete = hasHeader && hasLink && hasPage;
+	const requiredComplete = hasHeader && hasLink;
 	const canSaveDraft = hasHeader && isDirty && !saving && !actionPending;
 	const canPublish =
 		draftSaved && !isDirty && requiredComplete && !saving && !actionPending;
@@ -425,13 +423,13 @@ const SubnavForm = ({
 	const previewDomain = useCODELinks
 		? 'preview.code.dev-gutools.co.uk'
 		: 'preview.gutools.co.uk';
-	const savedFirstPagePath = savedSubnav?.pages[0]?.path;
+	const savedFirstPagePath = savedSubnav?.pages?.[0]?.path;
 	const previewUrl = savedFirstPagePath
 		? `https://${previewDomain}/${savedFirstPagePath.replace(/^\//, '')}?cacheBust=${previewNonce}`
 		: null;
 	const savedPagesSummary = savedSubnav?.pages
-		.map((page) => page.path)
-		.join(', ');
+		?.map((page) => page.path)
+		?.join(', ');
 
 	const handleSaveDraft = async () => {
 		setError(null);
@@ -443,7 +441,9 @@ const SubnavForm = ({
 			}
 			setSavedSubnav(subnav);
 			setDraftSaved(true);
-			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
+			setPreviewCountdown(
+				subnav.pages?.length ? PREVIEW_PROPAGATION_SECONDS : null,
+			);
 		} catch (e) {
 			console.error('Failed to save subnav draft', e);
 		}
@@ -626,7 +626,9 @@ const SubnavForm = ({
 							active={currentStepId === 'pages'}
 							onFocus={() => setCurrentStepId('pages')}
 						>
-							<SubnavContainerHeading>Assign to pages</SubnavContainerHeading>
+							<SubnavContainerHeading>
+								Assign to pages (Optional)
+							</SubnavContainerHeading>
 							{pages.map((page, index) => (
 								<RepeatableRow key={index}>
 									<RowFields>
@@ -656,7 +658,6 @@ const SubnavForm = ({
 									<IconButton
 										type="button"
 										onClick={() => removePage(index)}
-										disabled={pages.length === 1}
 										aria-label="Remove page"
 									>
 										<FiMinusCircle />
@@ -693,14 +694,15 @@ const SubnavForm = ({
 						>
 							<SubnavContainerHeading>Publish</SubnavContainerHeading>
 							<Typography element="p" variant="bodySm">
-								Save a draft to preview the subnav in the panel on the right,
-								then publish when you are ready.
+								Save a draft, then publish when you are ready. Assign a page to
+								preview the subnav in the panel on the right.
 							</Typography>
 							{error && <ErrorMessage>{error}</ErrorMessage>}
 							{draftSaved && (
 								<Typography element="p" variant="bodySm">
-									Publishing will make this subnav live on its assigned pages
-									{savedPagesSummary ? `: ${savedPagesSummary}` : ''}.
+									{savedPagesSummary
+										? `Publishing will make this subnav live on its assigned pages: ${savedPagesSummary}.`
+										: 'This subnav will be published without assigning any pages.'}
 								</Typography>
 							)}
 							<CreateFormActions>
@@ -822,7 +824,9 @@ const SubnavForm = ({
 								</CreateFormPreviewScaler>
 							) : (
 								<CreateFormPreviewPlaceholder>
-									No draft subnav to display
+									{savedSubnav
+										? 'Assign a page and save a draft to preview this subnav.'
+										: 'No draft subnav to display'}
 								</CreateFormPreviewPlaceholder>
 							)}
 						</CreateFormPreviewViewport>

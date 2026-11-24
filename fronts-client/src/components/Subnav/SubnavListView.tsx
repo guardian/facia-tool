@@ -184,7 +184,7 @@ const SubnavListPanel = ({
 						const title = subnav.header.headerText || 'Untitled subnav';
 						const meta = [
 							...subnav.links.map((link) => link.linkText),
-							...subnav.pages.map((page) => page.path),
+							...(subnav.pages ?? []).map((page) => page.path),
 						]
 							.filter(Boolean)
 							.join(' · ');
