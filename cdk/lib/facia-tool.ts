@@ -10,7 +10,6 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import  { CfnCondition } from 'aws-cdk-lib';
 import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
@@ -257,13 +256,6 @@ export class FaciaTool extends GuStack {
 				description: 'SSM key containing security group of the CAPI endpoint',
 				default: '/newvpc/endpoint/capi/PROD',
 			},
-			{
-				name: 'CloudFrontWebAclArn',
-				type: 'String',
-				description:
-					'ARN of the CloudFront-scoped WAF web ACL. Leave empty to disable the association.',
-				default: '',
-			},
 		];
 
 		const parameters = new Map<string, CfnParameter>(
@@ -298,17 +290,15 @@ export class FaciaTool extends GuStack {
 	}): void {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
-		const webAclArn = parameter('CloudFrontWebAclArn');
-		const hasWebAcl = new CfnCondition(this, 'HasCloudFrontWebAcl', {
-			expression: Fn.conditionNot(Fn.conditionEquals(webAclArn, '')),
-		});
-
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
-			webAclId: Fn.conditionIf(
-				hasWebAcl.logicalId,
-				webAclArn,
-				Aws.NO_VALUE,
-			).toString(),
+			webAclId:
+				this.stage === 'CODE'
+					? Fn.getStackOutput(
+							'cms-fronts-INFRA-facia-tool-cloud-front-waf',
+							'CloudFrontWebAclArn',
+							'us-east-1',
+						)
+					: undefined,
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,

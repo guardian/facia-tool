@@ -2,20 +2,6 @@
 
 exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
 {
-  "Conditions": {
-    "HasCloudFrontWebAcl": {
-      "Fn::Not": [
-        {
-          "Fn::Equals": [
-            {
-              "Ref": "CloudFrontWebAclArn",
-            },
-            "",
-          ],
-        },
-      ],
-    },
-  },
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
@@ -140,11 +126,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Default": "/INFRA/fronts.code.dev-gutools.co.uk/cloudFrontCertificateArn",
       "Description": "The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "CloudFrontWebAclArn": {
-      "Default": "",
-      "Description": "ARN of the CloudFront-scoped WAF web ACL. Leave empty to disable the association.",
-      "Type": "String",
     },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
@@ -621,15 +602,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "SslSupportMethod": "sni-only",
           },
           "WebACLId": {
-            "Fn::If": [
-              "HasCloudFrontWebAcl",
-              {
-                "Ref": "CloudFrontWebAclArn",
-              },
-              {
-                "Ref": "AWS::NoValue",
-              },
-            ],
+            "Fn::GetStackOutput": {
+              "OutputName": "CloudFrontWebAclArn",
+              "Region": "us-east-1",
+              "StackName": "cms-fronts-INFRA-facia-tool-cloud-front-waf",
+            },
           },
         },
         "Tags": [
@@ -2591,20 +2568,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb",
 
 exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
 {
-  "Conditions": {
-    "HasCloudFrontWebAcl": {
-      "Fn::Not": [
-        {
-          "Fn::Equals": [
-            {
-              "Ref": "CloudFrontWebAclArn",
-            },
-            "",
-          ],
-        },
-      ],
-    },
-  },
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
@@ -2729,11 +2692,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Default": "/INFRA/fronts.gutools.co.uk/cloudFrontCertificateArn",
       "Description": "The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "CloudFrontWebAclArn": {
-      "Default": "",
-      "Description": "ARN of the CloudFront-scoped WAF web ACL. Leave empty to disable the association.",
-      "Type": "String",
     },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
@@ -3208,17 +3166,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             },
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only",
-          },
-          "WebACLId": {
-            "Fn::If": [
-              "HasCloudFrontWebAcl",
-              {
-                "Ref": "CloudFrontWebAclArn",
-              },
-              {
-                "Ref": "AWS::NoValue",
-              },
-            ],
           },
         },
         "Tags": [

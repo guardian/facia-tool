@@ -1,5 +1,5 @@
 import { App } from 'aws-cdk-lib';
-import { Template } from 'aws-cdk-lib/assertions';
+import { Match, Template } from 'aws-cdk-lib/assertions';
 import { FaciaEditions } from './facia-editions';
 import { FaciaTool } from './facia-tool';
 
@@ -31,10 +31,17 @@ describe('The FaciaTool stack', () => {
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
 		});
-		template.hasParameter('CloudFrontWebAclArn', {
-			Type: 'String',
-			Default: '',
+		expect(template.toJSON().Parameters).not.toHaveProperty(
+			'CloudFrontWebAclArn',
+		);
+		template.hasResourceProperties('AWS::CloudFront::Distribution', {
+			DistributionConfig: {
+				WebACLId: Match.anyValue(),
+			},
 		});
+		expect(JSON.stringify(template.toJSON())).toContain(
+			'cms-fronts-INFRA-facia-tool-cloud-front-waf',
+		);
 		expect(template.toJSON()).toMatchSnapshot();
 	});
 
@@ -65,9 +72,14 @@ describe('The FaciaTool stack', () => {
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
 		});
-		template.hasParameter('CloudFrontWebAclArn', {
-			Type: 'String',
-			Default: '',
+		expect(template.toJSON().Parameters).not.toHaveProperty(
+			'CloudFrontWebAclArn',
+		);
+		const distributions = template.findResources('AWS::CloudFront::Distribution');
+		Object.values(distributions).forEach((distribution) => {
+			expect(distribution.Properties.DistributionConfig).not.toHaveProperty(
+				'WebACLId',
+			);
 		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});
