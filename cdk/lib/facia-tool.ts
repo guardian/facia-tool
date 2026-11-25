@@ -291,6 +291,10 @@ export class FaciaTool extends GuStack {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
+			webAclId: StringParameter.valueForStringParameter(
+				this,
+				`/${this.stage}/cms-fronts/faciaWebAclArn`,
+			),
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,

@@ -1,5 +1,5 @@
 import { App } from 'aws-cdk-lib';
-import { Match, Template } from 'aws-cdk-lib/assertions';
+import { Template } from 'aws-cdk-lib/assertions';
 import { FaciaEditions } from './facia-editions';
 import { FaciaTool } from './facia-tool';
 
@@ -34,10 +34,16 @@ describe('The FaciaTool stack', () => {
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
+		const webAclParameter =
+			'SsmParameterValueCODEcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter';
+		template.hasParameter(webAclParameter, {
+			Type: 'AWS::SSM::Parameter::Value<String>',
+			Default: '/CODE/cms-fronts/faciaWebAclArn',
+		});
 		template.resourceCountIs('AWS::CloudFront::Distribution', 1);
 		template.hasResourceProperties('AWS::CloudFront::Distribution', {
 			DistributionConfig: {
-				WebACLId: Match.absent(),
+				WebACLId: { Ref: webAclParameter },
 			},
 		});
 		expect(template.toJSON()).toMatchSnapshot();
@@ -73,10 +79,16 @@ describe('The FaciaTool stack', () => {
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
+		const webAclParameter =
+			'SsmParameterValuePRODcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter';
+		template.hasParameter(webAclParameter, {
+			Type: 'AWS::SSM::Parameter::Value<String>',
+			Default: '/PROD/cms-fronts/faciaWebAclArn',
+		});
 		template.resourceCountIs('AWS::CloudFront::Distribution', 1);
 		template.hasResourceProperties('AWS::CloudFront::Distribution', {
 			DistributionConfig: {
-				WebACLId: Match.absent(),
+				WebACLId: { Ref: webAclParameter },
 			},
 		});
 		expect(template.toJSON()).toMatchSnapshot();
