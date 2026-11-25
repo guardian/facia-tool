@@ -601,13 +601,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only",
           },
-          "WebACLId": {
-            "Fn::GetStackOutput": {
-              "OutputName": "CloudFrontWebAclArn",
-              "Region": "us-east-1",
-              "StackName": "cms-fronts-INFRA-facia-tool-cloud-front-waf",
-            },
-          },
         },
         "Tags": [
           {
