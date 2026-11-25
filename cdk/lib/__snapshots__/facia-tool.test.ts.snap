@@ -2713,10 +2713,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "SsmParameterValuePRODcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter": {
-      "Default": "/PROD/cms-fronts/faciaWebAclArn",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "SwitchboardBucket": {
       "Default": "arn:aws:s3:::facia-switches/*",
       "Description": "Bucket where switchboard writes switches status",
@@ -3170,9 +3166,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             },
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only",
-          },
-          "WebACLId": {
-            "Ref": "SsmParameterValuePRODcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter",
           },
         },
         "Tags": [
