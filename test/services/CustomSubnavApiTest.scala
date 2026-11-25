@@ -14,7 +14,7 @@ class CustomSubnavApiTest extends FreeSpec with Matchers with MockitoSugar {
       header = CustomSubnavHeader(title, None, "Copy"),
       format = CustomSubnavFormat.Large,
       links = Nil,
-      pages = Nil,
+      pages = None,
       images = None,
       palette = None,
       lastUpdated = new DateTime(0),

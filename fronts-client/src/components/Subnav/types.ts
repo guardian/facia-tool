@@ -58,7 +58,7 @@ export interface CustomSubnav {
 	header: CustomSubnavHeader;
 	format: CustomSubnavFormat;
 	links: SubnavLink[];
-	pages: TargetedPage[];
+	pages?: TargetedPage[];
 	images?: SubnavImage[];
 	palette?: Palettes;
 	lastUpdated: number;
