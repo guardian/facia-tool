@@ -16,3 +16,4 @@ Feature: Seeded editorial front
   # Evidence: fronts-client/src/components/CollectionDisplay.tsx
   # Evidence: fronts-client/src/components/card/article/ArticleBody.tsx
   # Evidence: fronts-client/src/index.tsx
+  
