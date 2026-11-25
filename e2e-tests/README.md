@@ -29,6 +29,9 @@ TLS proxy supplies `X-Forwarded-Proto: https`.
 Server-side calls use the dynamically
 forwarded Testcontainers ports. Browser telemetry requests use Playwright's
 `--host-resolver-rules` to reach the WireMock HTTPS port at `127.0.0.1:3133`.
+Browser Feast recipe and chef searches call `recipes.guardianapis.com` directly,
+so the same mechanism maps it to the recipes WireMock's HTTPS port at
+`127.0.0.1:3134`, which also answers CORS preflights (`--enable-stub-cors`).
 Unlike the regular development environment, the e2e stack does not route
 through dev-nginx or `fronts.local.dev-gutools.co.uk`.
 
@@ -44,7 +47,7 @@ flowchart LR
     Host[Host browser or Playwright] -->|localhost:9000| Proxy[nginx auth proxy]
     Proxy -->|host tunnel to port 9001| Native[Native Play and Vite]
     Native -->|mapped ports| LocalDeps[Postgres, LocalStack, WireMock]
-    Host -->|telemetry via 127.0.0.1:3133| LocalDeps
+    Host -->|telemetry and recipes via 127.0.0.1:3133/3134| LocalDeps
   end
 
   subgraph CI[CI or owned container stack]
@@ -181,6 +184,12 @@ background steps for stack health and pan-domain sign-in; `/cookie` uses a new
 ephemeral keypair for every stack, so tests must not hard-code cookies or keys.
 Cookie issuance lives only in `fixtures/auth-redirect/default.conf.template`
 and `setup/stack/auth-redirect.ts`, not in the application's controllers or routes.
+
+Every scenario signs in as the synthetic `e2e.editor@guardian.co.uk`, whose
+`fronts_access`, `edit_editorial_fronts`, and `edit_editions` permissions are
+seeded from `fixtures/s3/permissions-cache/`. Scenarios that need an editions
+issue create their own through the editions API (see
+`steps/background.steps.ts`) rather than sharing seeded issues across workers.
 
 To add or change seeded AWS state, put synthetic source data under
 `fixtures/s3/` or `fixtures/dynamodb/` and update `setup/stack/bootstrap.ts`.

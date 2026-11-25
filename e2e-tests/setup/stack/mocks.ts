@@ -12,6 +12,8 @@ interface MockConfig {
   name: string;
   aliases: string[];
   httpsHostPort?: number;
+  // Needed when the browser calls the mock cross-origin.
+  enableCors?: boolean;
 }
 
 const mockConfigs: MockConfig[] = [
@@ -20,7 +22,12 @@ const mockConfigs: MockConfig[] = [
     aliases: ["content.guardianapis.com", "preview.content.guardianapis.com"],
   },
   { name: "ophan", aliases: ["api.ophan.co.uk"] },
-  { name: "recipes", aliases: ["recipes.guardianapis.com"] },
+  {
+    name: "recipes",
+    aliases: ["recipes.guardianapis.com"],
+    httpsHostPort: 3134,
+    enableCors: true,
+  },
   {
     name: "grid",
     aliases: ["api.media.local.dev-gutools.co.uk"],
@@ -71,6 +78,7 @@ async function startMock(
       "--disable-banner",
       "--verbose",
       ...(config.httpsHostPort ? ["--https-port", "8443"] : []),
+      ...(config.enableCors ? ["--enable-stub-cors"] : []),
     ])
     .withWaitStrategy(Wait.forHttp("/__admin/health", 8080))
     .withStartupTimeout(120_000);
