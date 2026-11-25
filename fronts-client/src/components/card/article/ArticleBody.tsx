@@ -413,12 +413,12 @@ const articleBodyDefault = React.memo(
 
 		const isAbTestingEnabledOnFront =
 			isHeadlineAbTestingEnabledOnFront(frontId);
-
+		const isLiveBlog = type === 'liveblog';
 		const isClipboard = frontId === clipboardId;
 		const shouldShowAbTestStatus =
 			!!abTestStatus && (isAbTestingEnabledOnFront || isClipboard);
 		const shouldShowHeadlineUpdateIndicator =
-			isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && !isLive;
+			isHeadlineUpdateIndicatorEnabled && hasCapiHeadlineChanged && !isLiveBlog;
 		return (
 			<>
 				{showMeta && (
