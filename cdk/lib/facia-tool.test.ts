@@ -75,11 +75,11 @@ describe('The FaciaTool stack', () => {
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
-		const distributions = template.findResources('AWS::CloudFront::Distribution');
-		Object.values(distributions).forEach((distribution) => {
-			expect(distribution.Properties.DistributionConfig).not.toHaveProperty(
-				'WebACLId',
-			);
+		template.resourceCountIs('AWS::CloudFront::Distribution', 1);
+		template.hasResourceProperties('AWS::CloudFront::Distribution', {
+			DistributionConfig: {
+				WebACLId: Match.absent(),
+			},
 		});
 		expect(template.toJSON()).toMatchSnapshot();
 	});
