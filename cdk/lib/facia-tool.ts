@@ -10,7 +10,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CfnParameter, Duration, Tags } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
@@ -291,14 +291,6 @@ export class FaciaTool extends GuStack {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
-			webAclId:
-				this.stage === 'CODE'
-					? Fn.getStackOutput(
-							'cms-fronts-INFRA-facia-tool-cloud-front-waf',
-							'CloudFrontWebAclArn',
-							'us-east-1',
-						)
-					: undefined,
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,

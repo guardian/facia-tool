@@ -34,14 +34,12 @@ describe('The FaciaTool stack', () => {
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
+		template.resourceCountIs('AWS::CloudFront::Distribution', 1);
 		template.hasResourceProperties('AWS::CloudFront::Distribution', {
 			DistributionConfig: {
-				WebACLId: Match.anyValue(),
+				WebACLId: Match.absent(),
 			},
 		});
-		expect(JSON.stringify(template.toJSON())).toContain(
-			'cms-fronts-INFRA-facia-tool-cloud-front-waf',
-		);
 		expect(template.toJSON()).toMatchSnapshot();
 	});
 
