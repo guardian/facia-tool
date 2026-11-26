@@ -147,10 +147,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "A list of public subnets",
       "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
-    "SsmParameterValueCODEcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter": {
-      "Default": "/CODE/cms-fronts/faciaWebAclArn",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
     "SwitchboardBucket": {
       "Default": "arn:aws:s3:::facia-switches/*",
       "Description": "Bucket where switchboard writes switches status",
@@ -605,9 +601,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only",
           },
-          "WebACLId": {
-            "Ref": "SsmParameterValueCODEcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter",
-          },
+          "WebACLId": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example",
         },
         "Tags": [
           {
@@ -629,6 +623,21 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         ],
       },
       "Type": "AWS::CloudFront::Distribution",
+    },
+    "FaciaWebAclArn9504F9DD": {
+      "Properties": {
+        "Description": "ARN of the Facia CloudFront WebACL",
+        "Name": "/CODE/cms-fronts/faciaWebAclArn",
+        "Tags": {
+          "Stack": "cms-fronts",
+          "Stage": "CODE",
+          "gu:cdk:version": "TEST",
+          "gu:repo": "guardian/facia-tool",
+        },
+        "Type": "String",
+        "Value": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example",
+      },
+      "Type": "AWS::SSM::Parameter",
     },
     "FeastPublicationTopic": {
       "Properties": {

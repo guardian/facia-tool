@@ -290,3 +290,14 @@ jobs:
                       cfn-facia-tool-certificates:
                         - cdk/cdk.out/FaciaToolCertificate-useast-1-CODE.template.json
                         - cdk/cdk.out/FaciaToolCertificate-useast-1-PROD.template.json
+            - name: Upload CloudFront WAF project to riff-raff
+              uses: guardian/actions-riff-raff@v4
+              with:
+                  app: facia-tool-cloudfront-waf
+                  roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+                  buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
+                  githubToken: ${{ secrets.GITHUB_TOKEN }}
+                  configPath: cloudfront-waf-riff-raff.yaml
+                  contentDirectories: |
+                      cfn-facia-tool-cloudfront-waf:
+                        - cdk/cdk.out/FaciaToolCloudFrontWaf-useast-1-CODE.template.json

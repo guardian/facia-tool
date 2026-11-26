@@ -76,6 +76,8 @@ export interface FaciaToolProps extends GuStackProps {
 	authDomain: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
+	/** ARN of the CloudFront WAF, deployed in us-east-1. */
+	cloudFrontWebAclArn?: string;
 	/** The database's security group, from the `FaciaEditions` stack. */
 	databaseSecurityGroupId: string;
 	instanceType: string;
@@ -151,11 +153,22 @@ export class FaciaTool extends GuStack {
 			parameterName: `/infosec/waf/services/${this.stage}/${app}-alb-arn`,
 			stringValue: ec2App.loadBalancer.loadBalancerArn,
 		});
+		if (this.stage === 'CODE') {
+			if (!props.cloudFrontWebAclArn) {
+				throw new Error('CODE requires a CloudFront WebACL ARN');
+			}
+			new StringParameter(this, 'FaciaWebAclArn', {
+				description: 'ARN of the Facia CloudFront WebACL',
+				parameterName: `/${this.stage}/cms-fronts/faciaWebAclArn`,
+				stringValue: props.cloudFrontWebAclArn,
+			});
+		}
 
 		this.cloudFront({
 			parameter,
 			domainName: props.domainName,
 			originDomainName: ec2App.loadBalancer.loadBalancerDnsName,
+			webAclArn: props.cloudFrontWebAclArn,
 		});
 
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
@@ -283,21 +296,17 @@ export class FaciaTool extends GuStack {
 		parameter,
 		domainName,
 		originDomainName,
+		webAclArn,
 	}: {
 		parameter: (name: string) => string;
 		domainName: string;
 		originDomainName: string;
+		webAclArn?: string;
 	}): void {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
-			webAclId:
-				this.stage === 'CODE'
-					? StringParameter.valueForStringParameter(
-							this,
-							`/${this.stage}/cms-fronts/faciaWebAclArn`,
-						)
-					: undefined,
+			webAclId: this.stage === 'CODE' ? webAclArn : undefined,
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,

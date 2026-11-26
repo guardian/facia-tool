@@ -20,6 +20,8 @@ describe('The FaciaTool stack', () => {
 			domainName: 'fronts.code.dev-gutools.co.uk',
 			authDomain: 'code.dev-gutools.co.uk',
 			frontPressedTable: 'front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU',
+			cloudFrontWebAclArn:
+				'arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example',
 			databaseSecurityGroupId: editions.databaseSecurityGroupId,
 			instanceType: 't4g.small',
 			minimumInstances: 1,
@@ -31,19 +33,20 @@ describe('The FaciaTool stack', () => {
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
 		});
+		template.hasResourceProperties('AWS::SSM::Parameter', {
+			Name: '/CODE/cms-fronts/faciaWebAclArn',
+			Type: 'String',
+			Value:
+				'arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example',
+		});
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
-		const webAclParameter =
-			'SsmParameterValueCODEcmsfrontsfaciaWebAclArnC96584B6F00A464EAD1953AFF4B05118Parameter';
-		template.hasParameter(webAclParameter, {
-			Type: 'AWS::SSM::Parameter::Value<String>',
-			Default: '/CODE/cms-fronts/faciaWebAclArn',
-		});
 		template.resourceCountIs('AWS::CloudFront::Distribution', 1);
 		template.hasResourceProperties('AWS::CloudFront::Distribution', {
 			DistributionConfig: {
-				WebACLId: { Ref: webAclParameter },
+				WebACLId:
+					'arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example',
 			},
 		});
 		expect(template.toJSON()).toMatchSnapshot();
@@ -76,6 +79,11 @@ describe('The FaciaTool stack', () => {
 			Type: 'String',
 			Value: { Ref: 'LoadBalancerFaciatool65BDBE55' },
 		});
+		expect(
+			template.findResources('AWS::SSM::Parameter', {
+				Properties: { Name: '/PROD/cms-fronts/faciaWebAclArn' },
+			}),
+		).toEqual({});
 		expect(template.toJSON().Parameters).not.toHaveProperty(
 			'CloudFrontWebAclArn',
 		);
