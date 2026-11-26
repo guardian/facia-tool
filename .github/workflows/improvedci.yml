@@ -176,7 +176,7 @@ jobs:
                     - 4724:5432
         steps:
             - uses: actions/checkout@v4
-            - uses: guardian/setup-scala@v1
+            - uses: guardian/setup-scala@v2
             - name: Run tests
               run: sbt 'test; database-int:test'
 
@@ -184,7 +184,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: guardian/setup-scala@v1
+            - uses: guardian/setup-scala@v2
             - name: Check scala formatting
               run: sbt 'scalafmtCheck; scalafmtSbtCheck;'
 
@@ -214,7 +214,7 @@ jobs:
             - name: Set GITHUB_RUN_NUMBER environment variable
               run: |
                   echo "GITHUB_RUN_NUMBER=${{ needs.generate_build_number.outputs.BUILD_NUMBER }}" >> $GITHUB_ENV
-            - uses: guardian/setup-scala@v1
+            - uses: guardian/setup-scala@v2
             - name: Bundle
               run: sbt debian:packageBin
             - uses: actions/upload-artifact@v4
