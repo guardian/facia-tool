@@ -38,7 +38,13 @@ describe('The FaciaToolCloudFrontWaf stack', () => {
 			DefaultAction: { Allow: {} },
 			Rules: Match.arrayWith(
 				ruleNames.map((name, index) =>
-					Match.objectLike({ Name: name, Priority: index + 1 }),
+					Match.objectLike({
+						Name: name,
+						Priority: index + 1,
+						...(index < 7
+							? { OverrideAction: { Count: {} } }
+							: { Action: { Count: Match.anyValue() } }),
+					}),
 				),
 			),
 		});

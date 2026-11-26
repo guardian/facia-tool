@@ -118,10 +118,10 @@ export class FaciaToolCloudFrontWaf extends GuStack {
 			},
 			rules: [
 				managedRule('AWSManagedRulesAdminProtectionRuleSet', 1, {
-					none: {},
+					count: {},
 				}),
 				managedRule('AWSManagedRulesAmazonIpReputationList', 2, {
-					none: {},
+					count: {},
 				}),
 				managedRule('AWSManagedRulesAnonymousIpList', 3, { count: {} }),
 				managedRule(
