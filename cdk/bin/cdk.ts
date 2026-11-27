@@ -5,7 +5,7 @@ import { FaciaTool } from '../lib/facia-tool';
 import { FaciaToolCertificate } from '../lib/facia-tool-certificate';
 import { FaciaToolCloudFrontWaf } from '../lib/facia-tool-cloudfront-waf';
 
-export const app = new GuRoot();
+const app = new GuRoot();
 
 new FaciaToolCloudFrontWaf(
 	app,
