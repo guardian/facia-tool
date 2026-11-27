@@ -127,6 +127,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "The ARN of the certificate for the Cloudfront distribution. Must be created in us-east-1.",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "CloudFrontWebAclArn": {
+      "Default": "/CODE/cms-fronts/faciaWebAclArn",
+      "Description": "SSM parameter containing the CloudFront WebACL ARN",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
@@ -601,7 +606,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "MinimumProtocolVersion": "TLSv1.2_2021",
             "SslSupportMethod": "sni-only",
           },
-          "WebACLId": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example",
+          "WebACLId": {
+            "Ref": "CloudFrontWebAclArn",
+          },
         },
         "Tags": [
           {
@@ -623,21 +630,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         ],
       },
       "Type": "AWS::CloudFront::Distribution",
-    },
-    "FaciaWebAclArn9504F9DD": {
-      "Properties": {
-        "Description": "ARN of the Facia CloudFront WebACL",
-        "Name": "/CODE/cms-fronts/faciaWebAclArn",
-        "Tags": {
-          "Stack": "cms-fronts",
-          "Stage": "CODE",
-          "gu:cdk:version": "TEST",
-          "gu:repo": "guardian/facia-tool",
-        },
-        "Type": "String",
-        "Value": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/Facia-CODE-WAF/example",
-      },
-      "Type": "AWS::SSM::Parameter",
     },
     "FeastPublicationTopic": {
       "Properties": {

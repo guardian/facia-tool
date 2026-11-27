@@ -5,9 +5,9 @@ import { FaciaTool } from '../lib/facia-tool';
 import { FaciaToolCertificate } from '../lib/facia-tool-certificate';
 import { FaciaToolCloudFrontWaf } from '../lib/facia-tool-cloudfront-waf';
 
-const app = new GuRoot();
+export const app = new GuRoot();
 
-const cloudFrontWafCode = new FaciaToolCloudFrontWaf(
+new FaciaToolCloudFrontWaf(
 	app,
 	'FaciaToolCloudFrontWaf-useast-1-CODE',
 	{
@@ -16,7 +16,6 @@ const cloudFrontWafCode = new FaciaToolCloudFrontWaf(
 		env: { region: 'us-east-1' },
 		cloudFormationStackName: 'cms-fronts-CODE-facia-tool-cloudfront-waf',
 		riffRaffProjectName: 'facia-tool-cloudfront-waf',
-		crossRegionReferences: true,
 	},
 );
 // us-east-1, because CloudFront viewer certificates must be. Deployed separately from the
@@ -61,12 +60,10 @@ new FaciaTool(app, 'FaciaTool-euwest-1-CODE', {
 	stack: 'cms-fronts',
 	stage: 'CODE',
 	env: { region: 'eu-west-1' },
-	crossRegionReferences: true,
 	cloudFormationStackName: 'facia-CODE',
 	domainName: 'fronts.code.dev-gutools.co.uk',
 	authDomain: 'code.dev-gutools.co.uk',
 	frontPressedTable: 'front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU',
-	cloudFrontWebAclArn: cloudFrontWafCode.webAclArn,
 	databaseSecurityGroupId: editionsCode.databaseSecurityGroupId,
 	instanceType: 't4g.small',
 	minimumInstances: 1,
