@@ -173,6 +173,28 @@ describe('Snap cards actions', () => {
 				}),
 			);
 		});
+		it('should create a snap link if a Guardian URL is provided and CAPI returns no results', async () => {
+			fetchMock.once('begin:/api/preview', {
+				response: { status: 'ok', total: 0, results: [] },
+			});
+			fetchMock.mock(
+				'/http/proxy/https://www.theguardian.com/puzzles-and-games?view=mobile',
+				guardianTagPage,
+			);
+			const store = mockStore(initialState);
+			await store.dispatch(
+				createArticleEntitiesFromDrop(
+					idDrop('https://www.theguardian.com/puzzles-and-games'),
+				) as any,
+			);
+			expect(store.getActions()[0]).toEqual(
+				cardsReceived({
+					card1: await createSnap(
+						'https://www.theguardian.com/puzzles-and-games',
+					),
+				}),
+			);
+		});
 		describe('snaps created from url params prefixed with gu- ', () => {
 			it('should be created if they are provided in the resource id', async () => {
 				const store = mockStore(initialState);
