@@ -1,8 +1,9 @@
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
 import { GuStack } from '@guardian/cdk/lib/constructs/core';
 import type { App } from 'aws-cdk-lib';
-import { CfnOutput } from 'aws-cdk-lib';
-import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
+import { ArnFormat, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { CfnLoggingConfiguration, CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
 
 const managedRule = (
 	name: string,
@@ -116,6 +117,21 @@ export class FaciaToolCloudFrontWaf extends GuStack {
 				metricName: `Facia-${this.stage}-WAF`,
 				sampledRequestsEnabled: false,
 			},
+			dataProtectionConfig: {
+				dataProtections: [
+					{
+						action: 'SUBSTITUTION',
+						field: {
+							fieldType: 'SINGLE_HEADER',
+							fieldKeys: ['authorization', 'cookie'],
+						},
+					},
+					{
+						action: 'SUBSTITUTION',
+						field: { fieldType: 'QUERY_STRING' },
+					},
+				],
+			},
 			rules: [
 				managedRule('AWSManagedRulesAdminProtectionRuleSet', 1, {
 					count: {},
@@ -177,6 +193,35 @@ export class FaciaToolCloudFrontWaf extends GuStack {
 					'awswaf:managed:aws:posix-os:',
 				),
 			],
+		});
+
+		const logGroup = new LogGroup(this, 'WafLogGroup', {
+			logGroupName: `aws-waf-logs-facia-tool-cloudfront-${this.stage.toLowerCase()}`,
+			retention: RetentionDays.ONE_MONTH,
+			removalPolicy: RemovalPolicy.RETAIN,
+		});
+		new CfnLoggingConfiguration(this, 'WafLogging', {
+			resourceArn: webAcl.attrArn,
+			logDestinationConfigs: [
+				this.formatArn({
+					service: 'logs',
+					resource: 'log-group',
+					resourceName: logGroup.logGroupName,
+					arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+				}),
+			],
+			loggingFilter: {
+				DefaultBehavior: 'DROP',
+				Filters: [
+					{
+						Behavior: 'KEEP',
+						Requirement: 'MEETS_ANY',
+						Conditions: ['COUNT', 'BLOCK', 'EXCLUDED_AS_COUNT'].map(
+							(Action) => ({ ActionCondition: { Action } }),
+						),
+					},
+				],
+			},
 		});
 
 		this.webAclArn = webAcl.attrArn;
