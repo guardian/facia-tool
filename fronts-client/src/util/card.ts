@@ -305,6 +305,11 @@ const getCardEntitiesFromDrop = async (
 				externalArticle: article,
 			};
 		}
+		// A valid CAPI response with no content, e.g. a section without articles.
+		if (isURL) {
+			const card = await createSnap(resourceIdOrUrl);
+			return { card };
+		}
 	} catch (e) {
 		if (isURL) {
 			// If there was an error getting content for CAPI, assume the link is valid
