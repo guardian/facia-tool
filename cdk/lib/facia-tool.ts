@@ -43,6 +43,7 @@ import {
 	Role,
 } from 'aws-cdk-lib/aws-iam';
 import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 const app = 'facia-tool';
 const applicationPort = 9000;
@@ -75,6 +76,8 @@ export interface FaciaToolProps extends GuStackProps {
 	authDomain: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
+	/** ARN of the CloudFront WAF, deployed in us-east-1. */
+	cloudFrontWebAclArn?: string;
 	/** The database's security group, from the `FaciaEditions` stack. */
 	databaseSecurityGroupId: string;
 	instanceType: string;
@@ -146,10 +149,26 @@ export class FaciaTool extends GuStack {
 			}),
 		});
 
+		new StringParameter(this, 'WafLoadBalancerArn', {
+			parameterName: `/infosec/waf/services/${this.stage}/${app}-alb-arn`,
+			stringValue: ec2App.loadBalancer.loadBalancerArn,
+		});
+		if (this.stage === 'CODE') {
+			if (!props.cloudFrontWebAclArn) {
+				throw new Error('CODE requires a CloudFront WebACL ARN');
+			}
+			new StringParameter(this, 'FaciaWebAclArn', {
+				description: 'ARN of the Facia CloudFront WebACL',
+				parameterName: `/${this.stage}/cms-fronts/faciaWebAclArn`,
+				stringValue: props.cloudFrontWebAclArn,
+			});
+		}
+
 		this.cloudFront({
 			parameter,
 			domainName: props.domainName,
 			originDomainName: ec2App.loadBalancer.loadBalancerDnsName,
+			webAclArn: props.cloudFrontWebAclArn,
 		});
 
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
@@ -200,6 +219,17 @@ export class FaciaTool extends GuStack {
 				switchboardBucket: parameter('SwitchboardBucket'),
 			});
 		}
+	}
+
+	/**
+	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
+	 * thing we decrypt is the SecureString holding the database password, and it uses the
+	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
+	 */
+	private get viaSsmOrSqs(): Record<string, Record<string, string[]>> {
+		return {
+			StringEquals: { 'kms:ViaService': [`ssm.${this.region}.amazonaws.com`, `sqs.${this.region}.amazonaws.com`] },
+		};
 	}
 
 	/**
@@ -266,14 +296,17 @@ export class FaciaTool extends GuStack {
 		parameter,
 		domainName,
 		originDomainName,
+		webAclArn,
 	}: {
 		parameter: (name: string) => string;
 		domainName: string;
 		originDomainName: string;
+		webAclArn?: string;
 	}): void {
 		const certificateArn = parameter('CloudFrontCertificateArn');
 
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
+			webAclId: this.stage === 'CODE' ? webAclArn : undefined,
 			domainNames: [domainName],
 			certificate: Certificate.fromCertificateArn(
 				this,
@@ -324,17 +357,6 @@ export class FaciaTool extends GuStack {
 			resource: bucketName,
 			resourceName: key,
 		});
-	}
-
-	/**
-	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
-	 * thing we decrypt is the SecureString holding the database password, and it uses the
-	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
-	 */
-	private get viaSsmOrSqs(): Record<string, Record<string, string[]>> {
-		return {
-			StringEquals: { 'kms:ViaService': [`ssm.${this.region}.amazonaws.com`, `sqs.${this.region}.amazonaws.com`] },
-		};
 	}
 
 	private dynamoTableArn(tableName: string): string {

@@ -1,0 +1,12 @@
+stacks: [cms-fronts]
+regions: [us-east-1]
+allowedStages:
+  - CODE
+
+deployments:
+  cfn-facia-tool-cloudfront-waf:
+    type: cloud-formation
+    app: facia-tool-cloudfront-waf
+    parameters:
+      templateStagePaths:
+        CODE: FaciaToolCloudFrontWaf-useast-1-CODE.template.json
